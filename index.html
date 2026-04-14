@@ -199,12 +199,22 @@
     .value-item h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
     .value-item p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 36px 0; }
-    .feature-card { background: white; border-radius: var(--r); padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: all 0.2s; }
-    .feature-card:hover { border-color: var(--cyan); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,180,216,0.12); }
-    .feat-icon { width: 44px; height: 44px; border-radius: 11px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
-    .feature-card h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 7px; }
-    .feature-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    /* Accordion features */
+    .accordion { display: flex; flex-direction: column; gap: 10px; margin: 32px 0; }
+    .acc-item { background: white; border-radius: var(--r); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; transition: box-shadow 0.2s; }
+    .acc-item.open { box-shadow: 0 4px 20px rgba(0,180,216,0.12); border-color: var(--cyan); }
+    .acc-header { width: 100%; display: flex; align-items: center; gap: 14px; padding: 18px 20px; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+    .acc-header:hover { background: var(--bg); }
+    .acc-icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .acc-title { flex: 1; font-size: 15px; font-weight: 700; color: var(--navy); }
+    .acc-chevron { font-size: 16px; color: var(--cyan-dark); transition: transform 0.25s; flex-shrink: 0; }
+    .acc-item.open .acc-chevron { transform: rotate(180deg); }
+    .acc-body { display: none; padding: 0 20px 20px 74px; animation: fadeIn 0.2s ease; }
+    .acc-item.open .acc-body { display: block; }
+    .feat-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+    .feat-list li { font-size: 14px; color: #4A5568; line-height: 1.65; padding-left: 16px; position: relative; }
+    .feat-list li::before { content: '→'; position: absolute; left: 0; color: var(--cyan-dark); font-weight: 700; }
+    .feat-list li strong { color: var(--navy); }
 
     /* Commercial proposal */
     .pricing-hero { background: linear-gradient(135deg, var(--navy) 0%, #1a4a7a 100%); border-radius: var(--r); padding: 36px 40px; color: white; margin: 36px 0; }
@@ -307,33 +317,35 @@
       .stat-desc { font-size: 11px !important; }
 
       .about-img, .scroll-hint { display: none !important; }
-      .value-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 24px !important; }
-      .value-item { padding: 10px !important; }
-      .value-item .icon { font-size: 18px !important; margin-bottom: 5px !important; }
-      .value-item h4 { font-size: 11px !important; }
-      .value-item p { font-size: 10px !important; }
 
+      /* ── PAGE 1: Intro + Funcionalidades ─── */
+      #t-about { padding: 0 24px; page-break-after: always; }
       #t-about .sec-title { font-size: 18px !important; margin-bottom: 8px !important; }
       #t-about .sec-body { font-size: 12px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
-      #t-about .divider, #t-about h2, #t-about #ab-why-body { display: none !important; }
-      #t-about { padding: 0 24px; page-break-after: avoid; }
+      .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 0 !important; }
+      .stat-card { padding: 10px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
+      .stat-num { font-size: 22px !important; } .stat-unit { font-size: 14px !important; } .stat-desc { font-size: 10px !important; }
+      #t-about h2 { font-size: 14px !important; margin-bottom: 10px !important; }
+      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 0 !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div:first-child { width: 28px !important; height: 28px !important; font-size: 14px !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div > div:first-child { font-size: 12px !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div > div:last-child { font-size: 10px !important; }
+      #t-about .divider { margin: 12px 0 !important; }
 
-      /* ── PAGE 2: Features + Pricing ─── */
-      #t-features { padding: 0 24px; page-break-before: always; }
-      #t-features .sec-title { font-size: 16px !important; margin-bottom: 6px !important; }
-      #t-features .sec-body { font-size: 11px !important; margin-bottom: 10px !important; }
-      .feature-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4,1fr) !important;
-        gap: 8px !important;
-        margin: 8px 0 !important;
-      }
-      .feature-card { padding: 10px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; transform: none !important; }
-      .feat-icon { width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 7px !important; margin-bottom: 7px !important; }
-      .feature-card h3 { font-size: 11px !important; margin-bottom: 4px !important; }
-      .feature-card p { font-size: 10px !important; line-height: 1.4 !important; }
+      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 10px; }
+      #t-features .sec-tag, #t-features .sec-body { display: none !important; }
+      #t-features .sec-title { font-size: 15px !important; margin-bottom: 10px !important; }
+      .accordion { gap: 6px !important; margin: 0 !important; }
+      .acc-item { box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
+      .acc-item.open { border-color: #00B4D8 !important; }
+      .acc-header { padding: 10px 14px !important; }
+      .acc-icon-wrap { width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 7px !important; }
+      .acc-title { font-size: 11px !important; }
+      .acc-body { display: block !important; padding: 0 14px 10px 56px !important; }
+      .feat-list li { font-size: 10px !important; line-height: 1.4 !important; margin-bottom: 3px !important; }
 
-      #t-proposal { padding: 0 24px; page-break-before: avoid; margin-top: 14px; }
+      /* ── PAGE 2: Cotización ─── */
+      #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
       #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 4px !important; }
       #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 8px !important; }
       .pricing-hero { padding: 16px !important; margin: 8px 0 !important; }
@@ -420,10 +432,7 @@
               <span class="ops-badge" id="ops-badge" style="display:none">Tier ?</span>
             </div>
           </div>
-          <div class="form-group">
-            <label>Logo del Prospecto (URL — opcional)</label>
-            <input type="url" id="inp-logo" placeholder="https://empresa.com/logo.png" />
-          </div>
+
           <div class="form-group">
             <label>Nota para la propuesta (opcional)</label>
             <textarea id="inp-note" rows="2" placeholder="Ej: Incluye onboarding dedicado. Precios válidos 30 días."></textarea>
@@ -491,6 +500,23 @@
             <div style="font-size:10px;color:var(--cyan-light);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:5px;">Implementación (pago único)</div>
             <div style="font-size:22px;font-weight:800;">$<span id="ps-impl">—</span> <span style="font-size:13px;color:rgba(255,255,255,0.45);font-weight:400;">USD</span></div>
             <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;">15% del ACV · onboarding + configuración</div>
+          </div>
+          <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan-light);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:8px">
+              <input type="checkbox" id="erp-toggle" onchange="updatePricing()" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer" />
+              Incluir Integración ERP (opcional)
+            </label>
+            <div id="erp-price-row" style="display:none">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-size:11px;color:rgba(255,255,255,0.5)">Monto:</span>
+                <span style="font-size:11px;color:rgba(255,255,255,0.5)">$</span>
+                <input type="number" id="erp-price" value="0" min="0" step="100"
+                  oninput="updatePricing()"
+                  style="width:100px;padding:4px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
+                <span style="font-size:11px;color:rgba(255,255,255,0.5)">USD</span>
+              </div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.4)">Pago único · parametrización + puesta en marcha</div>
+            </div>
           </div>
         </div>
       </div>
@@ -594,8 +620,8 @@
     <!-- ─── SOBRE BIRDIE ─────────────────── -->
     <div id="t-about" class="section-tab active">
       <div class="sec-tag" id="ab-tag">SOBRE NOSOTROS</div>
-      <h1 class="sec-title" id="ab-title">Digitalizamos el comercio exterior mexicano</h1>
-      <p class="sec-body" id="ab-body">Birdie es la plataforma líder para la digitalización de operaciones de importación en México. Transformamos la manera en que las empresas gestionan su comercio exterior: conectamos a importadores con sus agentes aduanales en una sola plataforma inteligente, eliminando el caos del correo electrónico, los documentos dispersos y la falta de visibilidad.</p>
+      <h1 class="sec-title" id="ab-title">IA para tu comercio exterior</h1>
+      <p class="sec-body" id="ab-body">Birdie es una plataforma tecnológica que centraliza, valida y da trazabilidad total a la información de las importaciones (marítimas y aéreas), permitiendo a las empresas reducir riesgos, errores y costos operativos, mientras toman mejores decisiones con datos en tiempo real.</p>
 
       <div class="about-img"><img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1200&q=80" alt="Puerto comercial" loading="lazy" /></div>
 
@@ -606,13 +632,25 @@
       </div>
 
       <div class="divider"></div>
-      <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:16px;letter-spacing:-0.5px" id="ab-why">¿Por qué Birdie?</h2>
-      <p class="sec-body" style="margin-bottom:28px" id="ab-why-body">Las empresas más grandes de México pierden tiempo y dinero en procesos de importación manuales: correos perdidos, documentos desorganizados, cero visibilidad del status de sus pedimentos. Birdie resuelve esto con una plataforma centralizada que da control total sobre cada operación.</p>
+      <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:20px;letter-spacing:-0.5px" id="ab-why">¿Por qué Birdie?</h2>
 
-      <div class="value-row">
-        <div class="value-item"><div class="icon">📦</div><h4 id="v1h">Visibilidad Total</h4><p id="v1p">Status en tiempo real de cada pedimento y operación</p></div>
-        <div class="value-item"><div class="icon">⚡</div><h4 id="v2h">Agilidad Operativa</h4><p id="v2p">Reduce tiempos de coordinación hasta 60%</p></div>
-        <div class="value-item"><div class="icon">🛡️</div><h4 id="v3h">Cumplimiento</h4><p id="v3p">Alertas automáticas SAT / ANAM / NOM en tiempo real</p></div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:40px">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
+          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📉</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Reduce incidencias operativas y costos ocultos</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Detecta errores antes de que se conviertan en problemas costosos en aduana o almacén.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
+          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔍</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Incrementa control, trazabilidad y cumplimiento aduanal</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Visibilidad completa de cada operación desde origen hasta entrega en almacén.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
+          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⚡</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Disminuye la dependencia de procesos manuales y correos</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Centraliza toda la operación en una sola plataforma. Fin a los correos perdidos y las hojas de cálculo.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
+          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🚀</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Sienta las bases de una operación logística escalable y digital</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Una plataforma que crece con tu empresa y se adapta a la complejidad de tu operación.</div></div>
+        </div>
       </div>
     </div>
 
@@ -621,15 +659,91 @@
       <div class="sec-tag" id="ft-tag">PLATAFORMA</div>
       <h1 class="sec-title" id="ft-title">Todo lo que necesitas para gestionar tus importaciones</h1>
       <p class="sec-body" id="ft-body">Birdie integra en una sola plataforma todas las herramientas que tu equipo necesita para operar con eficiencia, visibilidad y control total sobre cada operación de comercio exterior.</p>
-      <div class="feature-grid">
-        <div class="feature-card"><div class="feat-icon">📊</div><h3 id="f1h">Dashboard de Operaciones</h3><p id="f1p">Panel centralizado con status en tiempo real de todos tus pedimentos: estatus, alertas, tiempos de despacho y costos acumulados.</p></div>
-        <div class="feature-card"><div class="feat-icon">📁</div><h3 id="f2h">Portal de Documentos</h3><p id="f2p">Carga, organiza y comparte documentos aduanales de forma segura: factura comercial, packing list, BL, certificados de origen y más.</p></div>
-        <div class="feature-card"><div class="feat-icon">🔔</div><h3 id="f3h">Alertas Inteligentes</h3><p id="f3p">Notificaciones automáticas de vencimientos, retrasos en despacho, cambios en regulaciones y requisitos de cumplimiento.</p></div>
-        <div class="feature-card"><div class="feat-icon">💬</div><h3 id="f4h">Comunicación con Agente</h3><p id="f4p">Canal directo con tu agente aduanal integrado en cada operación. Sin correos perdidos, con historial completo por pedimento.</p></div>
-        <div class="feature-card"><div class="feat-icon">📈</div><h3 id="f5h">Analytics y Reportes</h3><p id="f5p">Dashboards de desempeño, análisis de costos, tiempos promedio de despacho y benchmarks del sector exportador/importador.</p></div>
-        <div class="feature-card"><div class="feat-icon">🔗</div><h3 id="f6h">Integración ERP / API</h3><p id="f6p">Conecta Birdie con tu ERP (SAP, Oracle, Microsiga) mediante nuestra API REST para sincronización automática de operaciones.</p></div>
-        <div class="feature-card"><div class="feat-icon">🌍</div><h3 id="f7h">Gestión de Proveedores</h3><p id="f7p">Base de datos de proveedores internacionales, historial de compras, documentación por proveedor y evaluación de riesgo.</p></div>
-        <div class="feature-card"><div class="feat-icon">🛡️</div><h3 id="f8h">Cumplimiento Regulatorio</h3><p id="f8p">Validación automática de fracciones arancelarias, normas NOM, NICO y actualizaciones con cambios del SAT y ANAM en tiempo real.</p></div>
+
+      <div class="accordion" id="features-accordion">
+
+        <!-- 1. Gestión Operativa -->
+        <div class="acc-item open">
+          <button class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-icon-wrap"><span class="acc-icon">⚙️</span></div>
+            <span class="acc-title">Sistema de Gestión Operativa</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <ul class="feat-list">
+              <li><strong>Personalización de columnas</strong> — Configura las columnas relevantes para replicar la visibilidad actual de tu operación.</li>
+              <li><strong>Trazabilidad aérea y marítima (multinaviera)</strong> — Automatización desde POD, POL, ETD, ETA, fecha de descarga y retorno de vacío.</li>
+              <li><strong>Integración directa con SOIA</strong> — Visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.</li>
+              <li><strong>Bitácora colaborativa multiórea</strong> — Registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2. Control Documental -->
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-icon-wrap"><span class="acc-icon">📁</span></div>
+            <span class="acc-title">Control Documental</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <ul class="feat-list">
+              <li><strong>Gestión segura de documentos</strong> — Carga, organiza, solicita y comparte documentos con agentes aduanales y agentes de carga: factura comercial, packing list, BL, certificados de origen y más.</li>
+              <li><strong>Expediente completo por operación</strong> — Garantiza que cada operación cuente con todos sus documentos requeridos.</li>
+              <li><strong>Validación automática con IA</strong> — Revisión inteligente de documentos para detectar errores o inconsistencias antes del despacho.</li>
+              <li><strong>Retención documental de 5 años</strong> — Acceso inmediato a cualquier expediente en caso de auditorías del SAT o ANAM.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 3. Alertas Inteligentes -->
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-icon-wrap"><span class="acc-icon">🔔</span></div>
+            <span class="acc-title">Alertas Inteligentes <span style="display:inline-flex;align-items:center;gap:4px;margin-left:8px;background:#25D366;color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              WhatsApp
+            </span></span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <ul class="feat-list">
+              <li><strong>Notificaciones automáticas por correo</strong> — Alertas por cambios de ETA, documentos faltantes en embarques por arribar, alertas de Cargo Ready Date (CRD) y más.</li>
+              <li><strong>Integración con WhatsApp</strong> — Consulta el estatus de operaciones, contenedores y fechas de llegada directamente desde WhatsApp, sin necesidad de ingresar a la plataforma.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 4. Colaboración Multiórea -->
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-icon-wrap"><span class="acc-icon">🤝</span></div>
+            <span class="acc-title">Colaboración con Diferentes Áreas</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <ul class="feat-list">
+              <li><strong>Fuentes de información por área</strong> — Construimos vistas específicas para compras, finanzas, almacén y cualquier otra área que requiera visibilidad operativa.</li>
+              <li><strong>Implementación detallada por equipo</strong> — Cada equipo de trabajo recibe su configuración y capacitación específica según sus necesidades.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 5. KPIs y Analítica -->
+        <div class="acc-item">
+          <button class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-icon-wrap"><span class="acc-icon">📊</span></div>
+            <span class="acc-title">Tableros de KPIs y Analítica</span>
+            <span class="acc-chevron">▾</span>
+          </button>
+          <div class="acc-body">
+            <ul class="feat-list">
+              <li><strong>Indicadores logísticos en tiempo real</strong> — Tiempos promedio de despacho aduanal, eficiencia logística, costos acumulados y más, disponibles desde el primer día.</li>
+              <li><strong>Tableros personalizados</strong> — A partir del tercer mes de colaboración, se desarrollan dashboards de indicadores personalizados para la operación del cliente.</li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -697,8 +811,13 @@
           </tr>
           <tr style="background:#fafcff">
             <td><strong id="td-impl-label">Implementación</strong></td>
-            <td id="td-impl-desc">Onboarding, configuración y capacitación (pago único, 1 vez)</td>
+            <td id="td-impl-desc">Configuración personalizada de la plataforma según los flujos operativos, documentos y reglas de negocio del cliente. Capacitación, acompañamiento y puesta en marcha (Go-Live) con soporte dedicado durante la fase de estabilización.</td>
             <td id="td-impl-amt">$0</td>
+          </tr>
+          <tr id="tr-erp" style="display:none;background:#f0fdf4">
+            <td><strong id="td-erp-label">Integración ERP</strong> <span style="font-size:11px;color:var(--text-muted);font-weight:400">(opcional)</span></td>
+            <td id="td-erp-desc">Parametrización inicial del sistema de acuerdo con la operación del cliente. Carga y estructuración de datos maestros iniciales. Pruebas de funcionamiento y puesta en marcha.</td>
+            <td id="td-erp-amt">$0</td>
           </tr>
           <tr class="total-row">
             <td colspan="2"><strong id="td-total-label">Total primer año</strong></td>
@@ -739,13 +858,70 @@
       <h1 class="sec-title" id="tc-title">Términos y Condiciones</h1>
       <p class="sec-body" id="tc-intro">Esta propuesta está sujeta a los siguientes términos. Para cualquier duda contáctanos en <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.</p>
 
+      <!-- SLA Download -->
+      <div style="margin-bottom:32px;padding:18px 22px;background:var(--cyan-pale);border:1px solid var(--cyan);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">📄 Acuerdo de Nivel de Servicio (SLA)</div>
+          <div style="font-size:12px;color:var(--text-muted)">Descarga nuestro SLA completo con tiempos de respuesta, uptime garantizado y compromisos de servicio.</div>
+        </div>
+        <a id="sla-link" href="https://drive.google.com/uc?export=download&id=12Sg522-drAAGm-f4bo_ia1aLsuWedEIk" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:white;padding:10px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap">
+          ⬇ Descargar SLA
+        </a>
+      </div>
+
       <div class="terms-block"><h3 id="tc1-h">1. Vigencia de la Propuesta</h3><p id="tc1-p">Esta propuesta tiene una vigencia de <strong>30 días naturales</strong> a partir de la fecha de emisión. Transcurrido este periodo, los precios y condiciones pueden ser sujetos a revisión.</p></div>
-      <div class="terms-block"><h3 id="tc2-h">2. Facturación y Pago</h3><ul id="tc2-ul"><li>La suscripción anual se factura al inicio del contrato por el monto total del año.</li><li>El descuento del 10% aplica exclusivamente para pago anual por adelantado.</li><li>El pago mensual no incluye descuento y puede cancelarse con 30 días de aviso.</li><li>La cuota de implementación se factura al momento de la firma del contrato.</li><li>Los pagos deben realizarse dentro de los 15 días naturales siguientes a la fecha de factura.</li><li>Los precios están en USD y pueden pagarse en MXN al tipo de cambio Banxico del día de pago.</li></ul></div>
-      <div class="terms-block"><h3 id="tc3-h">3. Implementación y Onboarding</h3><ul id="tc3-ul"><li>Duración estimada: 2 a 4 semanas.</li><li>Incluye: configuración de la plataforma, carga inicial de datos, integración con agente aduanal y capacitación del equipo.</li><li>El cliente deberá asignar un punto de contacto durante la implementación.</li></ul></div>
-      <div class="terms-block"><h3 id="tc4-h">4. Contrato y Renovación</h3><ul id="tc4-ul"><li>El contrato inicial es por un período de <strong>12 meses</strong>.</li><li>Renovación automática por periodos iguales, con aviso de cancelación de 30 días antes del vencimiento.</li><li>Birdie se reserva el derecho de ajustar tarifas con 60 días de anticipación para las renovaciones.</li></ul></div>
-      <div class="terms-block"><h3 id="tc5-h">5. Soporte y SLA</h3><ul id="tc5-ul"><li>Soporte Lunes–Viernes 9:00–18:00 (CDMX).</li><li>Tiempos de respuesta: crítico 2h · alto 4h · normal 24h hábiles.</li><li>Uptime garantizado del 99.5% mensual.</li></ul></div>
-      <div class="terms-block"><h3 id="tc6-h">6. Confidencialidad y Datos</h3><p id="tc6-p">Birdie trata todos los datos del cliente con estricta confidencialidad. Los datos son propiedad del cliente y no serán compartidos con terceros. El servicio cumple con la Ley Federal de Protección de Datos Personales (LFPDPPP).</p></div>
-      <div class="terms-block"><h3 id="tc7-h">7. Limitación de Responsabilidad</h3><p id="tc7-p">La responsabilidad de Birdie se limita al monto de la suscripción anual contratada. Birdie no se hace responsable de retrasos atribuibles a autoridades aduanales o a información proporcionada por el cliente.</p></div>
+
+      <div class="terms-block"><h3 id="tc2-h">2. Condiciones Generales</h3>
+        <ul id="tc2-ul">
+          <li>Incluye <strong>usuarios ilimitados</strong>.</li>
+          <li>Contratación mínima de <strong>6 meses</strong>.</li>
+          <li>Se requiere firma de <strong>Acuerdo de Transformación Operativa</strong> previo al inicio de la colaboración.</li>
+          <li>Los costos mencionados <strong>no incluyen IVA</strong>.</li>
+          <li>En caso de no contratar el servicio de implementación, se entrega centro de recursos y tutoriales para <strong>implementación autogestionada</strong>.</li>
+          <li>Favor de revisar el <strong>Anexo de Compromisos de Transformación Operativa</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="terms-block"><h3 id="tc3-h">3. Facturación y Pago</h3>
+        <ul id="tc3-ul">
+          <li>La suscripción anual se factura al inicio del contrato por el monto total del año.</li>
+          <li>El descuento del 10% aplica exclusivamente para pago anual por adelantado.</li>
+          <li>El pago mensual no incluye descuento y puede cancelarse con 30 días de aviso.</li>
+          <li>La cuota de implementación se factura al momento de la firma del contrato.</li>
+          <li>Los pagos deben realizarse dentro de los 15 días naturales siguientes a la fecha de factura.</li>
+          <li>En caso de realizar su pago en M.N., se calculará con base al <strong>tipo de cambio del DOF los días 5 de cada mes</strong> en facturación.</li>
+          <li>En caso de no requerir factura mexicana, se puede emitir <strong>Invoice con pago en Estados Unidos</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="terms-block"><h3 id="tc4-h">4. Implementación y Onboarding</h3>
+        <ul id="tc4-ul">
+          <li>Duración estimada: 2 a 4 semanas.</li>
+          <li>Incluye: configuración personalizada de la plataforma, carga inicial de datos, integración con agente aduanal y capacitación del equipo.</li>
+          <li>El cliente deberá asignar un punto de contacto durante la implementación.</li>
+        </ul>
+      </div>
+
+      <div class="terms-block"><h3 id="tc5-h">5. Contrato y Renovación</h3>
+        <ul id="tc5-ul">
+          <li>El contrato inicial es por un período mínimo de <strong>6 meses</strong>, con renovación estándar a 12 meses.</li>
+          <li>Renovación automática por periodos iguales, con aviso de cancelación de 30 días antes del vencimiento.</li>
+          <li>Birdie se reserva el derecho de ajustar tarifas con 60 días de anticipación para las renovaciones.</li>
+        </ul>
+      </div>
+
+      <div class="terms-block"><h3 id="tc6-h">6. Soporte y SLA</h3>
+        <ul id="tc6-ul">
+          <li>Soporte Lunes–Viernes 9:00–18:00 (CDMX).</li>
+          <li>Tiempos de respuesta: crítico 2h · alto 4h · normal 24h hábiles.</li>
+          <li>Uptime garantizado del 99.5% mensual.</li>
+        </ul>
+      </div>
+
+      <div class="terms-block"><h3 id="tc7-h">7. Confidencialidad y Datos</h3><p id="tc7-p">Birdie trata todos los datos del cliente con estricta confidencialidad. Los datos son propiedad del cliente y no serán compartidos con terceros. El servicio cumple con la Ley Federal de Protección de Datos Personales (LFPDPPP).</p></div>
+
+      <div class="terms-block"><h3 id="tc8-h">8. Limitación de Responsabilidad</h3><p id="tc8-p">La responsabilidad de Birdie se limita al monto de la suscripción anual contratada. Birdie no se hace responsable de retrasos atribuibles a autoridades aduanales o a información proporcionada por el cliente.</p></div>
 
       <div class="cta-block">
         <h3 id="cta-title">¿Listo para digitalizar tus importaciones?</h3>
@@ -824,19 +1000,27 @@ function updatePricing() {
   if (!p) { result.style.display = 'none'; empty.style.display = 'block'; badge.style.display = 'none'; return; }
   empty.style.display = 'none'; result.style.display = 'block'; badge.style.display = 'flex';
   badge.textContent = `Tier ${p.tier}`;
-  document.getElementById('ps-tier').textContent      = `⚡ Tier ${p.tier}`;
-  document.getElementById('ps-ppo').textContent       = fc(p.ppo);
-  document.getElementById('ps-acv').textContent       = fc(p.acv);
-  document.getElementById('ps-monthly').textContent   = fc(p.monthly);
+  document.getElementById('ps-tier').textContent        = `⚡ Tier ${p.tier}`;
+  document.getElementById('ps-ppo').textContent         = fc(p.ppo);
+  document.getElementById('ps-acv').textContent         = fc(p.acv);
+  document.getElementById('ps-monthly').textContent     = fc(p.monthly);
   document.getElementById('ps-annual-disc').textContent = fc(p.annualDisc);
-  document.getElementById('ps-saving').textContent    = fc(p.saving);
-  document.getElementById('ps-impl').textContent      = fc(p.impl);
+  document.getElementById('ps-saving').textContent      = fc(p.saving);
+  document.getElementById('ps-impl').textContent        = fc(p.impl);
+  // ERP toggle
+  const erpOn = document.getElementById('erp-toggle').checked;
+  document.getElementById('erp-price-row').style.display = erpOn ? 'block' : 'none';
 }
 
 function setLang(l, btn) {
   LANG = l;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+function toggleAcc(btn) {
+  const item = btn.closest('.acc-item');
+  item.classList.toggle('open');
 }
 
 function toggleTabulador(btn) {
@@ -876,11 +1060,12 @@ function resetTabulador() {
 
 // ── GENERATE PROPOSAL URL ──────────────────────────────────────────────────────
 function generateProposal() {
-  const co = document.getElementById('inp-company').value.trim();
-  const ct = document.getElementById('inp-contact').value.trim();
-  const ops = parseInt(document.getElementById('inp-ops').value);
-  const logo = document.getElementById('inp-logo').value.trim();
+  const co   = document.getElementById('inp-company').value.trim();
+  const ct   = document.getElementById('inp-contact').value.trim();
+  const ops  = parseInt(document.getElementById('inp-ops').value);
   const note = document.getElementById('inp-note').value.trim();
+  const erpOn = document.getElementById('erp-toggle').checked;
+  const erpAmt = erpOn ? (parseFloat(document.getElementById('erp-price').value) || 0) : 0;
 
   if (!co)  { alert('Ingresa el nombre de la empresa');  document.getElementById('inp-company').focus(); return; }
   if (!ct)  { alert('Ingresa el nombre del contacto');   document.getElementById('inp-contact').focus(); return; }
@@ -893,12 +1078,13 @@ function generateProposal() {
   const valid = new Date(today); valid.setDate(valid.getDate() + 30);
 
   const data = {
-    v:2, co, ct, ops, lang: LANG, logo, note,
+    v:3, co, ct, ops, lang: LANG, logo:'', note,
     date: today.toISOString().split('T')[0],
     valid: valid.toISOString().split('T')[0],
     ppo: p.ppo, acv: p.acv, mo: p.monthly,
     ann: p.annualDisc, moDisc: p.moDisc,
     saving: p.saving, impl: p.impl, tier: p.tier,
+    erp: erpAmt,
   };
 
   const encoded = enc(data);
@@ -1013,7 +1199,6 @@ function applyPricingToProposal(d, billing, en) {
 
   const subAmt  = isAnnual ? d.ann : d.acv;   // what they pay for subscription
   const moEq    = isAnnual ? d.moDisc : d.mo;  // monthly equivalent
-  const totalY1 = subAmt + d.impl;
 
   // Chip
   document.getElementById('chip-saving').textContent = fc(d.saving);
@@ -1055,9 +1240,19 @@ function applyPricingToProposal(d, billing, en) {
   document.getElementById('td-disc-amt').textContent   = isAnnual ? `-$${fc(d.saving)}` : '';
 
   document.getElementById('td-impl-label').textContent = en ? 'Implementation' : 'Implementación';
-  document.getElementById('td-impl-desc').textContent  = en ? 'Onboarding, setup & training (one-time)' : 'Onboarding, configuración y capacitación (pago único)';
   document.getElementById('td-impl-amt').textContent   = `$${fc(d.impl)}`;
 
+  // ERP row
+  const erpAmt = d.erp || 0;
+  const trErp = document.getElementById('tr-erp');
+  if (erpAmt > 0) {
+    trErp.style.display = '';
+    document.getElementById('td-erp-amt').textContent = `$${fc(erpAmt)}`;
+  } else {
+    trErp.style.display = 'none';
+  }
+
+  const totalY1 = subAmt + d.impl + erpAmt;
   document.getElementById('td-total-label').textContent = en ? 'Total First Year' : 'Total primer año';
   document.getElementById('td-total-amt').innerHTML     = `<strong>$${fc(totalY1)}</strong>`;
 }
