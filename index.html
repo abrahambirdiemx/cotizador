@@ -289,101 +289,91 @@
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       body { background: white !important; font-size: 11px; }
+
+      /* ── HIDE EVERYTHING EXCEPT CONTENT ─── */
       #generator-view, .gen-header, .valid-banner, .proposal-nav,
-      .proposal-cover, .proposal-footer, .btn-pdf, .lang-switch,
-      .scroll-hint, .billing-toggle-wrap { display: none !important; }
+      .proposal-cover, .proposal-footer, footer, .btn-pdf, .lang-switch,
+      .scroll-hint, .billing-toggle-wrap, .cta-block,
+      #pw-overlay, .about-img { display: none !important; }
+
       #proposal-view { display: block !important; }
       .proposal-content { max-width: 100%; padding: 0; margin: 0; }
       .section-tab { display: block !important; animation: none !important; }
 
-      /* ── PAGE 1: Header + Sobre Birdie ─── */
-      .print-header {
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 24px;
-        background: #0A2647;
-        color: white;
-        margin-bottom: 16px;
-      }
+      /* ── PAGE 1: Sobre Birdie ─── */
+      .print-header { display: flex !important; align-items: center; justify-content: space-between; padding: 16px 24px; background: #0A2647; color: white; margin-bottom: 16px; }
       .print-company-block { padding: 0 24px 12px; }
-      .print-company-block h1 { font-size: 22px; font-weight: 900; color: #0A2647; letter-spacing: -0.5px; }
+      .print-company-block h1 { font-size: 22px; font-weight: 900; color: #0A2647; }
       .print-company-block p { font-size: 12px; color: #64748B; }
 
-      .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 10px !important; margin: 10px 24px !important; }
-      .stat-card { padding: 12px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
-      .stat-num { font-size: 26px !important; }
-      .stat-unit { font-size: 16px !important; }
-      .stat-desc { font-size: 11px !important; }
-
-      .about-img, .scroll-hint { display: none !important; }
-
-      /* ── PAGE 1: Intro + Funcionalidades ─── */
       #t-about { padding: 0 24px; page-break-after: always; }
-      #t-about .sec-title { font-size: 18px !important; margin-bottom: 8px !important; }
-      #t-about .sec-body { font-size: 12px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
+      #t-about .sec-title { font-size: 17px !important; margin-bottom: 10px !important; margin-top: 14px !important; }
+      #t-about .sec-body { font-size: 12px !important; margin-bottom: 12px !important; line-height: 1.6 !important; }
+      #t-about .divider { margin: 12px 0 !important; }
+      #t-about h2 { font-size: 13px !important; margin-bottom: 10px !important; margin-top: 14px !important; }
       .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 0 !important; }
       .stat-card { padding: 10px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
-      .stat-num { font-size: 22px !important; } .stat-unit { font-size: 14px !important; } .stat-desc { font-size: 10px !important; }
-      #t-about h2 { font-size: 14px !important; margin-bottom: 10px !important; }
-      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 0 !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div:first-child { width: 28px !important; height: 28px !important; font-size: 14px !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div > div:first-child { font-size: 12px !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div > div:last-child { font-size: 10px !important; }
-      #t-about .divider { margin: 12px 0 !important; }
+      .stat-num { font-size: 20px !important; } .stat-unit { font-size: 13px !important; } .stat-desc { font-size: 10px !important; }
+      .value-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 0 !important; }
+      .value-item { padding: 10px !important; }
+      .value-item .icon { font-size: 18px !important; margin-bottom: 4px !important; }
+      .value-item h4 { font-size: 11px !important; }
+      .value-item p { font-size: 10px !important; }
 
-      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 10px; }
-      #t-features .sec-tag, #t-features .sec-body { display: none !important; }
-      #t-features .sec-title { font-size: 15px !important; margin-bottom: 10px !important; }
+      /* ── PAGE 1 CONTINUED: Funcionalidades ─── */
+      #t-features { padding: 0 24px; margin-top: 0; }
+      #t-features .sec-tag { display: none !important; }
+      #t-features .sec-title { font-size: 14px !important; margin-bottom: 8px !important; margin-top: 14px !important; }
+      #t-features .sec-body { font-size: 11px !important; margin-bottom: 8px !important; line-height: 1.5 !important; }
       .accordion { gap: 6px !important; margin: 0 !important; }
-      .acc-item { box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
-      .acc-item.open { border-color: #00B4D8 !important; }
-      .acc-header { padding: 10px 14px !important; }
-      .acc-icon-wrap { width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 7px !important; }
-      .acc-title { font-size: 11px !important; }
-      .acc-body { display: block !important; padding: 0 14px 10px 56px !important; }
-      .feat-list li { font-size: 10px !important; line-height: 1.4 !important; margin-bottom: 3px !important; }
+      .acc-item { box-shadow: none !important; border: 1px solid #CBD5E0 !important; border-radius: 6px !important; overflow: visible !important; page-break-inside: avoid !important; }
+      .acc-header { padding: 7px 12px !important; }
+      .acc-icon-wrap { width: 24px !important; height: 24px !important; font-size: 12px !important; border-radius: 5px !important; flex-shrink: 0 !important; }
+      .acc-title { font-size: 10px !important; font-weight: 700 !important; color: #0A2647 !important; }
+      .acc-chevron { display: none !important; }
+      .acc-body { display: block !important; visibility: visible !important; height: auto !important; max-height: none !important; overflow: visible !important; padding: 2px 10px 8px 42px !important; animation: none !important; }
+      .feat-list { gap: 3px !important; }
+      .feat-list li { font-size: 9.5px !important; line-height: 1.4 !important; margin-bottom: 2px !important; color: #2D3748 !important; padding-left: 12px !important; }
+      .feat-list li::before { font-size: 9px !important; }
 
       /* ── PAGE 2: Cotización ─── */
       #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
-      #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 4px !important; }
+      #t-proposal .sec-title { font-size: 15px !important; margin-bottom: 6px !important; margin-top: 14px !important; }
       #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 8px !important; }
-      .pricing-hero { padding: 16px !important; margin: 8px 0 !important; }
-      .pricing-hero h2 { font-size: 16px !important; margin-bottom: 4px !important; }
-      .pricing-hero .ph-sub { font-size: 11px !important; margin-bottom: 12px !important; }
-      .price-cards-row { grid-template-columns: repeat(3,1fr) !important; gap: 10px !important; }
-      .price-card { padding: 12px !important; }
+      .pricing-hero { padding: 14px !important; margin: 8px 0 !important; }
+      .pricing-hero h2 { font-size: 15px !important; margin-bottom: 4px !important; }
+      .pricing-hero .ph-sub { font-size: 11px !important; margin-bottom: 10px !important; }
+      .price-cards-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; }
+      .price-card { padding: 10px !important; }
       .price-card .pc-label { font-size: 9px !important; }
-      .price-card .pc-amount { font-size: 22px !important; }
-      .price-card .pc-period { font-size: 10px !important; }
-      .price-card .pc-saving { font-size: 10px !important; }
-      .breakdown-table td, .breakdown-table th { padding: 8px 10px !important; font-size: 11px !important; }
-      .impl-note { font-size: 11px !important; padding: 10px 14px !important; margin: 8px 0 !important; }
-      #note-section { margin: 8px 0 !important; }
-      .note-block { padding: 10px 14px !important; }
-      .includes-box { padding: 16px !important; margin-top: 12px !important; }
-      .includes-box h3 { font-size: 13px !important; margin-bottom: 10px !important; }
-      .includes-item { font-size: 11px !important; }
+      .price-card .pc-amount { font-size: 20px !important; }
+      .price-card .pc-period { font-size: 9px !important; }
+      .price-card .pc-saving { font-size: 9px !important; }
+      .breakdown-table td, .breakdown-table th { padding: 6px 10px !important; font-size: 11px !important; }
+      #tr-mo-sub td { font-size: 10px !important; padding: 4px 10px !important; }
+      .impl-note { font-size: 11px !important; padding: 8px 12px !important; margin: 6px 0 !important; }
+      #note-section { margin: 6px 0 !important; }
+      .note-block { padding: 8px 12px !important; }
+      .includes-box { padding: 12px !important; margin-top: 10px !important; }
+      .includes-box h3 { font-size: 12px !important; margin-bottom: 8px !important; }
+      .includes-grid { grid-template-columns: repeat(2,1fr) !important; gap: 4px !important; }
+      .includes-item { font-size: 10px !important; }
 
       /* ── PAGE 3: T&C ─── */
       #t-terms { padding: 0 24px; page-break-before: always; }
-      #t-terms .sec-title { font-size: 18px !important; margin-bottom: 6px !important; }
-      #t-terms .sec-body { font-size: 12px !important; margin-bottom: 14px !important; }
-      .terms-block { margin: 12px 0 !important; }
-      .terms-block h3 { font-size: 13px !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
-      .terms-block p, .terms-block li { font-size: 11px !important; line-height: 1.55 !important; }
-      .terms-block ul { padding-left: 16px !important; }
+      #t-terms .sec-title { font-size: 17px !important; margin-bottom: 8px !important; margin-top: 14px !important; }
+      #t-terms .sec-body { font-size: 11px !important; margin-bottom: 14px !important; }
+      .terms-block { margin: 10px 0 !important; }
+      .terms-block h3 { font-size: 11px !important; font-weight: 800 !important; margin-bottom: 5px !important; padding-bottom: 3px !important; }
+      .terms-block p, .terms-block li { font-size: 10px !important; line-height: 1.55 !important; }
+      .terms-block ul { padding-left: 14px !important; }
       .terms-block li { margin-bottom: 3px !important; }
-      .cta-block { padding: 16px !important; margin-top: 16px !important; }
-      .cta-block h3 { font-size: 14px !important; }
-      .cta-block p { font-size: 11px !important; }
-      .cta-btn { padding: 8px 20px !important; font-size: 12px !important; }
 
-      /* Print-only header block */
+      /* Print-only elements */
       .print-only { display: block !important; }
-      .print-sec-divider { border: none; border-top: 2px solid #0A2647; margin: 12px 0; }
+      .print-sec-divider { border: none; border-top: 2px solid #0A2647; margin: 10px 0; }
 
-      @page { margin: 10mm 12mm; size: A4; }
+      @page { margin: 12mm 14mm; size: A4; }
     }
 
     .print-only { display: none; }
@@ -640,7 +630,7 @@
       <div class="about-img"><img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1200&q=80" alt="Puerto comercial" loading="lazy" /></div>
 
       <div class="stats-row">
-        <div class="stat-card"><div><span class="stat-num">500</span><span class="stat-unit">+</span></div><div class="stat-desc" id="s1">Empresas importadoras en la plataforma</div></div>
+        <div class="stat-card"><div><span class="stat-num">7,000</span><span class="stat-unit">+</span></div><div class="stat-desc" id="s1">Contenedores rastreados en la plataforma</div></div>
         <div class="stat-card"><div><span class="stat-num">98</span><span class="stat-unit">%</span></div><div class="stat-desc" id="s2">Satisfacción de clientes activos</div></div>
         <div class="stat-card"><div><span class="stat-num">40</span><span class="stat-unit">%</span></div><div class="stat-desc" id="s3">Reducción promedio en tiempos de despacho</div></div>
       </div>
@@ -1366,7 +1356,7 @@ function applySpanish(d) {
   t('ab-tag','SOBRE NOSOTROS');
   t('ab-title','Digitalizamos el comercio exterior mexicano');
   document.getElementById('ab-body').textContent = 'Birdie es la plataforma líder para la digitalización de operaciones de importación en México. Transformamos la manera en que las empresas gestionan su comercio exterior: conectamos a importadores con sus agentes aduanales en una sola plataforma inteligente, eliminando el caos del correo electrónico, los documentos dispersos y la falta de visibilidad.';
-  t('s1','Empresas importadoras en la plataforma');
+  t('s1','Contenedores rastreados en la plataforma');
   t('s2','Satisfacción de clientes activos');
   t('s3','Reducción promedio en tiempos de despacho');
   t('ab-why','¿Por qué Birdie?');
@@ -1488,6 +1478,14 @@ function downloadPDF() {
   birdieInitGate();
 })();
 
+
+// ── PRINT: open all accordions before printing, restore after ────────────────
+window.addEventListener('beforeprint', function() {
+  document.querySelectorAll('.acc-item').forEach(function(el) { el.classList.add('open'); });
+});
+window.addEventListener('afterprint', function() {
+  document.querySelectorAll('.acc-item').forEach(function(el) { el.classList.remove('open'); });
+});
 // ── PASSWORD GATE ────────────────────────────────────────────────────────────
 const BIRDIE_HASH = 'a373bff3391fa1d7b94f398f50f890aff5349f95ec489a13465a3f7a8fe9afdf';
 const BIRDIE_KEY  = 'birdie_auth_v1';
