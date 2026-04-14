@@ -290,8 +290,8 @@
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       body { background: white !important; font-size: 11px; }
       #generator-view, .gen-header, .valid-banner, .proposal-nav,
-      .proposal-cover, .proposal-footer, footer, .btn-pdf, .lang-switch,
-      .scroll-hint, .billing-toggle-wrap, .cta-block, #pw-overlay { display: none !important; }
+      .proposal-cover, .proposal-footer, .btn-pdf, .lang-switch,
+      .scroll-hint, .billing-toggle-wrap { display: none !important; }
       #proposal-view { display: block !important; }
       .proposal-content { max-width: 100%; padding: 0; margin: 0; }
       .section-tab { display: block !important; animation: none !important; }
@@ -310,37 +310,44 @@
       .print-company-block h1 { font-size: 22px; font-weight: 900; color: #0A2647; letter-spacing: -0.5px; }
       .print-company-block p { font-size: 12px; color: #64748B; }
 
+      .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 10px !important; margin: 10px 24px !important; }
+      .stat-card { padding: 12px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
+      .stat-num { font-size: 26px !important; }
+      .stat-unit { font-size: 16px !important; }
+      .stat-desc { font-size: 11px !important; }
+
       .about-img, .scroll-hint { display: none !important; }
 
       /* ── PAGE 1: Intro + Funcionalidades ─── */
       #t-about { padding: 0 24px; page-break-after: always; }
-      #t-about .sec-title { font-size: 18px !important; margin-bottom: 10px !important; margin-top: 16px !important; }
-      #t-about .sec-body { font-size: 12px !important; margin-bottom: 14px !important; line-height: 1.6 !important; }
+      #t-about .sec-title { font-size: 18px !important; margin-bottom: 8px !important; }
+      #t-about .sec-body { font-size: 12px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
       .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 0 !important; }
       .stat-card { padding: 10px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
       .stat-num { font-size: 22px !important; } .stat-unit { font-size: 14px !important; } .stat-desc { font-size: 10px !important; }
-      #t-about h2 { font-size: 14px !important; margin-bottom: 12px !important; margin-top: 16px !important; }
-      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 4px !important; }
-      #t-about .divider { margin: 14px 0 !important; }
+      #t-about h2 { font-size: 14px !important; margin-bottom: 10px !important; }
+      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 0 !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div:first-child { width: 28px !important; height: 28px !important; font-size: 14px !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div > div:first-child { font-size: 12px !important; }
+      #t-about > div[style*="flex-direction:column"] > div > div > div:last-child { font-size: 10px !important; }
+      #t-about .divider { margin: 12px 0 !important; }
 
-      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 16px; }
-      #t-features .sec-tag { display: none !important; }
-      #t-features .sec-body { font-size: 11px !important; margin-bottom: 10px !important; }
-      #t-features .sec-title { font-size: 15px !important; margin-bottom: 12px !important; }
-      .accordion { gap: 8px !important; margin: 0 !important; }
-      .acc-item { box-shadow: none !important; border: 1px solid #CBD5E0 !important; border-radius: 6px !important; overflow: visible !important; }
-      .acc-header { padding: 8px 12px !important; }
-      .acc-icon-wrap { width: 26px !important; height: 26px !important; font-size: 13px !important; border-radius: 6px !important; }
-      .acc-title { font-size: 11px !important; font-weight: 700 !important; color: #0A2647 !important; }
-      .acc-chevron { display: none !important; }
-      .acc-body { display: block !important; visibility: visible !important; height: auto !important; overflow: visible !important; padding: 4px 12px 10px 46px !important; }
-      .feat-list { gap: 5px !important; }
-      .feat-list li { font-size: 10px !important; line-height: 1.45 !important; margin-bottom: 2px !important; color: #2D3748 !important; }
+      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 10px; }
+      #t-features .sec-tag, #t-features .sec-body { display: none !important; }
+      #t-features .sec-title { font-size: 15px !important; margin-bottom: 10px !important; }
+      .accordion { gap: 6px !important; margin: 0 !important; }
+      .acc-item { box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
+      .acc-item.open { border-color: #00B4D8 !important; }
+      .acc-header { padding: 10px 14px !important; }
+      .acc-icon-wrap { width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 7px !important; }
+      .acc-title { font-size: 11px !important; }
+      .acc-body { display: block !important; padding: 0 14px 10px 56px !important; }
+      .feat-list li { font-size: 10px !important; line-height: 1.4 !important; margin-bottom: 3px !important; }
 
       /* ── PAGE 2: Cotización ─── */
       #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
-      #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 6px !important; margin-top: 16px !important; }
-      #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 10px !important; }
+      #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 4px !important; }
+      #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 8px !important; }
       .pricing-hero { padding: 16px !important; margin: 8px 0 !important; }
       .pricing-hero h2 { font-size: 16px !important; margin-bottom: 4px !important; }
       .pricing-hero .ph-sub { font-size: 11px !important; margin-bottom: 12px !important; }
@@ -350,8 +357,7 @@
       .price-card .pc-amount { font-size: 22px !important; }
       .price-card .pc-period { font-size: 10px !important; }
       .price-card .pc-saving { font-size: 10px !important; }
-      .breakdown-table td, .breakdown-table th { padding: 6px 10px !important; font-size: 11px !important; }
-      #tr-mo-sub td { font-size: 10px !important; padding: 5px 10px !important; }
+      .breakdown-table td, .breakdown-table th { padding: 8px 10px !important; font-size: 11px !important; }
       .impl-note { font-size: 11px !important; padding: 10px 14px !important; margin: 8px 0 !important; }
       #note-section { margin: 8px 0 !important; }
       .note-block { padding: 10px 14px !important; }
@@ -361,13 +367,17 @@
 
       /* ── PAGE 3: T&C ─── */
       #t-terms { padding: 0 24px; page-break-before: always; }
-      #t-terms .sec-title { font-size: 18px !important; margin-bottom: 8px !important; margin-top: 16px !important; }
-      #t-terms .sec-body { font-size: 12px !important; margin-bottom: 16px !important; }
-      .terms-block { margin: 14px 0 !important; }
-      .terms-block h3 { font-size: 12px !important; font-weight: 800 !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
-      .terms-block p, .terms-block li { font-size: 11px !important; line-height: 1.6 !important; }
+      #t-terms .sec-title { font-size: 18px !important; margin-bottom: 6px !important; }
+      #t-terms .sec-body { font-size: 12px !important; margin-bottom: 14px !important; }
+      .terms-block { margin: 12px 0 !important; }
+      .terms-block h3 { font-size: 13px !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
+      .terms-block p, .terms-block li { font-size: 11px !important; line-height: 1.55 !important; }
       .terms-block ul { padding-left: 16px !important; }
-      .terms-block li { margin-bottom: 4px !important; }
+      .terms-block li { margin-bottom: 3px !important; }
+      .cta-block { padding: 16px !important; margin-top: 16px !important; }
+      .cta-block h3 { font-size: 14px !important; }
+      .cta-block p { font-size: 11px !important; }
+      .cta-btn { padding: 8px 20px !important; font-size: 12px !important; }
 
       /* Print-only header block */
       .print-only { display: block !important; }
@@ -377,6 +387,20 @@
     }
 
     .print-only { display: none; }
+
+    /* ── PASSWORD OVERLAY ─── */
+    #pw-overlay { position:fixed;inset:0;background:#0A2647;display:none;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.3s; }
+    #pw-overlay.fade { opacity:0; }
+    #pw-card { background:white;border-radius:16px;padding:48px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.4); }
+    #pw-logo { width:56px;height:56px;background:#0A2647;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden; }
+    #pw-logo img { width:100%;height:100%;object-fit:contain;padding:6px; }
+    #pw-card h2 { font-size:20px;font-weight:900;color:#0A2647;margin-bottom:6px; }
+    #pw-card p.sub { font-size:13px;color:#64748B;margin-bottom:28px; }
+    #pw-input { width:100%;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;font-size:15px;font-family:Inter,sans-serif;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border 0.2s; }
+    #pw-input:focus { border-color:#00B4D8; }
+    #pw-err { display:none;color:#EF4444;font-size:12px;margin-bottom:10px; }
+    #pw-btn { width:100%;padding:13px;background:#0A2647;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:background 0.2s; }
+    #pw-btn:hover:not(:disabled) { background:#1E6091; }
   </style>
 </head>
 <body>
@@ -1251,7 +1275,6 @@ function applyPricingToProposal(d, billing, en) {
   document.getElementById('td-total-label').textContent = en ? 'Total First Year' : 'Total primer año';
   document.getElementById('td-total-amt').innerHTML     = `<strong>$${fc(totalY1)}</strong>`;
 
-  // Monthly row
   document.getElementById('td-mo-sub-label').textContent = isAnnual
     ? (en ? 'Monthly equivalent (yr 2+)' : 'Equivalente mensual (a partir del año 2)')
     : (en ? 'Monthly payment' : 'Pago mensual');
@@ -1461,63 +1484,61 @@ function downloadPDF() {
     const data = dec(p);
     if (data) { renderProposal(data); return; }
   }
-  // ── PASSWORD GATE (generator only) ────────────────────────────────────────
-  const HASH = 'a373bff3391fa1d7b94f398f50f890aff5349f95ec489a13465a3f7a8fe9afdf';
-  const SESSION_KEY = 'birdie_auth';
+  document.getElementById('generator-view').style.display = 'block';
+  birdieInitGate();
+})();
 
-  async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  }
+// ── PASSWORD GATE ────────────────────────────────────────────────────────────
+const BIRDIE_HASH = 'a373bff3391fa1d7b94f398f50f890aff5349f95ec489a13465a3f7a8fe9afdf';
+const BIRDIE_KEY  = 'birdie_auth_v1';
 
-  async function checkPassword() {
-    const val = document.getElementById('pw-input').value;
-    const btn = document.getElementById('pw-btn');
-    const err = document.getElementById('pw-err');
-    btn.disabled = true;
-    btn.textContent = '...';
-    const hash = await sha256(val);
-    if (hash === HASH) {
-      sessionStorage.setItem(SESSION_KEY, '1');
-      document.getElementById('pw-overlay').style.opacity = '0';
-      setTimeout(() => { document.getElementById('pw-overlay').remove(); }, 300);
+async function birdieCheckPw() {
+  const input = document.getElementById('pw-input');
+  const btn   = document.getElementById('pw-btn');
+  const err   = document.getElementById('pw-err');
+  const val   = input.value;
+  if (!val) return;
+  btn.disabled = true; btn.textContent = '...';
+  err.style.display = 'none';
+  try {
+    const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(val));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    if (hash === BIRDIE_HASH) {
+      sessionStorage.setItem(BIRDIE_KEY, '1');
+      const ov = document.getElementById('pw-overlay');
+      ov.classList.add('fade');
+      setTimeout(function() { ov.style.display = 'none'; }, 320);
     } else {
       err.style.display = 'block';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
+      input.value = ''; input.focus();
+      btn.disabled = false; btn.textContent = 'Entrar';
     }
-    btn.disabled = false;
-    btn.textContent = 'Entrar';
+  } catch(e) {
+    err.textContent = 'Abre desde GitHub Pages o un servidor HTTPS.';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Entrar';
   }
+}
 
-  if (!sessionStorage.getItem(SESSION_KEY)) {
-    const overlay = document.createElement('div');
-    overlay.id = 'pw-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:#0A2647;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.3s;';
-    overlay.innerHTML = `
-      <div style="background:white;border-radius:16px;padding:48px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.4);">
-        <div style="width:56px;height:56px;background:#0A2647;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden;">
-          <img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" style="width:100%;height:100%;object-fit:contain;padding:6px;" />
-        </div>
-        <h2 style="font-size:20px;font-weight:900;color:#0A2647;margin-bottom:6px;">birdie</h2>
-        <p style="font-size:13px;color:#64748B;margin-bottom:28px;">Cotizador interno · Acceso restringido</p>
-        <input id="pw-input" type="password" placeholder="Contraseña"
-          style="width:100%;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;font-size:15px;font-family:Inter,sans-serif;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border 0.2s;"
-          onkeydown="if(event.key==='Enter')checkPassword()"
-          onfocus="this.style.borderColor='#00B4D8'" onblur="this.style.borderColor='#E2E8F0'" />
-        <p id="pw-err" style="display:none;color:#EF4444;font-size:12px;margin-bottom:10px;">Contraseña incorrecta. Intenta de nuevo.</p>
-        <button id="pw-btn" onclick="checkPassword()"
-          style="width:100%;padding:13px;background:#0A2647;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:background 0.2s;"
-          onmouseover="this.style.background='#1E6091'" onmouseout="this.style.background='#0A2647'">
-          Entrar
-        </button>
-      </div>`;
-    document.body.appendChild(overlay);
-    setTimeout(() => document.getElementById('pw-input').focus(), 100);
-  }
+function birdieInitGate() {
+  if (sessionStorage.getItem(BIRDIE_KEY)) return;
+  var ov = document.getElementById('pw-overlay');
+  ov.style.display = 'flex';
+  setTimeout(function() { var i = document.getElementById('pw-input'); if(i) i.focus(); }, 80);
+}
 
-  document.getElementById('generator-view').style.display = 'block';
-})();
 </script>
+<!-- ── PASSWORD OVERLAY ────────────────────────── -->
+<div id="pw-overlay">
+  <div id="pw-card">
+    <div id="pw-logo"><img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" alt="Birdie" /></div>
+    <h2>birdie</h2>
+    <p class="sub">Cotizador interno &middot; Acceso restringido</p>
+    <input id="pw-input" type="password" placeholder="Contraseña" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')birdieCheckPw()" />
+    <p id="pw-err">Contraseña incorrecta. Intenta de nuevo.</p>
+    <button id="pw-btn" onclick="birdieCheckPw()">Entrar</button>
+  </div>
+</div>
 </body>
 </html>
