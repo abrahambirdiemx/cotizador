@@ -950,6 +950,19 @@
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
+<!-- ── PASSWORD OVERLAY ────────────────────────── -->
+<div id="pw-overlay">
+  <div id="pw-card">
+    <div id="pw-logo"><img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" alt="Birdie" /></div>
+    <h2>birdie</h2>
+    <p class="sub">Cotizador interno &middot; Acceso restringido</p>
+    <input id="pw-input" type="password" placeholder="Contraseña" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')birdieCheckPw()" />
+    <p id="pw-err">Contraseña incorrecta. Intenta de nuevo.</p>
+    <button id="pw-btn" onclick="birdieCheckPw()">Entrar</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 
@@ -1521,22 +1534,10 @@ async function birdieCheckPw() {
 function birdieInitGate() {
   if (sessionStorage.getItem(BIRDIE_KEY)) return;
   var ov = document.getElementById('pw-overlay');
+  if (!ov) return; // element not yet in DOM — safe fallback
   ov.style.display = 'flex';
   setTimeout(function() { var i = document.getElementById('pw-input'); if(i) i.focus(); }, 80);
 }
 
-</script>
-<!-- ── PASSWORD OVERLAY ────────────────────────── -->
-<div id="pw-overlay">
-  <div id="pw-card">
-    <div id="pw-logo"><img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" alt="Birdie" /></div>
-    <h2>birdie</h2>
-    <p class="sub">Cotizador interno &middot; Acceso restringido</p>
-    <input id="pw-input" type="password" placeholder="Contraseña" autocomplete="current-password"
-      onkeydown="if(event.key==='Enter')birdieCheckPw()" />
-    <p id="pw-err">Contraseña incorrecta. Intenta de nuevo.</p>
-    <button id="pw-btn" onclick="birdieCheckPw()">Entrar</button>
-  </div>
-</div>
-</body>
+</script></body>
 </html>
