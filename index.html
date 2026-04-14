@@ -1220,7 +1220,8 @@ function applyPricingToProposal(d, billing, en) {
     ? (en ? `vs $${fc(d.mo)}/mo full price` : `vs $${fc(d.mo)}/mes precio lista`)
     : '';
 
-  document.getElementById('pc-ppo-amount').textContent = fc(d.ppo);
+  const ppoEff = isAnnual ? Math.round(d.ppo * 0.90 * 100) / 100 : d.ppo;
+  document.getElementById('pc-ppo-amount').textContent = fc(ppoEff);
   document.getElementById('pc-ppo-period').textContent = en ? 'USD / operation' : 'USD / operación';
   document.getElementById('pc-tier-num').textContent = d.tier;
 
