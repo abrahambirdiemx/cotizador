@@ -290,8 +290,8 @@
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       body { background: white !important; font-size: 11px; }
       #generator-view, .gen-header, .valid-banner, .proposal-nav,
-      .proposal-cover, .proposal-footer, .btn-pdf, .lang-switch,
-      .scroll-hint, .billing-toggle-wrap { display: none !important; }
+      .proposal-cover, .proposal-footer, footer, .btn-pdf, .lang-switch,
+      .scroll-hint, .billing-toggle-wrap, .cta-block, #pw-overlay { display: none !important; }
       #proposal-view { display: block !important; }
       .proposal-content { max-width: 100%; padding: 0; margin: 0; }
       .section-tab { display: block !important; animation: none !important; }
@@ -310,44 +310,37 @@
       .print-company-block h1 { font-size: 22px; font-weight: 900; color: #0A2647; letter-spacing: -0.5px; }
       .print-company-block p { font-size: 12px; color: #64748B; }
 
-      .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 10px !important; margin: 10px 24px !important; }
-      .stat-card { padding: 12px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
-      .stat-num { font-size: 26px !important; }
-      .stat-unit { font-size: 16px !important; }
-      .stat-desc { font-size: 11px !important; }
-
       .about-img, .scroll-hint { display: none !important; }
 
       /* ── PAGE 1: Intro + Funcionalidades ─── */
       #t-about { padding: 0 24px; page-break-after: always; }
-      #t-about .sec-title { font-size: 18px !important; margin-bottom: 8px !important; }
-      #t-about .sec-body { font-size: 12px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
+      #t-about .sec-title { font-size: 18px !important; margin-bottom: 10px !important; margin-top: 16px !important; }
+      #t-about .sec-body { font-size: 12px !important; margin-bottom: 14px !important; line-height: 1.6 !important; }
       .stats-row { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; margin: 10px 0 !important; }
       .stat-card { padding: 10px !important; box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
       .stat-num { font-size: 22px !important; } .stat-unit { font-size: 14px !important; } .stat-desc { font-size: 10px !important; }
-      #t-about h2 { font-size: 14px !important; margin-bottom: 10px !important; }
-      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 0 !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div:first-child { width: 28px !important; height: 28px !important; font-size: 14px !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div > div:first-child { font-size: 12px !important; }
-      #t-about > div[style*="flex-direction:column"] > div > div > div:last-child { font-size: 10px !important; }
-      #t-about .divider { margin: 12px 0 !important; }
+      #t-about h2 { font-size: 14px !important; margin-bottom: 12px !important; margin-top: 16px !important; }
+      #t-about > div[style*="flex-direction:column"] > div { padding: 10px 14px !important; margin-bottom: 4px !important; }
+      #t-about .divider { margin: 14px 0 !important; }
 
-      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 10px; }
-      #t-features .sec-tag, #t-features .sec-body { display: none !important; }
-      #t-features .sec-title { font-size: 15px !important; margin-bottom: 10px !important; }
-      .accordion { gap: 6px !important; margin: 0 !important; }
-      .acc-item { box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
-      .acc-item.open { border-color: #00B4D8 !important; }
-      .acc-header { padding: 10px 14px !important; }
-      .acc-icon-wrap { width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 7px !important; }
-      .acc-title { font-size: 11px !important; }
-      .acc-body { display: block !important; padding: 0 14px 10px 56px !important; }
-      .feat-list li { font-size: 10px !important; line-height: 1.4 !important; margin-bottom: 3px !important; }
+      #t-features { padding: 0 24px; page-break-after: avoid; margin-top: 16px; }
+      #t-features .sec-tag { display: none !important; }
+      #t-features .sec-body { font-size: 11px !important; margin-bottom: 10px !important; }
+      #t-features .sec-title { font-size: 15px !important; margin-bottom: 12px !important; }
+      .accordion { gap: 8px !important; margin: 0 !important; }
+      .acc-item { box-shadow: none !important; border: 1px solid #CBD5E0 !important; border-radius: 6px !important; overflow: visible !important; }
+      .acc-header { padding: 8px 12px !important; }
+      .acc-icon-wrap { width: 26px !important; height: 26px !important; font-size: 13px !important; border-radius: 6px !important; }
+      .acc-title { font-size: 11px !important; font-weight: 700 !important; color: #0A2647 !important; }
+      .acc-chevron { display: none !important; }
+      .acc-body { display: block !important; visibility: visible !important; height: auto !important; overflow: visible !important; padding: 4px 12px 10px 46px !important; }
+      .feat-list { gap: 5px !important; }
+      .feat-list li { font-size: 10px !important; line-height: 1.45 !important; margin-bottom: 2px !important; color: #2D3748 !important; }
 
       /* ── PAGE 2: Cotización ─── */
       #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
-      #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 4px !important; }
-      #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 8px !important; }
+      #t-proposal .sec-title { font-size: 16px !important; margin-bottom: 6px !important; margin-top: 16px !important; }
+      #t-proposal .sec-body { font-size: 11px !important; margin-bottom: 10px !important; }
       .pricing-hero { padding: 16px !important; margin: 8px 0 !important; }
       .pricing-hero h2 { font-size: 16px !important; margin-bottom: 4px !important; }
       .pricing-hero .ph-sub { font-size: 11px !important; margin-bottom: 12px !important; }
@@ -357,7 +350,8 @@
       .price-card .pc-amount { font-size: 22px !important; }
       .price-card .pc-period { font-size: 10px !important; }
       .price-card .pc-saving { font-size: 10px !important; }
-      .breakdown-table td, .breakdown-table th { padding: 8px 10px !important; font-size: 11px !important; }
+      .breakdown-table td, .breakdown-table th { padding: 6px 10px !important; font-size: 11px !important; }
+      #tr-mo-sub td { font-size: 10px !important; padding: 5px 10px !important; }
       .impl-note { font-size: 11px !important; padding: 10px 14px !important; margin: 8px 0 !important; }
       #note-section { margin: 8px 0 !important; }
       .note-block { padding: 10px 14px !important; }
@@ -367,17 +361,13 @@
 
       /* ── PAGE 3: T&C ─── */
       #t-terms { padding: 0 24px; page-break-before: always; }
-      #t-terms .sec-title { font-size: 18px !important; margin-bottom: 6px !important; }
-      #t-terms .sec-body { font-size: 12px !important; margin-bottom: 14px !important; }
-      .terms-block { margin: 12px 0 !important; }
-      .terms-block h3 { font-size: 13px !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
-      .terms-block p, .terms-block li { font-size: 11px !important; line-height: 1.55 !important; }
+      #t-terms .sec-title { font-size: 18px !important; margin-bottom: 8px !important; margin-top: 16px !important; }
+      #t-terms .sec-body { font-size: 12px !important; margin-bottom: 16px !important; }
+      .terms-block { margin: 14px 0 !important; }
+      .terms-block h3 { font-size: 12px !important; font-weight: 800 !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
+      .terms-block p, .terms-block li { font-size: 11px !important; line-height: 1.6 !important; }
       .terms-block ul { padding-left: 16px !important; }
-      .terms-block li { margin-bottom: 3px !important; }
-      .cta-block { padding: 16px !important; margin-top: 16px !important; }
-      .cta-block h3 { font-size: 14px !important; }
-      .cta-block p { font-size: 11px !important; }
-      .cta-btn { padding: 8px 20px !important; font-size: 12px !important; }
+      .terms-block li { margin-bottom: 4px !important; }
 
       /* Print-only header block */
       .print-only { display: block !important; }
@@ -674,7 +664,7 @@
               <li><strong>Personalización de columnas</strong> — Configura las columnas relevantes para replicar la visibilidad actual de tu operación.</li>
               <li><strong>Trazabilidad aérea y marítima (multinaviera)</strong> — Automatización desde POD, POL, ETD, ETA, fecha de descarga y retorno de vacío.</li>
               <li><strong>Integración directa con SOIA</strong> — Visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.</li>
-              <li><strong>Bitácora colaborativa multiórea</strong> — Registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.</li>
+              <li><strong>Bitácora colaborativa multiarea</strong> — Registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.</li>
             </ul>
           </div>
         </div>
@@ -823,6 +813,10 @@
             <td colspan="2"><strong id="td-total-label">Total primer año</strong></td>
             <td id="td-total-amt"><strong>$0</strong></td>
           </tr>
+          <tr id="tr-mo-sub" style="background:#f0f9ff">
+            <td colspan="2" style="font-size:12px;color:var(--text-muted)"><span id="td-mo-sub-label">Equivalente mensual (a partir del año 2)</span></td>
+            <td id="td-mo-sub-amt" style="font-size:12px;color:var(--cyan-dark);font-weight:700">$0/mes</td>
+          </tr>
         </tbody>
       </table>
 
@@ -845,9 +839,9 @@
           <div class="includes-item"><span class="check">✓</span><span id="inc3">Soporte técnico 9×5</span></div>
           <div class="includes-item"><span class="check">✓</span><span id="inc4">Actualizaciones continuas</span></div>
           <div class="includes-item"><span class="check">✓</span><span id="inc5">Almacenamiento de documentos</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc6">API y webhooks</span></div>
+          <div class="includes-item"><span class="check">✓</span><span id="inc6">Infraestructura cloud y servidores</span></div>
           <div class="includes-item"><span class="check">✓</span><span id="inc7">Reportes y analytics avanzados</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc8">Integraciones nativas ERP</span></div>
+          <div class="includes-item"><span class="check">✓</span><span id="inc8">Alta disponibilidad y respaldos automáticos</span></div>
         </div>
       </div>
     </div>
@@ -925,8 +919,8 @@
 
       <div class="cta-block">
         <h3 id="cta-title">¿Listo para digitalizar tus importaciones?</h3>
-        <p id="cta-sub">Contáctanos y comenzamos el proceso hoy mismo</p>
-        <a href="mailto:hola@birdie.mx" class="cta-btn" id="cta-btn">📧 hola@birdie.mx</a>
+        <p id="cta-sub">Para dudas o aclaraciones favor de contactar a:</p>
+        <a href="mailto:abraham@birdie.mx" class="cta-btn" id="cta-btn">📧 abraham@birdie.mx</a>
       </div>
     </div>
 
@@ -1256,6 +1250,12 @@ function applyPricingToProposal(d, billing, en) {
   const totalY1 = subAmt + d.impl + erpAmt;
   document.getElementById('td-total-label').textContent = en ? 'Total First Year' : 'Total primer año';
   document.getElementById('td-total-amt').innerHTML     = `<strong>$${fc(totalY1)}</strong>`;
+
+  // Monthly row
+  document.getElementById('td-mo-sub-label').textContent = isAnnual
+    ? (en ? 'Monthly equivalent (yr 2+)' : 'Equivalente mensual (a partir del año 2)')
+    : (en ? 'Monthly payment' : 'Pago mensual');
+  document.getElementById('td-mo-sub-amt').textContent = `$${fc(moEq)} / ${en ? 'mo' : 'mes'}`;
 }
 
 function setBillingMode(mode, btn) {
@@ -1317,8 +1317,8 @@ function applyEnglish(d) {
   document.getElementById('impl-note-text').innerHTML = 'The implementation fee is charged <strong>once</strong> at contract signing. From year two onward, only the annual subscription renews.';
   t('inc-title','✅ Included in the subscription');
   t('inc1','Full platform access'); t('inc2','Unlimited users'); t('inc3','Technical support 9×5');
-  t('inc4','Continuous updates'); t('inc5','Document storage'); t('inc6','API & webhooks');
-  t('inc7','Advanced analytics & reports'); t('inc8','Native ERP integrations');
+  t('inc4','Continuous updates'); t('inc5','Document storage'); t('inc6','Cloud infrastructure & servers');
+  t('inc7','Advanced analytics & reports'); t('inc8','High availability & automatic backups');
   t('tc-tag','LEGAL'); t('tc-title','Terms and Conditions');
   document.getElementById('tc-intro').innerHTML = 'This proposal is subject to the following terms. For any questions, contact us at <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('tc1-h','1. Proposal Validity'); t('tc1-p','This proposal is valid for 30 calendar days from the date of issue. After this period, prices and conditions may be subject to revision.');
@@ -1333,7 +1333,7 @@ function applyEnglish(d) {
   t('tc6-h','6. Confidentiality & Data'); t('tc6-p','Birdie treats all client data with strict confidentiality. Data belongs to the client and will not be shared with third parties. The service complies with Mexico\'s Federal Personal Data Protection Law (LFPDPPP).');
   t('tc7-h','7. Limitation of Liability'); t('tc7-p','Birdie\'s liability is limited to the amount of the contracted annual subscription. Birdie is not responsible for clearance delays attributable to customs authorities or client-provided information.');
   t('cta-title','Ready to digitalize your imports?');
-  t('cta-sub','Contact us and we\'ll start the process today');
+  t('cta-sub','For questions or clarifications, please contact:');
   t('c-tag','COMMERCIAL PROPOSAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','For:'); t('c-scroll','Explore proposal');
   t('note-label','Note');
 }
@@ -1362,12 +1362,12 @@ function applySpanish(d) {
   document.getElementById('impl-note-text').innerHTML = 'El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.';
   t('inc-title','✅ Incluido en la suscripción');
   t('inc1','Acceso completo a la plataforma'); t('inc2','Usuarios ilimitados'); t('inc3','Soporte técnico 9×5');
-  t('inc4','Actualizaciones continuas'); t('inc5','Almacenamiento de documentos'); t('inc6','API y webhooks');
-  t('inc7','Reportes y analytics avanzados'); t('inc8','Integraciones nativas ERP');
+  t('inc4','Actualizaciones continuas'); t('inc5','Almacenamiento de documentos'); t('inc6','Infraestructura cloud y servidores');
+  t('inc7','Reportes y analytics avanzados'); t('inc8','Alta disponibilidad y respaldos automáticos');
   t('tc-tag','LEGAL'); t('tc-title','Términos y Condiciones');
   document.getElementById('tc-intro').innerHTML = 'Esta propuesta está sujeta a los siguientes términos. Para cualquier duda contáctanos en <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('cta-title','¿Listo para digitalizar tus importaciones?');
-  t('cta-sub','Contáctanos y comenzamos el proceso hoy mismo');
+  t('cta-sub','Para dudas o aclaraciones favor de contactar a:');
   t('c-tag','PROPUESTA COMERCIAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','Para:'); t('c-scroll','Explorar propuesta');
   t('note-label','Nota');
 }
@@ -1461,6 +1461,61 @@ function downloadPDF() {
     const data = dec(p);
     if (data) { renderProposal(data); return; }
   }
+  // ── PASSWORD GATE (generator only) ────────────────────────────────────────
+  const HASH = 'a373bff3391fa1d7b94f398f50f890aff5349f95ec489a13465a3f7a8fe9afdf';
+  const SESSION_KEY = 'birdie_auth';
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    const btn = document.getElementById('pw-btn');
+    const err = document.getElementById('pw-err');
+    btn.disabled = true;
+    btn.textContent = '...';
+    const hash = await sha256(val);
+    if (hash === HASH) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('pw-overlay').style.opacity = '0';
+      setTimeout(() => { document.getElementById('pw-overlay').remove(); }, 300);
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+
+  if (!sessionStorage.getItem(SESSION_KEY)) {
+    const overlay = document.createElement('div');
+    overlay.id = 'pw-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:#0A2647;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.3s;';
+    overlay.innerHTML = `
+      <div style="background:white;border-radius:16px;padding:48px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.4);">
+        <div style="width:56px;height:56px;background:#0A2647;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden;">
+          <img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" style="width:100%;height:100%;object-fit:contain;padding:6px;" />
+        </div>
+        <h2 style="font-size:20px;font-weight:900;color:#0A2647;margin-bottom:6px;">birdie</h2>
+        <p style="font-size:13px;color:#64748B;margin-bottom:28px;">Cotizador interno · Acceso restringido</p>
+        <input id="pw-input" type="password" placeholder="Contraseña"
+          style="width:100%;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;font-size:15px;font-family:Inter,sans-serif;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border 0.2s;"
+          onkeydown="if(event.key==='Enter')checkPassword()"
+          onfocus="this.style.borderColor='#00B4D8'" onblur="this.style.borderColor='#E2E8F0'" />
+        <p id="pw-err" style="display:none;color:#EF4444;font-size:12px;margin-bottom:10px;">Contraseña incorrecta. Intenta de nuevo.</p>
+        <button id="pw-btn" onclick="checkPassword()"
+          style="width:100%;padding:13px;background:#0A2647;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:background 0.2s;"
+          onmouseover="this.style.background='#1E6091'" onmouseout="this.style.background='#0A2647'">
+          Entrar
+        </button>
+      </div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
+  }
+
   document.getElementById('generator-view').style.display = 'block';
 })();
 </script>
