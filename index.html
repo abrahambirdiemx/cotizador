@@ -398,7 +398,7 @@
 <!-- ╔══════════════════════════════════════╗
      ║         GENERATOR / ADMIN VIEW       ║
      ╚══════════════════════════════════════╝ -->
-<div id="generator-view">
+<div id="generator-view" style="display:none">
   <header class="gen-header">
     <div class="gen-header-logo">
       <div class="bird-icon"><img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" alt="Birdie" /></div>
@@ -1487,7 +1487,6 @@ function downloadPDF() {
     const data = dec(p);
     if (data) { renderProposal(data); return; }
   }
-  document.getElementById('generator-view').style.display = 'block';
   birdieInitGate();
 })();
 
@@ -1518,7 +1517,10 @@ async function birdieCheckPw() {
       sessionStorage.setItem(BIRDIE_KEY, '1');
       const ov = document.getElementById('pw-overlay');
       ov.classList.add('fade');
-      setTimeout(function() { ov.style.display = 'none'; }, 320);
+      setTimeout(function() {
+        ov.style.display = 'none';
+        document.getElementById('generator-view').style.display = 'block';
+      }, 320);
     } else {
       err.style.display = 'block';
       input.value = ''; input.focus();
@@ -1532,9 +1534,13 @@ async function birdieCheckPw() {
 }
 
 function birdieInitGate() {
-  if (sessionStorage.getItem(BIRDIE_KEY)) return;
+  if (sessionStorage.getItem(BIRDIE_KEY)) {
+    // Already authenticated this session — show generator directly
+    document.getElementById('generator-view').style.display = 'block';
+    return;
+  }
   var ov = document.getElementById('pw-overlay');
-  if (!ov) return; // element not yet in DOM — safe fallback
+  if (!ov) return;
   ov.style.display = 'flex';
   setTimeout(function() { var i = document.getElementById('pw-input'); if(i) i.focus(); }, 80);
 }
