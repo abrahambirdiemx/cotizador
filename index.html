@@ -1623,19 +1623,39 @@ function downloadPDF() {
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────────
-(function init() {
-  const p = new URLSearchParams(window.location.search).get('p');
+function birdieInit() {
+  var propView = document.getElementById('proposal-view');
+  var genView  = document.getElementById('generator-view');
+  var overlay  = document.getElementById('pw-overlay');
+
+  var p = new URLSearchParams(window.location.search).get('p');
   if (p) {
-    const data = dec(p);
-    if (data) { renderProposal(data); return; }
+    var data = dec(p);
+    if (data) {
+      // Client proposal link — NEVER show password, NEVER show generator
+      if (overlay) overlay.classList.add('hidden');
+      if (genView) genView.style.display = 'none';
+      renderProposal(data);
+      return;
+    }
   }
+  // Generator/admin path
+  if (propView) propView.style.display = 'none';
   if (sessionStorage.getItem(BIRDIE_KEY)) {
-    birdieHideOverlay();
-    document.getElementById('generator-view').style.display = 'block';
+    if (overlay) overlay.classList.add('hidden');
+    if (genView) genView.style.display = 'block';
   } else {
+    // Show overlay only here
+    if (overlay) overlay.classList.remove('hidden');
+    if (genView) genView.style.display = 'none';
     setTimeout(function(){ var i=document.getElementById('pw-input'); if(i) i.focus(); }, 80);
   }
-})();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', birdieInit);
+} else {
+  birdieInit();
+}
 
 // ── PRINT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('beforeprint', function() {
@@ -1668,6 +1688,8 @@ async function birdieCheckPw() {
     if (hash === BIRDIE_HASH) {
       sessionStorage.setItem(BIRDIE_KEY, '1');
       birdieHideOverlay();
+      var pv = document.getElementById('proposal-view');
+      if (pv) pv.style.display = 'none';
       document.getElementById('generator-view').style.display = 'block';
     } else {
       err.style.display = 'block';
@@ -1684,7 +1706,7 @@ async function birdieCheckPw() {
 </script>
 
 <!-- ── PASSWORD OVERLAY ── -->
-<div id="pw-overlay">
+<div id="pw-overlay" class="hidden">
   <div id="pw-card">
     <div id="pw-logo"><img src="https://i.ibb.co/4ZnHnjZX/logos-9.png" alt="Birdie" /></div>
     <h2>birdie</h2>
