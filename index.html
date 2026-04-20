@@ -552,8 +552,40 @@
           <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
             <div style="font-size:10px;color:var(--cyan-light);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:5px;">Implementación (pago único)</div>
             <div style="font-size:22px;font-weight:800;">$<span id="ps-impl">—</span> <span style="font-size:13px;color:rgba(255,255,255,0.45);font-weight:400;">USD</span></div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;">15% del ACV · onboarding + configuración</div>
+            <div id="ps-impl-sub" style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;">15% del ACV · onboarding + configuración</div>
           </div>
+
+          <!-- MANUAL OVERRIDE (suscripción + implementación) -->
+          <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan-light);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:0">
+              <input type="checkbox" id="override-toggle" onchange="updatePricing()" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer" />
+              Ajuste manual de costos
+            </label>
+            <div id="override-fields" style="display:none;margin-top:10px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px">
+                <div>
+                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Suscripción anual (USD)</div>
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.5)">$</span>
+                    <input type="number" id="override-sub" min="0" step="100" placeholder="auto"
+                      oninput="updatePricing()"
+                      style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Implementación (USD)</div>
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.5)">$</span>
+                    <input type="number" id="override-impl" min="0" step="100" placeholder="auto"
+                      oninput="updatePricing()"
+                      style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
+                  </div>
+                </div>
+              </div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px">💡 Deja el campo vacío para usar el cálculo automático. La suscripción anual recalcula mensual, anual con descuento y precio/operación.</div>
+            </div>
+          </div>
+
           <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan-light);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:8px">
               <input type="checkbox" id="erp-toggle" onchange="updatePricing()" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer" />
@@ -1127,17 +1159,52 @@ function calcPricing(ops) {
 
 const fc = v => new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(v);
 
+// Applies manual overrides to a pricing object. Mutates and returns it.
+// Also returns info about which fields were overridden.
+function applyOverrides(p, ops) {
+  const toggle = document.getElementById('override-toggle');
+  const info = { subOverridden: false, implOverridden: false };
+  if (!toggle || !toggle.checked) return info;
+  const subInput  = document.getElementById('override-sub');
+  const implInput = document.getElementById('override-impl');
+  const subRaw    = subInput ? subInput.value : '';
+  const implRaw   = implInput ? implInput.value : '';
+  const subVal    = parseFloat(subRaw);
+  const implVal   = parseFloat(implRaw);
+  if (subRaw !== '' && !isNaN(subVal) && subVal >= 0) {
+    p.acv        = subVal;
+    p.monthly    = subVal / 12;
+    p.annualDisc = subVal * 0.90;
+    p.moDisc     = p.annualDisc / 12;
+    p.saving     = p.acv - p.annualDisc;
+    p.ppo        = ops > 0 ? subVal / ops : 0;
+    info.subOverridden = true;
+  }
+  if (implRaw !== '' && !isNaN(implVal) && implVal >= 0) {
+    p.impl = implVal;
+    info.implOverridden = true;
+  }
+  return info;
+}
+
 // ── GENERATOR FUNCTIONS ────────────────────────────────────────────────────────
 function updatePricing() {
   const ops = parseInt(document.getElementById('inp-ops').value);
   const result = document.getElementById('ps-result');
   const empty  = document.getElementById('ps-empty');
   const badge  = document.getElementById('ops-badge');
+  // Manual override fields visibility
+  const ovrToggle = document.getElementById('override-toggle');
+  const ovrFields = document.getElementById('override-fields');
+  if (ovrToggle && ovrFields) {
+    ovrFields.style.display = ovrToggle.checked ? 'block' : 'none';
+  }
   if (!ops || ops < 1) {
     result.style.display = 'none'; empty.style.display = 'block'; badge.style.display = 'none'; return;
   }
   const p = calcPricing(ops);
   if (!p) { result.style.display = 'none'; empty.style.display = 'block'; badge.style.display = 'none'; return; }
+  const ovrInfo = applyOverrides(p, ops);
   empty.style.display = 'none'; result.style.display = 'block'; badge.style.display = 'flex';
   badge.textContent = `Tier ${p.tier}`;
   document.getElementById('ps-tier').textContent        = `⚡ Tier ${p.tier}`;
@@ -1147,6 +1214,13 @@ function updatePricing() {
   document.getElementById('ps-annual-disc').textContent = fc(p.annualDisc);
   document.getElementById('ps-saving').textContent      = fc(p.saving);
   document.getElementById('ps-impl').textContent        = fc(p.impl);
+  // Dynamic sublabel for implementation
+  const implSub = document.getElementById('ps-impl-sub');
+  if (implSub) {
+    implSub.textContent = ovrInfo.implOverridden
+      ? 'Monto ajustado manualmente · onboarding + configuración'
+      : '15% del ACV · onboarding + configuración';
+  }
   // ERP toggle
   const erpOn = document.getElementById('erp-toggle').checked;
   document.getElementById('erp-price-row').style.display = erpOn ? 'block' : 'none';
@@ -1223,6 +1297,7 @@ function generateProposal() {
 
   const p = calcPricing(ops);
   if (!p) { alert('Operaciones fuera de rango'); return; }
+  applyOverrides(p, ops);
 
   const today = new Date();
   const valid = new Date(today); valid.setDate(valid.getDate() + 30);
