@@ -440,6 +440,38 @@
     .pilot-next ul { list-style:none;padding:0;display:flex;flex-direction:column;gap:8px; }
     .pilot-next li { font-size:13px;color:rgba(255,255,255,0.8);display:flex;align-items:flex-start;gap:8px; }
     .pilot-next li::before { content:'→';color:var(--cyan);font-weight:700;flex-shrink:0; }
+
+    /* ── HISTORIAL DE PROPUESTAS ─── */
+    .gen-body-full { max-width:1120px;margin:0 auto;padding:0 24px 32px; }
+    .history-card .card-header { justify-content:space-between; }
+    .history-card .card-header .hist-tools { display:flex;gap:8px;align-items:center; }
+    .hist-count { background:var(--cyan-pale);color:var(--cyan-dark);font-size:11px;font-weight:800;padding:3px 8px;border-radius:20px; }
+    .hist-search { padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;width:180px; }
+    .hist-search:focus { border-color:var(--cyan); }
+    .hist-clear { padding:6px 10px;background:transparent;color:#EF4444;border:1px solid #EF4444;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif; }
+    .hist-clear:hover { background:#EF4444;color:white; }
+    .hist-empty { text-align:center;padding:32px 24px;color:var(--text-muted);font-size:13px; }
+    .hist-table { width:100%;border-collapse:collapse;font-size:12px; }
+    .hist-table th { background:#F8FAFC;color:var(--navy);padding:10px 12px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid var(--border); }
+    .hist-table td { padding:12px;border-bottom:1px solid #F1F5F9;color:#334155;vertical-align:middle; }
+    .hist-table tr:last-child td { border-bottom:none; }
+    .hist-table tr:hover td { background:#F8FAFC; }
+    .hist-company { font-weight:700;color:var(--navy); }
+    .hist-contact { color:var(--text-muted);font-size:11px;margin-top:2px; }
+    .hist-money { font-variant-numeric:tabular-nums;font-weight:600; }
+    .hist-pilot-chip { display:inline-block;background:#D1FAE5;color:#065f46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px; }
+    .hist-pilot-no { color:#CBD5E0;font-size:11px; }
+    .hist-actions { display:flex;gap:4px;flex-wrap:wrap; }
+    .hist-btn { padding:5px 9px;font-size:11px;font-weight:700;border:1px solid var(--border);background:white;color:var(--navy);border-radius:5px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.12s; }
+    .hist-btn:hover { background:var(--navy);color:white;border-color:var(--navy); }
+    .hist-btn.danger { color:#EF4444;border-color:#FEE2E2; }
+    .hist-btn.danger:hover { background:#EF4444;color:white;border-color:#EF4444; }
+    .hist-table .lang-dot { display:inline-block;font-size:10px;margin-right:4px; }
+    @media (max-width: 860px) {
+      .hist-table { font-size:11px; }
+      .hist-table th, .hist-table td { padding:8px; }
+      .hist-search { width:120px; }
+    }
   </style>
 </head>
 <body>
@@ -657,6 +689,34 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- HISTORIAL DE PROPUESTAS -->
+  <div class="gen-body-full">
+    <div class="card history-card">
+      <div class="card-header">
+        <h2>📚 Historial de propuestas <span class="hist-count" id="hist-count">0</span></h2>
+        <div class="hist-tools">
+          <input type="text" id="hist-search" class="hist-search" placeholder="Buscar empresa o contacto..." oninput="renderHistory()" />
+          <button class="hist-clear" onclick="clearAllHistory()" title="Borrar todo el historial">🗑 Limpiar</button>
+        </div>
+      </div>
+      <div id="hist-empty" class="hist-empty">Aún no hay propuestas generadas. Al generar una, aparecerá aquí.</div>
+      <table class="hist-table" id="hist-table" style="display:none">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Empresa / Contacto</th>
+            <th>Ops</th>
+            <th>ACV</th>
+            <th>Impl</th>
+            <th>Piloto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="hist-body"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -1318,6 +1378,23 @@ function generateProposal() {
   const out = document.getElementById('url-out');
   out.classList.add('visible');
   document.getElementById('url-display').textContent = url;
+
+  // Guardar en historial local
+  saveToHistory({
+    id: (crypto.randomUUID && crypto.randomUUID()) || (Date.now() + '-' + Math.random().toString(36).slice(2,8)),
+    url,
+    company: co,
+    contact: ct,
+    ops,
+    acv: p.acv,
+    impl: p.impl,
+    tier: p.tier,
+    lang: LANG,
+    erp: erpAmt,
+    pilot: pilotOn ? { cost: pilotCost, months: pilotMonths } : null,
+    createdAt: new Date().toISOString(),
+    validUntil: data.valid,
+  });
 }
 
 function enc(obj) {
@@ -1341,6 +1418,128 @@ function copyUrl() {
   });
 }
 function openProposal() { if (generatedUrl) window.open(generatedUrl, '_blank'); }
+
+// ── HISTORIAL DE PROPUESTAS (localStorage) ────────────────────────────────────
+const HIST_KEY = 'birdie_history_v1';
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HIST_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch(e) { return []; }
+}
+function persistHistory(arr) {
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+function saveToHistory(record) {
+  const arr = loadHistory();
+  arr.unshift(record);
+  // Cap a 500 registros para no reventar localStorage
+  if (arr.length > 500) arr.length = 500;
+  persistHistory(arr);
+  renderHistory();
+}
+function deleteHistoryItem(id) {
+  if (!confirm('¿Borrar esta propuesta del historial? (La liga seguirá funcionando si la enviaste al cliente.)')) return;
+  const arr = loadHistory().filter(r => r.id !== id);
+  persistHistory(arr);
+  renderHistory();
+}
+function clearAllHistory() {
+  const n = loadHistory().length;
+  if (n === 0) return;
+  if (!confirm('¿Borrar las ' + n + ' propuestas del historial? Las ligas ya enviadas seguirán funcionando. Esta acción no se puede deshacer.')) return;
+  persistHistory([]);
+  renderHistory();
+}
+function copyHistoryUrl(id) {
+  const rec = loadHistory().find(r => r.id === id);
+  if (!rec) return;
+  navigator.clipboard.writeText(rec.url).then(() => {
+    const btn = document.querySelector('[data-copy-id="' + id + '"]');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓';
+      setTimeout(() => { btn.textContent = orig; }, 1200);
+    }
+  });
+}
+function openHistoryUrl(id) {
+  const rec = loadHistory().find(r => r.id === id);
+  if (rec) window.open(rec.url, '_blank');
+}
+function fmtHistDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'2-digit' }) +
+           ' ' + d.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+  } catch(e) { return iso || '—'; }
+}
+function fmtHistMoney(n) {
+  if (typeof n !== 'number' || isNaN(n)) return '—';
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function langFlag(l) {
+  if (l === 'en') return '🇺🇸';
+  if (l === 'both') return '🌐';
+  return '🇲🇽';
+}
+function renderHistory() {
+  const all = loadHistory();
+  const searchEl = document.getElementById('hist-search');
+  const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+  const rows = q
+    ? all.filter(r => (r.company || '').toLowerCase().includes(q) || (r.contact || '').toLowerCase().includes(q))
+    : all;
+
+  const countEl = document.getElementById('hist-count');
+  const emptyEl = document.getElementById('hist-empty');
+  const tableEl = document.getElementById('hist-table');
+  const tbody = document.getElementById('hist-body');
+  if (!countEl || !emptyEl || !tableEl || !tbody) return;
+
+  countEl.textContent = all.length;
+
+  if (rows.length === 0) {
+    tableEl.style.display = 'none';
+    emptyEl.style.display = 'block';
+    emptyEl.textContent = all.length === 0
+      ? 'Aún no hay propuestas generadas. Al generar una, aparecerá aquí.'
+      : 'Ninguna propuesta coincide con tu búsqueda.';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  tableEl.style.display = '';
+
+  tbody.innerHTML = rows.map(r => {
+    const pilotHtml = r.pilot && r.pilot.cost && r.pilot.months
+      ? '<span class="hist-pilot-chip">' + fmtHistMoney(r.pilot.cost) + '/mes · ' + r.pilot.months + 'mo</span>'
+      : '<span class="hist-pilot-no">—</span>';
+    return '<tr>' +
+      '<td>' + fmtHistDate(r.createdAt) + '</td>' +
+      '<td>' +
+        '<div class="hist-company">' + langFlag(r.lang) + ' ' + escapeHtml(r.company || '—') + '</div>' +
+        '<div class="hist-contact">' + escapeHtml(r.contact || '—') + ' · ' + (r.ops || '—') + ' ops · Tier ' + (r.tier || '—') + '</div>' +
+      '</td>' +
+      '<td class="hist-money">' + (r.ops != null ? r.ops.toLocaleString('en-US') : '—') + '</td>' +
+      '<td class="hist-money">' + fmtHistMoney(r.acv) + '</td>' +
+      '<td class="hist-money">' + fmtHistMoney(r.impl) + '</td>' +
+      '<td>' + pilotHtml + '</td>' +
+      '<td>' +
+        '<div class="hist-actions">' +
+          '<button class="hist-btn" data-copy-id="' + r.id + '" onclick="copyHistoryUrl(\'' + r.id + '\')" title="Copiar liga">📋</button>' +
+          '<button class="hist-btn" onclick="openHistoryUrl(\'' + r.id + '\')" title="Abrir">👁</button>' +
+          '<button class="hist-btn danger" onclick="deleteHistoryItem(\'' + r.id + '\')" title="Borrar">🗑</button>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
 
 // ── RENDER PROPOSAL ────────────────────────────────────────────────────────────
 let PROP_DATA = null;
@@ -1718,6 +1917,7 @@ function birdieInit() {
   if (sessionStorage.getItem(BIRDIE_KEY)) {
     if (overlay) overlay.classList.add('hidden');
     if (genView) genView.style.display = 'block';
+    try { renderHistory(); } catch(e) {}
   } else {
     // Show overlay only here
     if (overlay) overlay.classList.remove('hidden');
@@ -1765,6 +1965,7 @@ async function birdieCheckPw() {
       var pv = document.getElementById('proposal-view');
       if (pv) pv.style.display = 'none';
       document.getElementById('generator-view').style.display = 'block';
+      try { renderHistory(); } catch(e) {}
     } else {
       err.style.display = 'block';
       input.value = ''; input.focus();
