@@ -177,6 +177,7 @@
     .proposal-content { max-width: 900px; margin: 0 auto; padding: 64px 24px; }
     .section-tab { display: none; }
     .section-tab.active { display: block; animation: fadeIn 0.28s ease; }
+    .section-tab.no-pilot { display: none !important; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .sec-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; color: var(--cyan-dark); margin-bottom: 14px; }
@@ -295,6 +296,7 @@
       #proposal-view { display: block !important; }
       .proposal-content { max-width: 100%; padding: 0; margin: 0; }
       .section-tab { display: block !important; animation: none !important; }
+      .section-tab.no-pilot { display: none !important; }
 
       /* ── PAGE 1: Header + Sobre Birdie ─── */
       .print-header {
@@ -1613,8 +1615,10 @@ function renderProposal(d) {
   // Pilot
   const pilot = d.pilot || { on: 0 };
   const pilotTab = document.getElementById('tab-pilot');
+  const pilotSection = document.getElementById('t-pilot');
   if (pilot.on && pilot.cost && pilot.months) {
     pilotTab.style.display = '';
+    if (pilotSection) pilotSection.classList.remove('no-pilot');
     document.getElementById('pp-cost-val').textContent   = fc(pilot.cost);
     document.getElementById('pp-months-val').textContent = pilot.months;
     document.getElementById('pp-total-val').textContent  = fc(pilot.cost * pilot.months);
@@ -1622,6 +1626,7 @@ function renderProposal(d) {
     document.getElementById('pp-scope-text').textContent = pilot.scope || '';
   } else {
     pilotTab.style.display = 'none';
+    if (pilotSection) pilotSection.classList.add('no-pilot');
   }
 
   if (en) applyEnglish(d);
@@ -1880,8 +1885,11 @@ function downloadPDF() {
   document.getElementById('ph-valid').textContent = (en ? 'Valid until: ' : 'Válida hasta: ') + fmtDate(d.valid, ACTIVE_LANG);
   document.getElementById('print-header-block').style.display = 'block';
 
-  // Make all tabs visible for print
-  document.querySelectorAll('.section-tab').forEach(t => t.style.display = 'block');
+  // Make all tabs visible for print — except the pilot if this proposal has no pilot
+  document.querySelectorAll('.section-tab').forEach(t => {
+    if (t.classList.contains('no-pilot')) return; // keep hidden
+    t.style.display = 'block';
+  });
 
   // Trigger print
   window.print();
@@ -1890,6 +1898,7 @@ function downloadPDF() {
   setTimeout(() => {
     document.getElementById('print-header-block').style.display = 'none';
     document.querySelectorAll('.section-tab').forEach((t, i) => {
+      if (t.classList.contains('no-pilot')) { t.style.display = ''; return; }
       t.style.display = t.classList.contains('active') ? 'block' : '';
     });
   }, 1000);
