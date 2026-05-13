@@ -471,15 +471,15 @@
     .stage-card .stage-text li::before { content:'•';color:var(--cyan);font-weight:900;font-size:18px;line-height:1;flex-shrink:0;margin-top:2px; }
 
     /* ── ETAPAS (form en generador) ── */
-    .stage-row { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 12px;margin-bottom:8px; }
+    .stage-row { background:#FFFFFF;border:1px solid #C7D2FE;border-radius:8px;padding:10px 12px;margin-bottom:8px;color:#1F2937; }
     .stage-row .stage-row-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; }
-    .stage-row .stage-row-head span { font-size:10px;color:#A5B4FC;font-weight:800;text-transform:uppercase;letter-spacing:0.8px; }
-    .stage-row .stage-row-del { background:transparent;border:none;color:rgba(255,255,255,0.45);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;font-family:Inter,sans-serif; }
-    .stage-row .stage-row-del:hover { background:rgba(239,68,68,0.2);color:#FCA5A5; }
-    .stage-row input, .stage-row textarea { width:100%;padding:6px 8px;font-size:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:5px;color:white;font-family:Inter,sans-serif;margin-bottom:6px;box-sizing:border-box;outline:none; }
-    .stage-row input:focus, .stage-row textarea:focus { border-color:rgba(99,102,241,0.6); }
+    .stage-row .stage-row-head span { font-size:10px;color:#3730A3;font-weight:800;text-transform:uppercase;letter-spacing:0.8px; }
+    .stage-row .stage-row-del { background:transparent;border:none;color:#6B7280;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;font-family:Inter,sans-serif; }
+    .stage-row .stage-row-del:hover { background:#FEE2E2;color:#B91C1C; }
+    .stage-row input, .stage-row textarea { width:100%;padding:6px 8px;font-size:12px;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;margin-bottom:6px;box-sizing:border-box;outline:none; }
+    .stage-row input:focus, .stage-row textarea:focus { border-color:#6366F1;background:#FFFFFF; }
     .stage-row textarea { resize:vertical;line-height:1.4; }
-    .stage-row input::placeholder, .stage-row textarea::placeholder { color:rgba(255,255,255,0.35); }
+    .stage-row input::placeholder, .stage-row textarea::placeholder { color:#9CA3AF; }
 
     /* ── HISTORIAL DE PROPUESTAS ─── */
     .gen-body-full { max-width:1120px;margin:0 auto;padding:0 24px 32px; }
@@ -680,51 +680,51 @@
 
 
           <!-- PRUEBA PILOTO TOGGLE -->
-          <div style="margin-top:12px;padding:14px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#6EE7B7;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:0">
+          <div style="margin-top:12px;padding:14px;background:#D1FAE5;border:1px solid #10B981;border-radius:8px;color:#1F2937;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#065F46;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
               <input type="checkbox" id="pilot-toggle" onchange="togglePilot()" style="width:16px;height:16px;accent-color:#10B981;cursor:pointer" />
               Incluir Prueba Piloto
             </label>
             <div id="pilot-fields" style="display:none;margin-top:12px">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
                 <div>
-                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Costo mensual (USD)</div>
+                  <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Costo mensual (USD)</div>
                   <div style="display:flex;align-items:center;gap:4px">
-                    <span style="font-size:12px;color:rgba(255,255,255,0.5)">$</span>
+                    <span style="font-size:12px;color:#374151;font-weight:700">$</span>
                     <input type="number" id="pilot-cost" value="0" min="0" step="100"
-                      style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
-                    <span style="font-size:10px;color:rgba(255,255,255,0.4)">USD</span>
+                      style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
+                    <span style="font-size:10px;color:#374151;font-weight:600">USD</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Duración (meses)</div>
+                  <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Duración (meses)</div>
                   <input type="number" id="pilot-months" value="2" min="1" max="12"
-                    style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
+                    style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
                 </div>
               </div>
               <div>
-                <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Alcance y objetivos</div>
+                <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Alcance y objetivos</div>
                 <textarea id="pilot-scope" rows="4" placeholder="Describe el alcance, áreas involucradas, entregables y objetivos de la prueba piloto..."
-                  style="width:100%;padding:8px 10px;font-size:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif;resize:vertical;line-height:1.5;box-sizing:border-box"></textarea>
-                <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:4px">💡 El texto se pasará tal como está a la propuesta. Revísalo antes de generar.</div>
+                  style="width:100%;padding:8px 10px;font-size:12px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif;resize:vertical;line-height:1.5;box-sizing:border-box"></textarea>
+                <div style="font-size:10px;color:#4B5563;margin-top:4px">💡 El texto se pasará tal como está a la propuesta. Revísalo antes de generar.</div>
               </div>
             </div>
           </div>
 
           <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE -->
-          <div style="margin-top:12px;padding:14px;background:rgba(99,102,241,0.10);border:1px solid rgba(99,102,241,0.35);border-radius:8px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#A5B4FC;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:0">
+          <div style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#3730A3;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
               <input type="checkbox" id="stages-toggle" onchange="toggleStages()" style="width:16px;height:16px;accent-color:#6366F1;cursor:pointer" />
               Incluir Etapas de Implementación
             </label>
             <div id="stages-fields" style="display:none;margin-top:12px">
               <div id="stages-list"></div>
               <button type="button" id="stages-add-btn" onclick="addStage()"
-                style="width:100%;padding:8px;background:rgba(99,102,241,0.20);color:#C7D2FE;border:1px dashed rgba(99,102,241,0.5);border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;margin-top:6px">
+                style="width:100%;padding:8px;background:#C7D2FE;color:#3730A3;border:1px dashed #6366F1;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;margin-top:6px">
                 + Agregar etapa
               </button>
-              <div id="stages-limit-msg" style="display:none;font-size:10px;color:rgba(255,255,255,0.45);margin-top:4px;text-align:center">Máximo 5 etapas.</div>
-              <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:6px">💡 Cada línea no vacía del texto se renderizará como un bullet en la propuesta.</div>
+              <div id="stages-limit-msg" style="display:none;font-size:10px;color:#4B5563;margin-top:4px;text-align:center">Máximo 5 etapas.</div>
+              <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Cada línea no vacía del texto se renderizará como un bullet en la propuesta.</div>
             </div>
           </div>
 
