@@ -208,7 +208,7 @@
     .acc-item.open { box-shadow: 0 4px 20px rgba(0,180,216,0.12); border-color: var(--cyan); }
     .acc-header { width: 100%; display: flex; align-items: center; gap: 14px; padding: 18px 20px; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif; transition: background 0.15s; }
     .acc-header:hover { background: var(--bg); }
-    .acc-icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .acc-icon-wrap { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; color: white; }
     .acc-title { flex: 1; font-size: 15px; font-weight: 700; color: var(--navy); }
     .acc-chevron { font-size: 16px; color: var(--cyan-dark); transition: transform 0.25s; flex-shrink: 0; }
     .acc-item.open .acc-chevron { transform: rotate(180deg); }
@@ -255,7 +255,7 @@
     .includes-box h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
     .includes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .includes-item { display: flex; gap: 8px; font-size: 13px; align-items: flex-start; color: var(--text); }
-    .check { color: var(--success); font-weight: 800; flex-shrink: 0; }
+    .check { color: var(--success); font-weight: 800; flex-shrink: 0; display: inline-flex; align-items: center; margin-top: 2px; }
 
     .note-block { padding: 16px 20px; background: var(--cyan-pale); border-left: 4px solid var(--cyan); border-radius: 0 var(--r-sm) var(--r-sm) 0; margin: 24px 0; }
     .note-block .note-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--cyan-dark); margin-bottom: 6px; }
@@ -492,6 +492,15 @@
     .stage-card .stage-text ul { list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px; }
     .stage-card .stage-text li { display:flex;gap:8px;align-items:flex-start; }
     .stage-card .stage-text li::before { content:'•';color:var(--cyan);font-weight:900;font-size:18px;line-height:1;flex-shrink:0;margin-top:2px; }
+
+    /* ── ICONOS (vista cliente) ── */
+    .icn { display:inline-block;vertical-align:middle;flex-shrink:0;line-height:0; }
+    .icn svg { display:block;width:100%;height:100%; }
+    .icn-xs { width:12px;height:12px; }
+    .icn-sm { width:16px;height:16px; }
+    .icn-md { width:20px;height:20px; }
+    .icn-lg { width:24px;height:24px; }
+    .icn-xl { width:32px;height:32px; }
 
     /* ── ROI (form en generador) ── */
     .roi-driver { background:#FFFFFF;border:1px solid #FDE68A;border-radius:8px;padding:10px 12px;margin-bottom:8px; }
@@ -924,7 +933,7 @@
 <div id="proposal-view" style="display:none">
 
   <div class="valid-banner" id="valid-banner">
-    📅 Propuesta válida hasta: <strong id="valid-date">—</strong>
+    <span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Propuesta válida hasta: <strong id="valid-date">—</strong>
   </div>
 
   <!-- COVER -->
@@ -946,11 +955,11 @@
         <div class="cover-company" id="c-company">Empresa</div>
         <div class="cover-subtitle" id="c-subtitle">IA para tu comercio exterior</div>
         <div class="cover-meta">
-          <div class="cover-meta-item">👤 <span id="c-for-label">Para:</span> <strong id="c-contact">—</strong></div>
-          <div class="cover-meta-item">📅 <strong id="c-date">—</strong></div>
-          <div class="cover-meta-item">⚡ <strong id="c-tier">—</strong></div>
+          <div class="cover-meta-item"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span id="c-for-label">Para:</span> <strong id="c-contact">—</strong></div>
+          <div class="cover-meta-item"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><strong id="c-date">—</strong></div>
+          <div class="cover-meta-item"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><strong id="c-tier">—</strong></div>
         </div>
-        <div class="scroll-hint">↓ <span id="c-scroll">Explorar propuesta</span></div>
+        <div class="scroll-hint"><span class="icn icn-sm" style="margin-right:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span><span id="c-scroll">Explorar propuesta</span></div>
       </div>
     </div>
   </div>
@@ -972,7 +981,7 @@
         <button onclick="switchProposalLang('es',this)" class="active">ES</button>
         <button onclick="switchProposalLang('en',this)">EN</button>
       </div>
-      <button class="btn-pdf" onclick="downloadPDF()" title="Descargar PDF">⬇ PDF</button>
+      <button class="btn-pdf" onclick="downloadPDF()" title="Descargar PDF"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>PDF</button>
     </div>
   </nav>
 
@@ -1015,19 +1024,19 @@
 
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:40px">
         <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
-          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📉</div>
+          <div style="width:36px;height:36px;background:var(--cyan-pale);color:var(--cyan-dark);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg></div>
           <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Reduce incidencias operativas y costos ocultos</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Detecta errores antes de que se conviertan en problemas costosos en aduana o almacén.</div></div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
-          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔍</div>
+          <div style="width:36px;height:36px;background:var(--cyan-pale);color:var(--cyan-dark);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Incrementa control, trazabilidad y cumplimiento aduanal</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Visibilidad completa de cada operación desde origen hasta entrega en almacén.</div></div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
-          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⚡</div>
+          <div style="width:36px;height:36px;background:var(--cyan-pale);color:var(--cyan-dark);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
           <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Disminuye la dependencia de procesos manuales y correos</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Centraliza toda la operación en una sola plataforma. Fin a los correos perdidos y las hojas de cálculo.</div></div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow)">
-          <div style="width:36px;height:36px;background:var(--cyan-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🚀</div>
+          <div style="width:36px;height:36px;background:var(--cyan-pale);color:var(--cyan-dark);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M15 9a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1z"/></svg></div>
           <div><div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Sienta las bases de una operación logística escalable y digital</div><div style="font-size:13px;color:var(--text-muted);line-height:1.6">Una plataforma que crece con tu empresa y se adapta a la complejidad de tu operación.</div></div>
         </div>
       </div>
@@ -1044,7 +1053,7 @@
         <!-- 1. Gestión Operativa -->
         <div class="acc-item open">
           <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><span class="acc-icon">⚙️</span></div>
+            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
             <span class="acc-title">Sistema de Gestión Operativa</span>
             <span class="acc-chevron">▾</span>
           </button>
@@ -1061,7 +1070,7 @@
         <!-- 2. Control Documental -->
         <div class="acc-item">
           <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><span class="acc-icon">📁</span></div>
+            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             <span class="acc-title">Control Documental</span>
             <span class="acc-chevron">▾</span>
           </button>
@@ -1078,7 +1087,7 @@
         <!-- 3. Alertas Inteligentes -->
         <div class="acc-item">
           <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><span class="acc-icon">🔔</span></div>
+            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
             <span class="acc-title">Alertas Inteligentes <span style="display:inline-flex;align-items:center;gap:4px;margin-left:8px;background:#25D366;color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
               WhatsApp
@@ -1096,7 +1105,7 @@
         <!-- 4. Colaboración Multiórea -->
         <div class="acc-item">
           <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><span class="acc-icon">🤝</span></div>
+            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             <span class="acc-title">Colaboración con Diferentes Áreas</span>
             <span class="acc-chevron">▾</span>
           </button>
@@ -1111,7 +1120,7 @@
         <!-- 5. KPIs y Analítica -->
         <div class="acc-item">
           <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><span class="acc-icon">📊</span></div>
+            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
             <span class="acc-title">Tableros de KPIs y Analítica</span>
             <span class="acc-chevron">▾</span>
           </button>
@@ -1172,7 +1181,7 @@
             <button class="bill-opt" onclick="setBillingMode('monthly',this)" id="bill-monthly-btn" data-es="Mensual" data-en="Monthly">Mensual</button>
             <button class="bill-opt active" onclick="setBillingMode('annual',this)" id="bill-annual-btn" data-es="Anual · 10% descuento" data-en="Annual · 10% off">Anual · 10% descuento</button>
           </div>
-          <div class="discount-chip" id="disc-chip">🎉 Ahorra $<span id="chip-saving">0</span> USD</div>
+          <div class="discount-chip" id="disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/><path d="M18 14l.9 2.6L21 17l-2.1.6L18 20l-.9-2.4L15 17l2.1-.4L18 14z"/><path d="M5 4l.7 2.1L8 7l-2.3.6L5 10l-.7-2.4L2 7l2.3-.4L5 4z"/></svg></span>Ahorra $<span id="chip-saving">0</span> USD</div>
         </div>
 
         <div class="price-cards-row">
@@ -1251,16 +1260,16 @@
       </div>
 
       <div class="includes-box">
-        <h3 id="inc-title">✅ Incluido en la suscripción</h3>
+        <h3 id="inc-title"><span class="icn icn-md" style="margin-right:8px;color:var(--success);vertical-align:-4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span id="inc-title-text">Incluido en la suscripción</span></h3>
         <div class="includes-grid">
-          <div class="includes-item"><span class="check">✓</span><span id="inc1">Acceso completo a la plataforma</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc2">Usuarios ilimitados</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc3">Soporte técnico 9×5</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc4">Actualizaciones continuas</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc5">Almacenamiento de documentos</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc6">Infraestructura cloud y servidores</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc7">Reportes y analytics avanzados</span></div>
-          <div class="includes-item"><span class="check">✓</span><span id="inc8">Alta disponibilidad y respaldos automáticos</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc1">Acceso completo a la plataforma</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc2">Usuarios ilimitados</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc3">Soporte técnico 9×5</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc4">Actualizaciones continuas</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc5">Almacenamiento de documentos</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc6">Infraestructura cloud y servidores</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc7">Reportes y analytics avanzados</span></div>
+          <div class="includes-item"><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block"><polyline points="20 6 9 17 4 12"/></svg></span><span id="inc8">Alta disponibilidad y respaldos automáticos</span></div>
         </div>
       </div>
     </div>
@@ -1268,7 +1277,7 @@
 
     <!-- ─── PRUEBA PILOTO ───────────────────── -->
     <div id="t-pilot" class="section-tab">
-      <div class="pilot-badge">🧪 PRUEBA PILOTO</div>
+      <div class="pilot-badge"><span class="icn icn-xs" style="margin-right:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg></span>PRUEBA PILOTO</div>
       <h1 class="sec-title" id="pp-title">Prueba Piloto Birdie</h1>
 
       <div class="pilot-hero">
@@ -1294,17 +1303,17 @@
       </div>
 
       <div class="pilot-objective">
-        <h3 id="pp-obj-title">🎯 Objetivo de la Prueba Piloto</h3>
+        <h3 id="pp-obj-title"><span class="icn icn-md" style="margin-right:8px;color:#059669;vertical-align:-4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span id="pp-obj-title-text">Objetivo de la Prueba Piloto</span></h3>
         <p id="pp-obj-text">La prueba piloto tiene como finalidad demostrar, en un entorno real y acotado, el impacto operativo de Birdie en los procesos de importación de <span id="pp-company-name">tu empresa</span>. Durante este periodo, el equipo de Birdie trabajará de forma cercana con tu equipo para asegurar una implementación exitosa, medir resultados concretos y sentar las bases de una relación de largo plazo basada en resultados.</p>
       </div>
 
       <div class="pilot-scope">
-        <h3 id="pp-scope-title">📋 Alcance del Piloto</h3>
+        <h3 id="pp-scope-title"><span class="icn icn-md" style="margin-right:8px;color:#059669;vertical-align:-4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h6"/></svg></span><span id="pp-scope-title-text">Alcance del Piloto</span></h3>
         <p id="pp-scope-text"></p>
       </div>
 
       <div class="pilot-next">
-        <h3 id="pp-next-title">✅ ¿Qué sigue después del piloto?</h3>
+        <h3 id="pp-next-title"><span class="icn icn-md" style="margin-right:8px;color:#059669;vertical-align:-4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><span id="pp-next-title-text">¿Qué sigue después del piloto?</span></h3>
         <ul id="pp-next-list">
           <li id="pp-next-1">Al término del piloto, realizamos una revisión de resultados y ROI obtenido.</li>
           <li id="pp-next-3">Transición sin fricciones al plan de suscripción acordado en esta propuesta.</li>
@@ -1330,12 +1339,12 @@
       <!-- SLA Download -->
       <div style="margin-bottom:32px;padding:18px 22px;background:var(--cyan-pale);border:1px solid var(--cyan);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">📄 Acuerdo de Nivel de Servicio (SLA)</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:8px"><span class="icn icn-sm" style="color:var(--cyan-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>Acuerdo de Nivel de Servicio (SLA)</div>
           <div style="font-size:12px;color:var(--text-muted)">Descarga nuestro SLA completo con tiempos de respuesta, uptime garantizado y compromisos de servicio.</div>
         </div>
         <a id="sla-link" href="https://drive.google.com/uc?export=download&id=12Sg522-drAAGm-f4bo_ia1aLsuWedEIk" target="_blank"
           style="display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:white;padding:10px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap">
-          ⬇ Descargar SLA
+          <span class="icn icn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Descargar SLA
         </a>
       </div>
 
@@ -1395,7 +1404,7 @@
       <div class="cta-block">
         <h3 id="cta-title">¿Listo para digitalizar tus importaciones?</h3>
         <p id="cta-sub">Para dudas o aclaraciones favor de contactar a:</p>
-        <a href="mailto:abraham@birdie.mx" class="cta-btn" id="cta-btn">📧 abraham@birdie.mx</a>
+        <a href="mailto:abraham@birdie.mx" class="cta-btn" id="cta-btn"><span class="icn icn-sm" style="margin-right:8px;vertical-align:-3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>abraham@birdie.mx</a>
       </div>
     </div>
 
@@ -1927,6 +1936,7 @@ function renderHistory() {
 }
 
 // ── RENDER PROPOSAL ────────────────────────────────────────────────────────────
+const ICON_CAL = '<span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>';
 let PROP_DATA = null;
 let ACTIVE_BILLING = 'annual';
 let ACTIVE_LANG = 'es';
@@ -1949,7 +1959,7 @@ function renderProposal(d) {
   const validStr = fmtDate(d.valid, ACTIVE_LANG);
   document.getElementById('valid-date').textContent = validStr;
   document.getElementById('valid-banner').innerHTML =
-    `📅 ${en ? 'Proposal valid until:' : 'Propuesta válida hasta:'} <strong>${validStr}</strong>`;
+    `${ICON_CAL}${en ? 'Proposal valid until:' : 'Propuesta válida hasta:'} <strong>${validStr}</strong>`;
 
   // Cover
   document.getElementById('c-company').textContent = d.co;
@@ -2105,7 +2115,7 @@ function renderROIProposal(d, roi) {
             '<div class="rdc-unit">' + esc(dr.unit) + '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="rdc-note">💡 ' + esc(dr.note) + '</div>' +
+        '<div class="rdc-note"><span class="icn icn-xs" style="margin-right:6px;color:#F59E0B;vertical-align:-2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg></span>' + esc(dr.note) + '</div>' +
       '</div>';
     }).join('');
   }
@@ -2234,7 +2244,7 @@ function switchProposalLang(lang, btn) {
   const validStr = fmtDate(PROP_DATA.valid, lang);
   document.getElementById('valid-date').textContent = validStr;
   document.getElementById('valid-banner').innerHTML =
-    `📅 ${en ? 'Proposal valid until:' : 'Propuesta válida hasta:'} <strong>${validStr}</strong>`;
+    `${ICON_CAL}${en ? 'Proposal valid until:' : 'Propuesta válida hasta:'} <strong>${validStr}</strong>`;
   document.getElementById('c-date').textContent = fmtDate(PROP_DATA.date, lang);
   document.getElementById('foot-date').textContent = fmtDate(PROP_DATA.date, lang);
 }
@@ -2269,7 +2279,7 @@ function applyEnglish(d) {
   t('pr-detail-title','Cost breakdown');
   t('th-concept','Concept'); t('th-desc','Description'); t('th-amount','Amount (USD)');
   document.getElementById('impl-note-text').innerHTML = 'The implementation fee is charged <strong>once</strong> at contract signing. From year two onward, only the annual subscription renews.';
-  t('inc-title','✅ Included in the subscription');
+  t('inc-title-text','Included in the subscription');
   t('inc1','Full platform access'); t('inc2','Unlimited users'); t('inc3','Technical support 9×5');
   t('inc4','Continuous updates'); t('inc5','Document storage'); t('inc6','Cloud infrastructure & servers');
   t('inc7','Advanced analytics & reports'); t('inc8','High availability & automatic backups');
@@ -2330,7 +2340,7 @@ function applySpanish(d) {
   t('pr-detail-title','Detalle del costo');
   t('th-concept','Concepto'); t('th-desc','Descripción'); t('th-amount','Monto (USD)');
   document.getElementById('impl-note-text').innerHTML = 'El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.';
-  t('inc-title','✅ Incluido en la suscripción');
+  t('inc-title-text','Incluido en la suscripción');
   t('inc1','Acceso completo a la plataforma'); t('inc2','Usuarios ilimitados'); t('inc3','Soporte técnico 9×5');
   t('inc4','Actualizaciones continuas'); t('inc5','Almacenamiento de documentos'); t('inc6','Infraestructura cloud y servidores');
   t('inc7','Reportes y analytics avanzados'); t('inc8','Alta disponibilidad y respaldos automáticos');
