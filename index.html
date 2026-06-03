@@ -179,6 +179,7 @@
     .section-tab.active { display: block; animation: fadeIn 0.28s ease; }
     .section-tab.no-pilot { display: none !important; }
     .section-tab.no-stages { display: none !important; }
+    .section-tab.no-roi { display: none !important; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .sec-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; color: var(--cyan-dark); margin-bottom: 14px; }
@@ -299,6 +300,7 @@
       .section-tab { display: block !important; animation: none !important; }
       .section-tab.no-pilot { display: none !important; }
       .section-tab.no-stages { display: none !important; }
+      .section-tab.no-roi { display: none !important; }
 
       /* ── PAGE 1: Header + Sobre Birdie ─── */
       .print-header {
@@ -349,6 +351,27 @@
       .acc-body { display: block !important; visibility: visible !important; height: auto !important; overflow: visible !important; padding: 4px 12px 10px 46px !important; }
       .acc-chevron { display: none !important; }
       .feat-list li { font-size: 10px !important; line-height: 1.45 !important; margin-bottom: 2px !important; color: #2D3748 !important; }
+
+      /* ── PAGE: Retorno de Inversión ─── */
+      #t-roi { padding: 0 24px; page-break-before: always; }
+      #t-roi .sec-title { font-size: 18px !important; margin-bottom: 6px !important; }
+      #t-roi .sec-body { font-size: 11px !important; margin-bottom: 12px !important; line-height: 1.55 !important; }
+      .roi-drivers { gap: 8px !important; margin-top: 10px !important; }
+      .roi-driver-card { padding: 10px 14px !important; box-shadow: none !important; page-break-inside: avoid; }
+      .roi-driver-card .rdc-title-block h3 { font-size: 12px !important; }
+      .roi-driver-card .rdc-formula { font-size: 10px !important; }
+      .roi-driver-card .rdc-value { font-size: 18px !important; }
+      .roi-driver-card .rdc-unit { font-size: 9px !important; }
+      .roi-driver-card .rdc-note { font-size: 10px !important; margin-top: 8px !important; padding-top: 8px !important; line-height: 1.4 !important; }
+      .roi-summary { padding: 14px 18px !important; margin-top: 10px !important; box-shadow: none !important; page-break-inside: avoid; }
+      .roi-summary-line { font-size: 11px !important; padding: 3px 0 !important; }
+      .roi-summary-line strong { font-size: 12px !important; }
+      .roi-summary-divider { margin: 8px 0 !important; }
+      .roi-summary-grid { gap: 8px !important; margin-top: 8px !important; }
+      .roi-summary-grid > div { padding: 10px !important; }
+      .roi-summary-grid .roi-cell-label { font-size: 8px !important; margin-bottom: 4px !important; }
+      .roi-summary-grid .roi-cell-value { font-size: 18px !important; }
+      .roi-summary-grid .roi-cell-unit { font-size: 8px !important; margin-top: 3px !important; }
 
       /* ── PAGE 2: Cotización ─── */
       #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
@@ -469,6 +492,42 @@
     .stage-card .stage-text ul { list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px; }
     .stage-card .stage-text li { display:flex;gap:8px;align-items:flex-start; }
     .stage-card .stage-text li::before { content:'•';color:var(--cyan);font-weight:900;font-size:18px;line-height:1;flex-shrink:0;margin-top:2px; }
+
+    /* ── ROI (form en generador) ── */
+    .roi-driver { background:#FFFFFF;border:1px solid #FDE68A;border-radius:8px;padding:10px 12px;margin-bottom:8px; }
+    .roi-driver-head { display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:#1F2937;margin-bottom:8px;font-weight:600; }
+    .roi-driver-head input[type=checkbox] { width:14px;height:14px;accent-color:#F59E0B;cursor:pointer;flex-shrink:0; }
+    .roi-driver-head strong { color:#78350F;font-weight:800; }
+    .roi-driver-head .roi-mini { color:#6B7280;font-size:11px;font-weight:500; }
+    .roi-inputs { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+    .roi-inputs.cols-1 { grid-template-columns:1fr; }
+    .roi-inputs > div label { display:block;font-size:10px;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;font-weight:700; }
+    .roi-inputs > div input { width:100%;padding:6px 8px;font-size:12px;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;box-sizing:border-box;outline:none; }
+    .roi-inputs > div input:focus { border-color:#F59E0B;background:#FFFFFF; }
+    .roi-preview { background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:#1F2937; }
+    .roi-preview-row { display:flex;justify-content:space-between;padding:3px 0; }
+    .roi-preview-row strong { color:#92400E;font-weight:800;font-variant-numeric:tabular-nums; }
+
+    /* ── ROI (vista cliente) ── */
+    .roi-drivers { display:flex;flex-direction:column;gap:14px;margin-top:24px; }
+    .roi-driver-card { padding:20px 24px;background:white;border:1px solid var(--border);border-left:5px solid #F59E0B;border-radius:var(--r);box-shadow:var(--shadow); }
+    .roi-driver-card .rdc-head { display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap; }
+    .roi-driver-card .rdc-title-block h3 { font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px;letter-spacing:-0.3px; }
+    .roi-driver-card .rdc-formula { font-size:12px;color:#6B7280;font-variant-numeric:tabular-nums; }
+    .roi-driver-card .rdc-value-block { text-align:right;flex-shrink:0; }
+    .roi-driver-card .rdc-value { font-size:26px;font-weight:900;color:#92400E;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.5px; }
+    .roi-driver-card .rdc-unit { font-size:11px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:0.6px;font-weight:700; }
+    .roi-driver-card .rdc-note { font-size:12px;color:#4B5563;font-style:italic;margin-top:12px;padding-top:12px;border-top:1px dashed #E5E7EB;line-height:1.5; }
+
+    .roi-summary { background:linear-gradient(135deg,#F59E0B 0%,#D97706 100%);border-radius:var(--r);padding:28px 32px;color:white;margin-top:28px;box-shadow:0 10px 30px rgba(245,158,11,0.25); }
+    .roi-summary-line { display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:6px 0;color:rgba(255,255,255,0.92); }
+    .roi-summary-line strong { color:white;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px; }
+    .roi-summary-divider { height:1px;background:rgba(255,255,255,0.35);margin:14px 0; }
+    .roi-summary-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px; }
+    .roi-summary-grid > div { background:rgba(255,255,255,0.18);border-radius:10px;padding:18px 14px;text-align:center; }
+    .roi-summary-grid .roi-cell-label { font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.9);font-weight:800;margin-bottom:8px; }
+    .roi-summary-grid .roi-cell-value { font-size:28px;font-weight:900;color:white;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.5px; }
+    .roi-summary-grid .roi-cell-unit { font-size:10px;color:rgba(255,255,255,0.8);margin-top:6px;letter-spacing:0.3px; }
 
     /* ── ETAPAS (form en generador) ── */
     .stage-row { background:#FFFFFF;border:1px solid #C7D2FE;border-radius:8px;padding:10px 12px;margin-bottom:8px;color:#1F2937; }
@@ -711,6 +770,88 @@
             </div>
           </div>
 
+          <!-- RETORNO DE INVERSIÓN TOGGLE -->
+          <div style="margin-top:12px;padding:14px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;color:#1F2937;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#92400E;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
+              <input type="checkbox" id="roi-toggle" onchange="toggleROI()" style="width:16px;height:16px;accent-color:#F59E0B;cursor:pointer" />
+              Incluir Retorno de Inversión (ROI)
+            </label>
+            <div id="roi-fields" style="display:none;margin-top:12px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed #FCD34D">
+                <span style="font-size:11px;color:#78350F;font-weight:800;text-transform:uppercase;letter-spacing:0.5px">Tipo de cambio USD→MXN:</span>
+                <input type="number" id="roi-fx" value="18" min="1" step="0.1" oninput="updateROIPreview()"
+                  style="width:80px;padding:5px 8px;font-size:13px;background:#FFFFFF;border:1px solid #FCD34D;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;font-weight:700;text-align:right" />
+              </div>
+
+              <!-- Driver 1: Tiempo manual -->
+              <div class="roi-driver">
+                <label class="roi-driver-head">
+                  <input type="checkbox" id="roi-d1" checked onchange="updateROIPreview()" />
+                  <strong>1. Tiempo manual</strong> <span class="roi-mini">— horas-hombre liberadas al automatizar</span>
+                </label>
+                <div class="roi-inputs">
+                  <div>
+                    <label>Horas / mes</label>
+                    <input type="number" id="roi-d1-hours" value="40" min="0" step="1" oninput="updateROIPreview()" />
+                  </div>
+                  <div>
+                    <label>Costo/hora (MXN)</label>
+                    <input type="number" id="roi-d1-cost" value="150" min="0" step="10" oninput="updateROIPreview()" />
+                  </div>
+                  <div>
+                    <label>% recuperado</label>
+                    <input type="number" id="roi-d1-pct" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Driver 2: Demurrage -->
+              <div class="roi-driver">
+                <label class="roi-driver-head">
+                  <input type="checkbox" id="roi-d2" onchange="updateROIPreview()" />
+                  <strong>2. Demurrage</strong> <span class="roi-mini">— días extra en puerto evitables</span>
+                </label>
+                <div class="roi-inputs">
+                  <div>
+                    <label>Conts. afectados / mes</label>
+                    <input type="number" id="roi-d2-cont" value="0" min="0" step="1" oninput="updateROIPreview()" />
+                  </div>
+                  <div>
+                    <label>Días evitables</label>
+                    <input type="number" id="roi-d2-days" value="2" min="0" step="0.5" oninput="updateROIPreview()" />
+                  </div>
+                  <div>
+                    <label>Costo USD / día</label>
+                    <input type="number" id="roi-d2-rate" value="120" min="0" step="10" oninput="updateROIPreview()" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Driver 3: Cumplimiento -->
+              <div class="roi-driver">
+                <label class="roi-driver-head">
+                  <input type="checkbox" id="roi-d3" onchange="updateROIPreview()" />
+                  <strong>3. Cumplimiento</strong> <span class="roi-mini">— multas y sanciones evitables</span>
+                </label>
+                <div class="roi-inputs cols-1">
+                  <div>
+                    <label>Multas evitadas / año (MXN)</label>
+                    <input type="number" id="roi-d3-fines" value="0" min="0" step="1000" oninput="updateROIPreview()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="roi-preview" id="roi-preview">
+                <div class="roi-preview-row"><span>Costo oculto anual:</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
+                <div class="roi-preview-row"><span>Inversión Birdie (año 1):</span><strong id="roi-prev-invest">$0 MXN</strong></div>
+                <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:4px;padding-top:6px"><span>Ahorro neto:</span><strong id="roi-prev-saving">$0 MXN</strong></div>
+                <div class="roi-preview-row"><span>ROI:</span><strong id="roi-prev-roi">0%</strong></div>
+                <div class="roi-preview-row"><span>Payback:</span><strong id="roi-prev-payback">— meses</strong></div>
+              </div>
+              <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Ajusta los drivers que apliquen al cliente. Solo los activados se mostrarán en la propuesta.</div>
+            </div>
+          </div>
+
           <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE -->
           <div style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#3730A3;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
@@ -820,6 +961,7 @@
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showTab('t-about',this)" data-es="Sobre Birdie" data-en="About Birdie">Sobre Birdie</button>
       <button class="nav-tab" onclick="showTab('t-features',this)" data-es="Funcionalidades" data-en="Features">Funcionalidades</button>
+      <button class="nav-tab" id="tab-roi" onclick="showTab('t-roi',this)" data-es="Retorno de Inversión" data-en="ROI" style="display:none">Retorno de Inversión</button>
       <button class="nav-tab" onclick="showTab('t-proposal',this)" data-es="Propuesta Comercial" data-en="Commercial Offer">Propuesta Comercial</button>
       <button class="nav-tab" id="tab-pilot" onclick="showTab('t-pilot',this)" data-es="Prueba Piloto" data-en="Pilot Program" style="display:none">Prueba Piloto</button>
       <button class="nav-tab" id="tab-stages" onclick="showTab('t-stages',this)" data-es="Etapas de Implementación" data-en="Implementation Stages" style="display:none">Etapas de Implementación</button>
@@ -981,6 +1123,36 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ─── RETORNO DE INVERSIÓN ──────────── -->
+    <div id="t-roi" class="section-tab no-roi">
+      <div class="sec-tag" id="roi-tag">VALOR</div>
+      <h1 class="sec-title" id="roi-title">Retorno de Inversión</h1>
+      <p class="sec-body" id="roi-intro">Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita en tu operación, comparados contra la inversión total del primer año.</p>
+      <div class="roi-drivers" id="roi-drivers-container"></div>
+      <div class="roi-summary">
+        <div class="roi-summary-line"><span id="roi-line-hidden-label">Costo oculto anual total</span><strong>$<span id="roi-out-hidden">0</span> MXN</strong></div>
+        <div class="roi-summary-line"><span id="roi-line-invest-label">Inversión Birdie (año 1)</span><strong>$<span id="roi-out-invest">0</span> MXN</strong></div>
+        <div class="roi-summary-divider"></div>
+        <div class="roi-summary-grid">
+          <div>
+            <div class="roi-cell-label" id="roi-cell-saving-label">Ahorro neto</div>
+            <div class="roi-cell-value">$<span id="roi-out-saving">0</span></div>
+            <div class="roi-cell-unit" id="roi-cell-saving-unit">MXN / año</div>
+          </div>
+          <div>
+            <div class="roi-cell-label" id="roi-cell-roi-label">ROI</div>
+            <div class="roi-cell-value"><span id="roi-out-roi">0</span>%</div>
+            <div class="roi-cell-unit" id="roi-cell-roi-unit">retorno anual</div>
+          </div>
+          <div>
+            <div class="roi-cell-label" id="roi-cell-payback-label">Payback</div>
+            <div class="roi-cell-value"><span id="roi-out-payback">—</span></div>
+            <div class="roi-cell-unit" id="roi-cell-payback-unit">meses</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1349,6 +1521,8 @@ function updatePricing() {
   // ERP toggle
   const erpOn = document.getElementById('erp-toggle').checked;
   document.getElementById('erp-price-row').style.display = erpOn ? 'block' : 'none';
+  // Refresh ROI preview if active
+  try { if (document.getElementById('roi-toggle') && document.getElementById('roi-toggle').checked) updateROIPreview(); } catch(e) {}
 }
 
 function setLang(l, btn) {
@@ -1402,6 +1576,71 @@ function resetTabulador() {
 function togglePilot() {
   const on = document.getElementById('pilot-toggle').checked;
   document.getElementById('pilot-fields').style.display = on ? 'block' : 'none';
+}
+
+// ── ROI: RETORNO DE INVERSIÓN ──────────────────────────────────────────────────
+function toggleROI() {
+  const on = document.getElementById('roi-toggle').checked;
+  document.getElementById('roi-fields').style.display = on ? 'block' : 'none';
+  if (on) updateROIPreview();
+}
+
+function collectROIFromForm() {
+  const num = (id, def) => {
+    const el = document.getElementById(id);
+    const v = el ? parseFloat(el.value) : NaN;
+    return isNaN(v) ? def : v;
+  };
+  const ck = id => { const el = document.getElementById(id); return el && el.checked ? 1 : 0; };
+  return {
+    on: ck('roi-toggle'),
+    fx: num('roi-fx', 18),
+    d1: { on: ck('roi-d1'), hours: num('roi-d1-hours', 0), cost: num('roi-d1-cost', 0), pct: num('roi-d1-pct', 0) },
+    d2: { on: ck('roi-d2'), cont:  num('roi-d2-cont', 0),  days: num('roi-d2-days', 0), rate: num('roi-d2-rate', 0) },
+    d3: { on: ck('roi-d3'), fines: num('roi-d3-fines', 0) },
+  };
+}
+
+function calcROI(roi, investmentMXN) {
+  const fx = roi.fx > 0 ? roi.fx : 18;
+  const d1 = (roi.d1 && roi.d1.on) ? (roi.d1.hours * roi.d1.cost * (roi.d1.pct / 100) * 12) : 0;
+  const d2 = (roi.d2 && roi.d2.on) ? (roi.d2.cont  * roi.d2.days * (roi.d2.rate * fx) * 12)   : 0;
+  const d3 = (roi.d3 && roi.d3.on) ? (roi.d3.fines)                                            : 0;
+  const hidden = d1 + d2 + d3;
+  const saving = hidden - investmentMXN;
+  const roiPct = investmentMXN > 0 ? (saving / investmentMXN) * 100 : 0;
+  const monthlyHidden = hidden / 12;
+  const payback = monthlyHidden > 0 ? (investmentMXN / monthlyHidden) : null;
+  return { d1, d2, d3, hidden, investmentMXN, saving, roiPct, payback };
+}
+
+function getInvestmentUSDFromForm() {
+  const opsEl = document.getElementById('inp-ops');
+  const ops = parseInt(opsEl ? opsEl.value : 0) || 0;
+  if (!ops) return 0;
+  const p = calcPricing(ops);
+  if (!p) return 0;
+  applyOverrides(p, ops);
+  const erpOn  = document.getElementById('erp-toggle').checked;
+  const erpAmt = erpOn ? (parseFloat(document.getElementById('erp-price').value) || 0) : 0;
+  return (p.acv || 0) + (p.impl || 0) + (erpAmt || 0);
+}
+
+function fmtMXN(n) { return '$' + Math.round(n).toLocaleString('en-US') + ' MXN'; }
+function fmtUSD(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+function updateROIPreview() {
+  if (!document.getElementById('roi-toggle').checked) return;
+  const roi = collectROIFromForm();
+  const investmentUSD = getInvestmentUSDFromForm();
+  const investmentMXN = investmentUSD * roi.fx;
+  const r = calcROI(roi, investmentMXN);
+  document.getElementById('roi-prev-hidden').textContent  = fmtMXN(r.hidden);
+  document.getElementById('roi-prev-invest').textContent  = fmtMXN(r.investmentMXN);
+  document.getElementById('roi-prev-saving').textContent  = fmtMXN(r.saving);
+  document.getElementById('roi-prev-roi').textContent     = Math.round(r.roiPct) + '%';
+  document.getElementById('roi-prev-payback').textContent = (r.payback != null && isFinite(r.payback))
+    ? r.payback.toFixed(1) + ' meses' : '— meses';
 }
 
 // ── ETAPAS DE IMPLEMENTACIÓN (form) ────────────────────────────────────────────
@@ -1488,6 +1727,10 @@ function generateProposal() {
       .filter(s => s.title || s.subtitle || s.text);
   }
 
+  // Retorno de inversión
+  const roiOn = document.getElementById('roi-toggle').checked;
+  const roiData = roiOn ? collectROIFromForm() : { on: 0 };
+
   if (!co)  { alert('Ingresa el nombre de la empresa');  document.getElementById('inp-company').focus(); return; }
   if (!ct)  { alert('Ingresa el nombre del contacto');   document.getElementById('inp-contact').focus(); return; }
   if (!ops) { alert('Ingresa el número de operaciones'); document.getElementById('inp-ops').focus(); return; }
@@ -1509,6 +1752,7 @@ function generateProposal() {
     erp: erpAmt,
     pilot: pilotOn ? { on:1, cost:pilotCost, months:pilotMonths, scope:pilotScope } : { on:0 },
     stages: (stagesOn && stagesItems.length > 0) ? { on:1, items: stagesItems } : { on:0 },
+    roi: roiOn ? roiData : { on:0 },
   };
 
   const encoded = enc(data);
@@ -1532,6 +1776,7 @@ function generateProposal() {
     erp: erpAmt,
     pilot: pilotOn ? { cost: pilotCost, months: pilotMonths } : null,
     stages: (stagesOn && stagesItems.length > 0) ? stagesItems.length : 0,
+    roi: roiOn ? 1 : 0,
     createdAt: new Date().toISOString(),
     validUntil: data.valid,
   });
@@ -1781,7 +2026,95 @@ function renderProposal(d) {
     if (stagesSection) stagesSection.classList.add('no-stages');
   }
 
+  // Retorno de inversión
+  const roi = d.roi || { on: 0 };
+  const roiTab = document.getElementById('tab-roi');
+  const roiSection = document.getElementById('t-roi');
+  if (roi.on) {
+    if (roiTab) roiTab.style.display = '';
+    if (roiSection) roiSection.classList.remove('no-roi');
+    renderROIProposal(d, roi);
+  } else {
+    if (roiTab) roiTab.style.display = 'none';
+    if (roiSection) roiSection.classList.add('no-roi');
+  }
+
   if (en) applyEnglish(d);
+}
+
+function renderROIProposal(d, roi) {
+  const en = ACTIVE_LANG === 'en';
+  const fx = roi.fx > 0 ? roi.fx : 18;
+  const investmentUSD = (d.acv || 0) + (d.impl || 0) + (d.erp || 0);
+  const investmentMXN = investmentUSD * fx;
+  const r = calcROI(roi, investmentMXN);
+
+  const fmtNum = n => Math.round(n).toLocaleString(en ? 'en-US' : 'es-MX');
+
+  const driverDefs = [];
+  if (roi.d1 && roi.d1.on) {
+    driverDefs.push({
+      title: en ? 'Manual time recovered' : 'Tiempo manual recuperado',
+      formula: (roi.d1.hours) + (en ? ' hrs/mo' : ' hrs/mes') +
+               ' × $' + fmtNum(roi.d1.cost) + ' MXN/' + (en ? 'hr' : 'hr') +
+               ' × ' + roi.d1.pct + '% × 12',
+      value: r.d1,
+      unit: en ? 'MXN / year' : 'MXN / año',
+      note: en
+        ? 'Estimated person-hours freed up by automating manual processes (tracking, filing, follow-up), valued at average loaded cost.'
+        : 'Horas-hombre liberadas al automatizar procesos manuales (tracking, archivado, seguimiento), valoradas a costo cargado promedio.',
+    });
+  }
+  if (roi.d2 && roi.d2.on) {
+    driverDefs.push({
+      title: en ? 'Demurrage avoided' : 'Demurrage evitado',
+      formula: roi.d2.cont + (en ? ' containers/mo' : ' conts./mes') +
+               ' × ' + roi.d2.days + (en ? ' days' : ' días') +
+               ' × ($' + fmtNum(roi.d2.rate) + ' USD × ' + fx + ' FX) × 12',
+      value: r.d2,
+      unit: en ? 'MXN / year' : 'MXN / año',
+      note: en
+        ? 'Cost of extra days at port. Birdie\'s anticipated visibility lets your team react before incurring charges.'
+        : 'Costo por días extra en puerto. La visibilidad anticipada de Birdie permite reaccionar antes de incurrir en cargos.',
+    });
+  }
+  if (roi.d3 && roi.d3.on) {
+    driverDefs.push({
+      title: en ? 'Fines and penalties avoided' : 'Multas y sanciones evitadas',
+      formula: en ? 'Estimated annual avoidable fines' : 'Estimado anual de multas evitables',
+      value: r.d3,
+      unit: en ? 'MXN / year' : 'MXN / año',
+      note: en
+        ? 'Fines and surcharges from inconsistent documentation or late submissions to customs authorities.'
+        : 'Multas y recargos por documentación inconsistente o presentaciones tardías ante autoridades aduanales.',
+    });
+  }
+
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const cont = document.getElementById('roi-drivers-container');
+  if (cont) {
+    cont.innerHTML = driverDefs.map(dr => {
+      return '<div class="roi-driver-card">' +
+        '<div class="rdc-head">' +
+          '<div class="rdc-title-block">' +
+            '<h3>' + esc(dr.title) + '</h3>' +
+            '<div class="rdc-formula">' + esc(dr.formula) + '</div>' +
+          '</div>' +
+          '<div class="rdc-value-block">' +
+            '<div class="rdc-value">$' + fmtNum(dr.value) + '</div>' +
+            '<div class="rdc-unit">' + esc(dr.unit) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rdc-note">💡 ' + esc(dr.note) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('roi-out-hidden').textContent  = fmtNum(r.hidden);
+  document.getElementById('roi-out-invest').textContent  = fmtNum(r.investmentMXN);
+  document.getElementById('roi-out-saving').textContent  = fmtNum(r.saving);
+  document.getElementById('roi-out-roi').textContent     = Math.round(r.roiPct);
+  document.getElementById('roi-out-payback').textContent = (r.payback != null && isFinite(r.payback)) ? r.payback.toFixed(1) : '—';
 }
 
 function renderStagesProposal(items) {
@@ -1960,6 +2293,19 @@ function applyEnglish(d) {
   t('st-tag','PROCESS');
   t('st-title','Implementation Stages');
   t('st-intro','This is how we will work with you through the platform adoption process.');
+  t('roi-tag','VALUE');
+  t('roi-title','Return on Investment');
+  t('roi-intro','We quantify the cost of not having Birdie. These are the annual operational savings the platform enables, compared against your year-1 total investment.');
+  t('roi-line-hidden-label','Total annual hidden cost');
+  t('roi-line-invest-label','Birdie investment (year 1)');
+  t('roi-cell-saving-label','Net savings');
+  t('roi-cell-saving-unit','MXN / year');
+  t('roi-cell-roi-label','ROI');
+  t('roi-cell-roi-unit','annual return');
+  t('roi-cell-payback-label','Payback');
+  t('roi-cell-payback-unit','months');
+  // Re-render driver cards in EN
+  if (d && d.roi && d.roi.on) renderROIProposal(d, d.roi);
 }
 
 function applySpanish(d) {
@@ -1997,6 +2343,19 @@ function applySpanish(d) {
   t('st-tag','PROCESO');
   t('st-title','Etapas de Implementación');
   t('st-intro','Así trabajaremos contigo durante el proceso de adopción de la plataforma.');
+  t('roi-tag','VALOR');
+  t('roi-title','Retorno de Inversión');
+  t('roi-intro','Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita en tu operación, comparados contra la inversión total del primer año.');
+  t('roi-line-hidden-label','Costo oculto anual total');
+  t('roi-line-invest-label','Inversión Birdie (año 1)');
+  t('roi-cell-saving-label','Ahorro neto');
+  t('roi-cell-saving-unit','MXN / año');
+  t('roi-cell-roi-label','ROI');
+  t('roi-cell-roi-unit','retorno anual');
+  t('roi-cell-payback-label','Payback');
+  t('roi-cell-payback-unit','meses');
+  // Re-render driver cards in ES
+  if (d && d.roi && d.roi.on) renderROIProposal(d, d.roi);
 }
 
 function showTab(id, btn) {
@@ -2070,6 +2429,7 @@ function downloadPDF() {
   document.querySelectorAll('.section-tab').forEach(t => {
     if (t.classList.contains('no-pilot'))  return; // keep hidden
     if (t.classList.contains('no-stages')) return; // keep hidden
+    if (t.classList.contains('no-roi'))    return; // keep hidden
     t.style.display = 'block';
   });
 
@@ -2080,7 +2440,7 @@ function downloadPDF() {
   setTimeout(() => {
     document.getElementById('print-header-block').style.display = 'none';
     document.querySelectorAll('.section-tab').forEach((t, i) => {
-      if (t.classList.contains('no-pilot') || t.classList.contains('no-stages')) {
+      if (t.classList.contains('no-pilot') || t.classList.contains('no-stages') || t.classList.contains('no-roi')) {
         t.style.display = ''; return;
       }
       t.style.display = t.classList.contains('active') ? 'block' : '';
