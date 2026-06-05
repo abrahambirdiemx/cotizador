@@ -807,20 +807,193 @@
         </div>
       </div>
 
-      <!-- Tabulador -->
-      <div class="card">
-        <div class="card-header">
-          <h2>💰 Tabulador de precios</h2>
-          <button class="tab-toggle" onclick="toggleTabulador(this)">Editar ▾</button>
+      <!-- PRUEBA PILOTO TOGGLE -->
+      <div class="tx-only" style="margin-top:12px;padding:14px;background:#D1FAE5;border:1px solid #10B981;border-radius:8px;color:#1F2937;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#065F46;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
+          <input type="checkbox" id="pilot-toggle" onchange="togglePilot()" style="width:16px;height:16px;accent-color:#10B981;cursor:pointer" />
+          Incluir Prueba Piloto
+        </label>
+        <div id="pilot-fields" style="display:none;margin-top:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div>
+              <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Costo mensual (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px">
+                <span style="font-size:12px;color:#374151;font-weight:700">$</span>
+                <input type="number" id="pilot-cost" value="0" min="0" step="100"
+                  style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
+                <span style="font-size:10px;color:#374151;font-weight:600">USD</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Duración (meses)</div>
+              <input type="number" id="pilot-months" value="2" min="1" max="12"
+                style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Alcance y objetivos</div>
+            <textarea id="pilot-scope" rows="4" placeholder="Describe el alcance, áreas involucradas, entregables y objetivos de la prueba piloto..."
+              style="width:100%;padding:8px 10px;font-size:12px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif;resize:vertical;line-height:1.5;box-sizing:border-box"></textarea>
+            <div style="font-size:10px;color:#4B5563;margin-top:4px">💡 El texto se pasará tal como está a la propuesta. Revísalo antes de generar.</div>
+          </div>
         </div>
-        <div class="tabulador-panel" id="tab-panel">
-          <p class="tab-info">Ajusta los precios por operación. Los cambios persisten en este navegador.</p>
-          <table class="tab-table">
-            <thead><tr><th>Tier</th><th>Operaciones anuales</th><th>Precio / op (USD)</th></tr></thead>
-            <tbody id="tab-body"></tbody>
-          </table>
-          <button class="btn-reset" onclick="resetTabulador()">↺ Restaurar precios originales</button>
+      </div>
+
+      <!-- RETORNO DE INVERSIÓN TOGGLE -->
+      <div style="margin-top:12px;padding:14px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;color:#1F2937;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#92400E;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
+          <input type="checkbox" id="roi-toggle" onchange="toggleROI()" style="width:16px;height:16px;accent-color:#F59E0B;cursor:pointer" />
+          Incluir Retorno de Inversión (ROI)
+        </label>
+        <div id="roi-fields" style="display:none;margin-top:12px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed #FCD34D">
+            <span style="font-size:11px;color:#78350F;font-weight:800;text-transform:uppercase;letter-spacing:0.5px">Tipo de cambio USD→MXN:</span>
+            <input type="number" id="roi-fx" value="18" min="1" step="0.1" oninput="updateROIPreview()"
+              style="width:80px;padding:5px 8px;font-size:13px;background:#FFFFFF;border:1px solid #FCD34D;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;font-weight:700;text-align:right" />
+          </div>
+
+          <!-- Driver 1: Tiempo manual -->
+          <div class="roi-driver">
+            <label class="roi-driver-head">
+              <input type="checkbox" id="roi-d1" checked onchange="updateROIPreview()" />
+              <strong>1. Tiempo manual</strong> <span class="roi-mini">— horas-hombre liberadas al automatizar</span>
+            </label>
+            <div class="roi-inputs">
+              <div>
+                <label>Horas / mes</label>
+                <input type="number" id="roi-d1-hours" value="40" min="0" step="1" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Costo/hora (MXN)</label>
+                <input type="number" id="roi-d1-cost" value="150" min="0" step="10" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>% recuperado</label>
+                <input type="number" id="roi-d1-pct" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver 2: Demurrage -->
+          <div class="roi-driver">
+            <label class="roi-driver-head">
+              <input type="checkbox" id="roi-d2" onchange="updateROIPreview()" />
+              <strong>2. Demurrage</strong> <span class="roi-mini">— días extra en puerto evitables</span>
+            </label>
+            <div class="roi-inputs">
+              <div>
+                <label>Conts. afectados / mes</label>
+                <input type="number" id="roi-d2-cont" value="0" min="0" step="1" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Días evitables</label>
+                <input type="number" id="roi-d2-days" value="2" min="0" step="0.5" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Costo USD / día</label>
+                <input type="number" id="roi-d2-rate" value="120" min="0" step="10" oninput="updateROIPreview()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver 3: Cumplimiento -->
+          <div class="roi-driver">
+            <label class="roi-driver-head">
+              <input type="checkbox" id="roi-d3" onchange="updateROIPreview()" />
+              <strong>3. Cumplimiento</strong> <span class="roi-mini">— multas y sanciones evitables</span>
+            </label>
+            <div class="roi-inputs cols-1">
+              <div>
+                <label>Multas evitadas / año (MXN)</label>
+                <input type="number" id="roi-d3-fines" value="0" min="0" step="1000" oninput="updateROIPreview()" />
+              </div>
+            </div>
+          </div>
+
+          <div class="roi-preview" id="roi-preview">
+            <div class="roi-preview-row"><span>Costo oculto anual:</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
+            <div class="roi-preview-row"><span>Inversión Birdie (año 1):</span><strong id="roi-prev-invest">$0 MXN</strong></div>
+            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:4px;padding-top:6px"><span>Ahorro neto:</span><strong id="roi-prev-saving">$0 MXN</strong></div>
+            <div class="roi-preview-row"><span>ROI:</span><strong id="roi-prev-roi">0%</strong></div>
+            <div class="roi-preview-row"><span>Payback:</span><strong id="roi-prev-payback">— meses</strong></div>
+          </div>
+          <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Ajusta los drivers que apliquen al cliente. Solo los activados se mostrarán en la propuesta.</div>
         </div>
+      </div>
+
+      <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE -->
+      <div class="tx-only" style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#3730A3;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
+          <input type="checkbox" id="stages-toggle" onchange="toggleStages()" style="width:16px;height:16px;accent-color:#6366F1;cursor:pointer" />
+          Incluir Etapas de Implementación
+        </label>
+        <div id="stages-fields" style="display:none;margin-top:12px">
+          <div id="stages-list"></div>
+          <button type="button" id="stages-add-btn" onclick="addStage()"
+            style="width:100%;padding:8px;background:#C7D2FE;color:#3730A3;border:1px dashed #6366F1;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;margin-top:6px">
+            + Agregar etapa
+          </button>
+          <div id="stages-limit-msg" style="display:none;font-size:10px;color:#4B5563;margin-top:4px;text-align:center">Máximo 5 etapas.</div>
+          <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Cada línea no vacía del texto se renderizará como un bullet en la propuesta.</div>
+        </div>
+      </div>
+
+      <!-- ENTERPRISE FORMAT CARD (solo visible en formato Enterprise) -->
+      <div class="ent-only ent-card">
+        <div class="ent-card-head">PROPUESTA ENTERPRISE — CONFIGURACIÓN</div>
+
+        <label class="field-label">Intro personalizada</label>
+        <textarea id="ent-intro" rows="3" placeholder="Texto introductorio que enmarca la propuesta..."></textarea>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label class="field-label">Volumen anual (ops)</label>
+            <input type="number" id="ent-volume" value="12000" min="0" step="100" />
+          </div>
+          <div>
+            <label class="field-label">Unidad volumen</label>
+            <input type="text" id="ent-volume-unit" value="operaciones / año" />
+          </div>
+        </div>
+
+        <div class="ent-helper">Selecciona qué pestañas verá el cliente:</div>
+        <div class="ent-tab-grid">
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-vision" checked /> 1. Visión y Madurez</label>
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-plan" checked /> 2. Plan de Implementación</label>
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-features" checked /> 3. Funcionalidades</label>
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-kpis" checked /> 4. Medición y KPIs</label>
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-roi" checked /> 5. Retorno de Inversión</label>
+          <label class="ent-tab-row"><input type="checkbox" id="ent-tab-commercial" checked /> 6. Propuesta Comercial</label>
+        </div>
+
+        <div class="ent-sub-block" id="ent-plan-block">
+          <div class="ent-sub-head"><label>Plan de Implementación — 3 fases (editable)</label></div>
+          <div id="ent-phases-list"></div>
+        </div>
+
+        <div class="ent-sub-block" id="ent-features-block">
+          <div class="ent-sub-head"><label>Funcionalidades — bloques e ítems</label></div>
+          <div id="ent-features-list"></div>
+        </div>
+
+        <div class="ent-helper">💡 ROI y Propuesta Comercial usan los inputs ya configurados arriba (tabulador, ERP, ROI).</div>
+      </div>
+
+      <button class="btn-generate" onclick="generateProposal()">🚀 Generar propuesta</button>
+
+      <div class="url-output" id="url-out">
+        <div class="url-label" style="margin-top:14px;">URL de la propuesta</div>
+        <div class="url-box">
+          <div class="url-field" id="url-display"></div>
+          <button class="btn-copy" id="btn-copy" onclick="copyUrl()">📋 Copiar</button>
+        </div>
+        <button class="btn-preview" onclick="openProposal()">👁 Abrir vista previa</button>
+      </div>
+
+      <div class="api-note">
+        <strong>🔌 API-ready para dashboard de growth</strong>
+        Ver <code>API_CONFIG</code> en el fuente para integración.
+        Soporta: crear, listar, trackear vistas por propuesta.
       </div>
     </div>
 
@@ -913,193 +1086,20 @@
       </div>
 
 
-          <!-- PRUEBA PILOTO TOGGLE -->
-          <div class="tx-only" style="margin-top:12px;padding:14px;background:#D1FAE5;border:1px solid #10B981;border-radius:8px;color:#1F2937;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#065F46;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
-              <input type="checkbox" id="pilot-toggle" onchange="togglePilot()" style="width:16px;height:16px;accent-color:#10B981;cursor:pointer" />
-              Incluir Prueba Piloto
-            </label>
-            <div id="pilot-fields" style="display:none;margin-top:12px">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-                <div>
-                  <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Costo mensual (USD)</div>
-                  <div style="display:flex;align-items:center;gap:4px">
-                    <span style="font-size:12px;color:#374151;font-weight:700">$</span>
-                    <input type="number" id="pilot-cost" value="0" min="0" step="100"
-                      style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
-                    <span style="font-size:10px;color:#374151;font-weight:600">USD</span>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Duración (meses)</div>
-                  <input type="number" id="pilot-months" value="2" min="1" max="12"
-                    style="width:100%;padding:6px 8px;font-size:13px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif" />
-                </div>
-              </div>
-              <div>
-                <div style="font-size:10px;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Alcance y objetivos</div>
-                <textarea id="pilot-scope" rows="4" placeholder="Describe el alcance, áreas involucradas, entregables y objetivos de la prueba piloto..."
-                  style="width:100%;padding:8px 10px;font-size:12px;background:#FFFFFF;border:1px solid #A7F3D0;border-radius:6px;color:#1F2937;font-family:Inter,sans-serif;resize:vertical;line-height:1.5;box-sizing:border-box"></textarea>
-                <div style="font-size:10px;color:#4B5563;margin-top:4px">💡 El texto se pasará tal como está a la propuesta. Revísalo antes de generar.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- RETORNO DE INVERSIÓN TOGGLE -->
-          <div style="margin-top:12px;padding:14px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;color:#1F2937;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#92400E;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
-              <input type="checkbox" id="roi-toggle" onchange="toggleROI()" style="width:16px;height:16px;accent-color:#F59E0B;cursor:pointer" />
-              Incluir Retorno de Inversión (ROI)
-            </label>
-            <div id="roi-fields" style="display:none;margin-top:12px">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed #FCD34D">
-                <span style="font-size:11px;color:#78350F;font-weight:800;text-transform:uppercase;letter-spacing:0.5px">Tipo de cambio USD→MXN:</span>
-                <input type="number" id="roi-fx" value="18" min="1" step="0.1" oninput="updateROIPreview()"
-                  style="width:80px;padding:5px 8px;font-size:13px;background:#FFFFFF;border:1px solid #FCD34D;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;font-weight:700;text-align:right" />
-              </div>
-
-              <!-- Driver 1: Tiempo manual -->
-              <div class="roi-driver">
-                <label class="roi-driver-head">
-                  <input type="checkbox" id="roi-d1" checked onchange="updateROIPreview()" />
-                  <strong>1. Tiempo manual</strong> <span class="roi-mini">— horas-hombre liberadas al automatizar</span>
-                </label>
-                <div class="roi-inputs">
-                  <div>
-                    <label>Horas / mes</label>
-                    <input type="number" id="roi-d1-hours" value="40" min="0" step="1" oninput="updateROIPreview()" />
-                  </div>
-                  <div>
-                    <label>Costo/hora (MXN)</label>
-                    <input type="number" id="roi-d1-cost" value="150" min="0" step="10" oninput="updateROIPreview()" />
-                  </div>
-                  <div>
-                    <label>% recuperado</label>
-                    <input type="number" id="roi-d1-pct" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Driver 2: Demurrage -->
-              <div class="roi-driver">
-                <label class="roi-driver-head">
-                  <input type="checkbox" id="roi-d2" onchange="updateROIPreview()" />
-                  <strong>2. Demurrage</strong> <span class="roi-mini">— días extra en puerto evitables</span>
-                </label>
-                <div class="roi-inputs">
-                  <div>
-                    <label>Conts. afectados / mes</label>
-                    <input type="number" id="roi-d2-cont" value="0" min="0" step="1" oninput="updateROIPreview()" />
-                  </div>
-                  <div>
-                    <label>Días evitables</label>
-                    <input type="number" id="roi-d2-days" value="2" min="0" step="0.5" oninput="updateROIPreview()" />
-                  </div>
-                  <div>
-                    <label>Costo USD / día</label>
-                    <input type="number" id="roi-d2-rate" value="120" min="0" step="10" oninput="updateROIPreview()" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Driver 3: Cumplimiento -->
-              <div class="roi-driver">
-                <label class="roi-driver-head">
-                  <input type="checkbox" id="roi-d3" onchange="updateROIPreview()" />
-                  <strong>3. Cumplimiento</strong> <span class="roi-mini">— multas y sanciones evitables</span>
-                </label>
-                <div class="roi-inputs cols-1">
-                  <div>
-                    <label>Multas evitadas / año (MXN)</label>
-                    <input type="number" id="roi-d3-fines" value="0" min="0" step="1000" oninput="updateROIPreview()" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="roi-preview" id="roi-preview">
-                <div class="roi-preview-row"><span>Costo oculto anual:</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
-                <div class="roi-preview-row"><span>Inversión Birdie (año 1):</span><strong id="roi-prev-invest">$0 MXN</strong></div>
-                <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:4px;padding-top:6px"><span>Ahorro neto:</span><strong id="roi-prev-saving">$0 MXN</strong></div>
-                <div class="roi-preview-row"><span>ROI:</span><strong id="roi-prev-roi">0%</strong></div>
-                <div class="roi-preview-row"><span>Payback:</span><strong id="roi-prev-payback">— meses</strong></div>
-              </div>
-              <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Ajusta los drivers que apliquen al cliente. Solo los activados se mostrarán en la propuesta.</div>
-            </div>
-          </div>
-
-          <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE -->
-          <div class="tx-only" style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#3730A3;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
-              <input type="checkbox" id="stages-toggle" onchange="toggleStages()" style="width:16px;height:16px;accent-color:#6366F1;cursor:pointer" />
-              Incluir Etapas de Implementación
-            </label>
-            <div id="stages-fields" style="display:none;margin-top:12px">
-              <div id="stages-list"></div>
-              <button type="button" id="stages-add-btn" onclick="addStage()"
-                style="width:100%;padding:8px;background:#C7D2FE;color:#3730A3;border:1px dashed #6366F1;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;margin-top:6px">
-                + Agregar etapa
-              </button>
-              <div id="stages-limit-msg" style="display:none;font-size:10px;color:#4B5563;margin-top:4px;text-align:center">Máximo 5 etapas.</div>
-              <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Cada línea no vacía del texto se renderizará como un bullet en la propuesta.</div>
-            </div>
-          </div>
-
-          <!-- ENTERPRISE FORMAT CARD (solo visible en formato Enterprise) -->
-          <div class="ent-only ent-card">
-            <div class="ent-card-head">PROPUESTA ENTERPRISE — CONFIGURACIÓN</div>
-
-            <label class="field-label">Intro personalizada</label>
-            <textarea id="ent-intro" rows="3" placeholder="Texto introductorio que enmarca la propuesta..."></textarea>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div>
-                <label class="field-label">Volumen anual (ops)</label>
-                <input type="number" id="ent-volume" value="12000" min="0" step="100" />
-              </div>
-              <div>
-                <label class="field-label">Unidad volumen</label>
-                <input type="text" id="ent-volume-unit" value="operaciones / año" />
-              </div>
-            </div>
-
-            <div class="ent-helper">Selecciona qué pestañas verá el cliente:</div>
-            <div class="ent-tab-grid">
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-vision" checked /> 1. Visión y Madurez</label>
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-plan" checked /> 2. Plan de Implementación</label>
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-features" checked /> 3. Funcionalidades</label>
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-kpis" checked /> 4. Medición y KPIs</label>
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-roi" checked /> 5. Retorno de Inversión</label>
-              <label class="ent-tab-row"><input type="checkbox" id="ent-tab-commercial" checked /> 6. Propuesta Comercial</label>
-            </div>
-
-            <div class="ent-sub-block" id="ent-plan-block">
-              <div class="ent-sub-head"><label>Plan de Implementación — 3 fases (editable)</label></div>
-              <div id="ent-phases-list"></div>
-            </div>
-
-            <div class="ent-sub-block" id="ent-features-block">
-              <div class="ent-sub-head"><label>Funcionalidades — bloques e ítems</label></div>
-              <div id="ent-features-list"></div>
-            </div>
-
-            <div class="ent-helper">💡 ROI y Propuesta Comercial usan los inputs ya configurados arriba (tabulador, ERP, ROI).</div>
-          </div>
-
-      <button class="btn-generate" onclick="generateProposal()">🚀 Generar propuesta</button>
-
-      <div class="url-output" id="url-out">
-        <div class="url-label" style="margin-top:14px;">URL de la propuesta</div>
-        <div class="url-box">
-          <div class="url-field" id="url-display"></div>
-          <button class="btn-copy" id="btn-copy" onclick="copyUrl()">📋 Copiar</button>
+      <!-- Tabulador -->
+      <div class="card">
+        <div class="card-header">
+          <h2>💰 Tabulador de precios</h2>
+          <button class="tab-toggle" onclick="toggleTabulador(this)">Editar ▾</button>
         </div>
-        <button class="btn-preview" onclick="openProposal()">👁 Abrir vista previa</button>
-      </div>
-
-      <div class="api-note">
-        <strong>🔌 API-ready para dashboard de growth</strong>
-        Ver <code>API_CONFIG</code> en el fuente para integración.
-        Soporta: crear, listar, trackear vistas por propuesta.
+        <div class="tabulador-panel" id="tab-panel">
+          <p class="tab-info">Ajusta los precios por operación. Los cambios persisten en este navegador.</p>
+          <table class="tab-table">
+            <thead><tr><th>Tier</th><th>Operaciones anuales</th><th>Precio / op (USD)</th></tr></thead>
+            <tbody id="tab-body"></tbody>
+          </table>
+          <button class="btn-reset" onclick="resetTabulador()">↺ Restaurar precios originales</button>
+        </div>
       </div>
     </div>
 
