@@ -339,7 +339,15 @@
       .ent-phase-item .ent-item-text { font-size: 10px !important; line-height: 1.45 !important; }
       .ent-feat-block { padding: 12px 16px !important; box-shadow: none !important; page-break-inside: avoid; margin-bottom: 8px !important; }
       .ent-feat-block h3 { font-size: 12px !important; margin-bottom: 8px !important; padding-bottom: 6px !important; }
-      .ent-feat-block li { font-size: 10.5px !important; line-height: 1.45 !important; }
+      .ent-feat-block ul.ent-feat-list { gap: 8px !important; }
+      .ent-feat-block li.ent-feat-row .ent-feat-bullet { width: 16px !important; height: 16px !important; }
+      .ent-feat-block li.ent-feat-row .ent-feat-bullet svg { width: 10px !important; height: 10px !important; }
+      .ent-feat-block li.ent-feat-row .ent-feat-title { font-size: 11px !important; }
+      .ent-feat-block li.ent-feat-row .ent-feat-desc { font-size: 10px !important; line-height: 1.4 !important; }
+      .ent-section-head { gap: 10px !important; margin-bottom: 10px !important; }
+      .ent-section-icon { width: 36px !important; height: 36px !important; border-radius: 8px !important; box-shadow: none !important; }
+      .ent-section-icon svg { width: 18px !important; height: 18px !important; }
+      .ent-demo-btn { display: none !important; }
       .ent-kpi-table thead th, .ent-kpi-table tbody td { padding: 8px 12px !important; font-size: 10.5px !important; }
       .ent-area-note { padding: 10px 14px !important; font-size: 10.5px !important; }
       .ent-next-steps { padding: 14px 20px !important; }
@@ -627,10 +635,24 @@
     .ent-feat-blocks { display:flex;flex-direction:column;gap:20px;margin-top:18px; }
     .ent-feat-block { background:white;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:24px 28px; }
     .ent-feat-block h3 { font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-0.2px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--cyan-pale); }
-    .ent-feat-block ul { list-style:none;padding:0;display:flex;flex-direction:column;gap:8px; }
-    .ent-feat-block li { display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#374151;line-height:1.55; }
-    .ent-feat-block li::before { content:'';display:block;width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:8px; }
-    .ent-feat-block li strong { color:var(--navy); }
+    .ent-feat-block ul.ent-feat-list { list-style:none;padding:0;display:flex;flex-direction:column;gap:14px;margin:0; }
+    .ent-feat-block li.ent-feat-row { display:flex;gap:12px;align-items:flex-start; }
+    .ent-feat-block li.ent-feat-row .ent-feat-bullet { flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--cyan-pale);color:var(--cyan-dark);display:flex;align-items:center;justify-content:center;margin-top:1px; }
+    .ent-feat-block li.ent-feat-row .ent-feat-bullet svg { width:13px;height:13px; }
+    .ent-feat-block li.ent-feat-row .ent-feat-body { flex:1;min-width:0; }
+    .ent-feat-block li.ent-feat-row .ent-feat-title { font-size:14px;font-weight:800;color:var(--navy);line-height:1.35;margin-bottom:3px; }
+    .ent-feat-block li.ent-feat-row .ent-feat-desc { font-size:13px;color:#4B5563;line-height:1.55; }
+
+    /* Section headers (icon + tag + title + demo button) */
+    .ent-section-head { display:flex;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap; }
+    .ent-section-icon { flex-shrink:0;width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--navy),var(--cyan-dark));color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(10,38,71,0.18); }
+    .ent-section-icon svg { width:28px;height:28px; }
+    .ent-section-head .ent-section-titles { flex:1;min-width:0; }
+    .ent-section-head .sec-tag { margin-bottom:4px; }
+    .ent-section-head .sec-title { margin-bottom:0; }
+    .ent-demo-btn { display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:#0A2647;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;transition:all 0.15s;letter-spacing:0.2px; }
+    .ent-demo-btn:hover { background:var(--cyan-dark);transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,180,216,0.35); }
+    .ent-demo-btn svg { width:14px;height:14px; }
 
     /* KPI table */
     .ent-kpi-table { width:100%;border-collapse:separate;border-spacing:0;margin:18px 0;background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border); }
@@ -975,6 +997,23 @@
         <div class="ent-sub-block" id="ent-features-block">
           <div class="ent-sub-head"><label>Funcionalidades — bloques e ítems</label></div>
           <div id="ent-features-list"></div>
+        </div>
+
+        <div class="ent-sub-block" id="ent-demos-block">
+          <div class="ent-sub-head"><label>Videos demo por sección (Loom u otra URL)</label></div>
+          <label class="field-label">1. Visión y Madurez</label>
+          <input type="url" id="ent-demo-vision" placeholder="https://www.loom.com/share/..." />
+          <label class="field-label">2. Plan de Implementación</label>
+          <input type="url" id="ent-demo-plan" placeholder="https://www.loom.com/share/..." />
+          <label class="field-label">3. Funcionalidades</label>
+          <input type="url" id="ent-demo-features" placeholder="https://www.loom.com/share/..." />
+          <label class="field-label">4. Medición y KPIs</label>
+          <input type="url" id="ent-demo-kpis" placeholder="https://www.loom.com/share/..." />
+          <label class="field-label">5. Retorno de Inversión</label>
+          <input type="url" id="ent-demo-roi" placeholder="https://www.loom.com/share/..." />
+          <label class="field-label">6. Propuesta Comercial</label>
+          <input type="url" id="ent-demo-commercial" placeholder="https://www.loom.com/share/..." />
+          <div class="ent-helper">💡 Si dejas vacío, el botón Video Demo no aparece en esa sección.</div>
         </div>
 
         <div class="ent-helper">💡 ROI y Propuesta Comercial usan los inputs ya configurados arriba (tabulador, ERP, ROI).</div>
@@ -1629,8 +1668,14 @@
 
     <!-- T1: Visión y Madurez -->
     <div id="t-ent-vision" class="section-tab ent-only no-ent-vision">
-      <div class="sec-tag" id="ev-tag">VISIÓN</div>
-      <h1 class="sec-title" id="ev-title">Visión y Madurez</h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="ev-tag">VISIÓN</div>
+          <h1 class="sec-title" id="ev-title">Visión y Madurez</h1>
+        </div>
+        <a class="ent-demo-btn" id="ev-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <div class="ent-vol-badge"><span id="ev-vol-label">Volumen anual</span>: <span class="ent-vol-num" id="ev-vol">12,000</span> <span id="ev-vol-unit">operaciones / año</span></div>
       <p class="sec-body" id="ev-intro">A ese volumen, cada ineficiencia operativa se convierte en un costo estructural que se multiplica miles de veces al año.</p>
 
@@ -1703,24 +1748,42 @@
 
     <!-- T2: Plan de Implementación -->
     <div id="t-ent-plan" class="section-tab ent-only no-ent-plan">
-      <div class="sec-tag" id="ep-tag">PROCESO</div>
-      <h1 class="sec-title" id="ep-title">Plan de Implementación — 90 días</h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="ep-tag">PROCESO</div>
+          <h1 class="sec-title" id="ep-title">Plan de Implementación — 90 días</h1>
+        </div>
+        <a class="ent-demo-btn" id="ep-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <p class="sec-body" id="ep-intro">La implementación se ejecuta en tres fases secuenciales. Nunca se apaga lo que funciona hasta validar que lo nuevo opera bien.</p>
       <div class="ent-phases" id="ent-phases-container"></div>
     </div>
 
     <!-- T3: Funcionalidades -->
     <div id="t-ent-features" class="section-tab ent-only no-ent-features">
-      <div class="sec-tag" id="ef-tag">PLATAFORMA</div>
-      <h1 class="sec-title" id="ef-title">Funcionalidades</h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="ef-tag">PLATAFORMA</div>
+          <h1 class="sec-title" id="ef-title">Funcionalidades</h1>
+        </div>
+        <a class="ent-demo-btn" id="ef-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <p class="sec-body" id="ef-intro">Estos son los bloques de funcionalidad incluidos en tu propuesta.</p>
       <div class="ent-feat-blocks" id="ent-features-container"></div>
     </div>
 
     <!-- T4: Medición y KPIs -->
     <div id="t-ent-kpis" class="section-tab ent-only no-ent-kpis">
-      <div class="sec-tag" id="ek-tag">MEDICIÓN</div>
-      <h1 class="sec-title" id="ek-title">Medición y KPIs</h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="ek-tag">MEDICIÓN</div>
+          <h1 class="sec-title" id="ek-title">Medición y KPIs</h1>
+        </div>
+        <a class="ent-demo-btn" id="ek-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <p class="sec-body" id="ek-intro">La medición es a la vez la herramienta de operación y la prueba del valor. Proponemos un marco de KPIs en cinco dimensiones, con vistas distintas según el área.</p>
       <table class="ent-kpi-table">
         <thead><tr><th id="ek-th-dim">Dimensión</th><th id="ek-th-ind">Indicadores</th></tr></thead>
@@ -1737,8 +1800,14 @@
 
     <!-- T5: Retorno de Inversión (reusa el mismo render que t-roi pero en su propio contenedor) -->
     <div id="t-ent-roi" class="section-tab ent-only no-ent-roi">
-      <div class="sec-tag" id="er-tag">VALOR</div>
-      <h1 class="sec-title" id="er-title">Retorno de Inversión</h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 6px 18px rgba(245,158,11,0.25)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="er-tag">VALOR</div>
+          <h1 class="sec-title" id="er-title">Retorno de Inversión</h1>
+        </div>
+        <a class="ent-demo-btn" id="er-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <p class="sec-body" id="er-intro">Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita, comparados contra la inversión total del primer año.</p>
       <div class="roi-drivers" id="ent-roi-drivers-container"></div>
       <div class="roi-summary">
@@ -1767,8 +1836,14 @@
 
     <!-- T6: Propuesta Comercial (pricing reuse + siguientes pasos + términos) -->
     <div id="t-ent-commercial" class="section-tab ent-only no-ent-commercial">
-      <div class="sec-tag" id="ec-tag">COTIZACIÓN</div>
-      <h1 class="sec-title">Propuesta para <span id="ec-company">tu empresa</span></h1>
+      <div class="ent-section-head">
+        <div class="ent-section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><line x1="2" y1="14" x2="22" y2="14"/></svg></div>
+        <div class="ent-section-titles">
+          <div class="sec-tag" id="ec-tag">COTIZACIÓN</div>
+          <h1 class="sec-title">Propuesta para <span id="ec-company">tu empresa</span></h1>
+        </div>
+        <a class="ent-demo-btn" id="ec-demo-btn" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>Video Demo</a>
+      </div>
       <p class="sec-body" id="ec-intro">Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.</p>
 
       <!-- Pricing hero (clonado a partir del t-proposal pero con IDs propios para no chocar) -->
@@ -3091,6 +3166,7 @@ function entCollectFromForm() {
     };
   }).filter(b => b.on && b.items.length);
 
+  const gv = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
   return {
     intro:  (document.getElementById('ent-intro').value || '').trim(),
     volume: parseFloat(document.getElementById('ent-volume').value) || 0,
@@ -3105,6 +3181,14 @@ function entCollectFromForm() {
     },
     phases,
     features,
+    demos: {
+      vision:     gv('ent-demo-vision'),
+      plan:       gv('ent-demo-plan'),
+      features:   gv('ent-demo-features'),
+      kpis:       gv('ent-demo-kpis'),
+      roi:        gv('ent-demo-roi'),
+      commercial: gv('ent-demo-commercial'),
+    },
   };
 }
 
@@ -3173,6 +3257,9 @@ function renderEnterpriseProposal(d) {
   // T6 Commercial — render pricing
   if (tabsCfg.commercial) renderEntCommercial(d);
 
+  // Demo buttons
+  applyDemoButtons(ent);
+
   if (en) applyEnterpriseEnglish(d); else applyEnterpriseSpanish(d);
 }
 
@@ -3200,14 +3287,49 @@ function renderEntPhasesProposal(phases, en) {
 function renderEntFeaturesProposal(blocks) {
   const cont = document.getElementById('ent-features-container');
   if (!cont) return;
+  const bulletSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   cont.innerHTML = blocks.map(b => `
     <div class="ent-feat-block">
       <h3>${entEscapeAttr(b.title)}</h3>
-      <ul>
-        ${b.items.map(it => `<li>${entLineToHtml(it.text)}</li>`).join('')}
+      <ul class="ent-feat-list">
+        ${b.items.map(it => {
+          const raw = String(it.text || '');
+          // Parse "**Title** — Description" pattern (em-dash, en-dash or hyphen)
+          const m = raw.match(/^\s*\*\*(.+?)\*\*\s*[—–\-]\s*(.+)$/s);
+          if (m) {
+            return '<li class="ent-feat-row">' +
+              '<span class="ent-feat-bullet">' + bulletSvg + '</span>' +
+              '<div class="ent-feat-body">' +
+                '<div class="ent-feat-title">' + entEscapeAttr(m[1]) + '</div>' +
+                '<div class="ent-feat-desc">' + entEscapeAttr(m[2]) + '</div>' +
+              '</div>' +
+            '</li>';
+          }
+          return '<li class="ent-feat-row">' +
+            '<span class="ent-feat-bullet">' + bulletSvg + '</span>' +
+            '<div class="ent-feat-body"><div class="ent-feat-desc">' + entLineToHtml(raw) + '</div></div>' +
+          '</li>';
+        }).join('')}
       </ul>
     </div>
   `).join('');
+}
+
+function applyDemoButtons(ent) {
+  const demos = (ent && ent.demos) || {};
+  const map = { vision:'ev-demo-btn', plan:'ep-demo-btn', features:'ef-demo-btn', kpis:'ek-demo-btn', roi:'er-demo-btn', commercial:'ec-demo-btn' };
+  Object.entries(map).forEach(([key, btnId]) => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    const url = demos[key];
+    if (url) {
+      btn.href = url;
+      btn.style.display = '';
+    } else {
+      btn.removeAttribute('href');
+      btn.style.display = 'none';
+    }
+  });
 }
 
 function renderEntROIProposal(d, roi) {
