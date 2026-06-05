@@ -1990,6 +1990,13 @@ function calcPricing(ops) {
 }
 
 const fc = v => new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(v);
+// Robust numeric parser: accepts dot or comma as decimal separator (Spanish locale users
+// sometimes type 7,5 instead of 7.5; plain parseFloat returns 7 in that case).
+function parseNum(v) {
+  if (v == null) return NaN;
+  if (typeof v === 'number') return v;
+  return parseFloat(String(v).trim().replace(/\s/g, '').replace(',', '.'));
+}
 
 // Applies manual overrides to a pricing object. Mutates and returns it.
 // Also returns info about which fields were overridden.
@@ -2001,8 +2008,8 @@ function applyOverrides(p, ops) {
   const implInput = document.getElementById('override-impl');
   const subRaw    = subInput ? subInput.value : '';
   const implRaw   = implInput ? implInput.value : '';
-  const subVal    = parseFloat(subRaw);
-  const implVal   = parseFloat(implRaw);
+  const subVal    = parseNum(subRaw);
+  const implVal   = parseNum(implRaw);
   if (subRaw !== '' && !isNaN(subVal) && subVal >= 0) {
     p.acv        = subVal;
     p.monthly    = subVal / 12;
@@ -2093,8 +2100,10 @@ function renderTabTable() {
 }
 
 function updateTabRow(i, v) {
-  TAB[i].price = parseFloat(v);
+  const n = parseNum(v);
+  TAB[i].price = isNaN(n) ? 0 : n;
   localStorage.setItem('birdie_tab', JSON.stringify(TAB));
+  renderTabTable();
   updatePricing();
 }
 
@@ -2123,7 +2132,7 @@ function toggleROI() {
 function collectROIFromForm() {
   const num = (id, def) => {
     const el = document.getElementById(id);
-    const v = el ? parseFloat(el.value) : NaN;
+    const v = el ? parseNum(el.value) : NaN;
     return isNaN(v) ? def : v;
   };
   const ck = id => { const el = document.getElementById(id); return el && el.checked ? 1 : 0; };
@@ -2157,7 +2166,7 @@ function getInvestmentUSDFromForm() {
   if (!p) return 0;
   applyOverrides(p, ops);
   const erpOn  = document.getElementById('erp-toggle').checked;
-  const erpAmt = erpOn ? (parseFloat(document.getElementById('erp-price').value) || 0) : 0;
+  const erpAmt = erpOn ? (parseNum(document.getElementById('erp-price').value) || 0) : 0;
   return (p.acv || 0) + (p.impl || 0) + (erpAmt || 0);
 }
 
@@ -2246,9 +2255,9 @@ function generateProposal() {
   const ops  = parseInt(document.getElementById('inp-ops').value);
   const note = document.getElementById('inp-note').value.trim();
   const erpOn = document.getElementById('erp-toggle').checked;
-  const erpAmt = erpOn ? (parseFloat(document.getElementById('erp-price').value) || 0) : 0;
+  const erpAmt = erpOn ? (parseNum(document.getElementById('erp-price').value) || 0) : 0;
   const pilotOn = document.getElementById('pilot-toggle').checked;
-  const pilotCost = pilotOn ? (parseFloat(document.getElementById('pilot-cost').value) || 0) : 0;
+  const pilotCost = pilotOn ? (parseNum(document.getElementById('pilot-cost').value) || 0) : 0;
   const pilotMonths = pilotOn ? (parseInt(document.getElementById('pilot-months').value) || 2) : 0;
   const pilotScope = pilotOn ? document.getElementById('pilot-scope').value.trim() : '';
 
@@ -3169,7 +3178,7 @@ function entCollectFromForm() {
   const gv = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
   return {
     intro:  (document.getElementById('ent-intro').value || '').trim(),
-    volume: parseFloat(document.getElementById('ent-volume').value) || 0,
+    volume: parseNum(document.getElementById('ent-volume').value) || 0,
     volumeUnit: (document.getElementById('ent-volume-unit').value || '').trim(),
     tabs: {
       vision:     document.getElementById('ent-tab-vision').checked     ? 1 : 0,
