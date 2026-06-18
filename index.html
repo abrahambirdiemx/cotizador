@@ -228,8 +228,8 @@
     /* Billing toggle */
     .billing-toggle-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
     .billing-toggle { display: flex; background: rgba(255,255,255,0.08); border-radius: 30px; padding: 3px; }
-    .bill-opt { padding: 8px 20px; border-radius: 27px; border: none; background: transparent; color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-    .bill-opt.active { background: var(--cyan); color: white; box-shadow: 0 2px 8px rgba(0,180,216,0.4); }
+    .bill-opt, .bill-btn { padding: 8px 20px; border-radius: 27px; border: none; background: transparent; color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+    .bill-opt.active, .bill-btn.active { background: var(--cyan); color: white; box-shadow: 0 2px 8px rgba(0,180,216,0.4); }
     .discount-chip { background: rgba(16,185,129,0.25); border: 1px solid rgba(16,185,129,0.5); color: #6EE7B7; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
 
     .price-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -1824,8 +1824,10 @@
         <h2 id="ec-hero-title">Resumen de Inversión</h2>
         <p class="ph-sub" id="ec-hero-sub">Elige la modalidad de pago que mejor se adapte a tu empresa</p>
         <div class="billing-toggle-wrap">
-          <button id="ec-bill-monthly-btn" class="bill-btn" onclick="ecSwitchBilling('monthly')">Mensual</button>
-          <button id="ec-bill-annual-btn" class="bill-btn active" onclick="ecSwitchBilling('annual')">Anual · 10% descuento</button>
+          <div class="billing-toggle">
+            <button id="ec-bill-monthly-btn" class="bill-btn" onclick="ecSwitchBilling('monthly')">Mensual</button>
+            <button id="ec-bill-annual-btn" class="bill-btn active" onclick="ecSwitchBilling('annual')">Anual · 10% descuento</button>
+          </div>
           <span class="discount-chip" id="ec-disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/></svg></span>Ahorra $<span id="ec-chip-saving">0</span> USD</span>
         </div>
         <div class="price-cards-row">
