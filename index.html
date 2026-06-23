@@ -2278,6 +2278,10 @@ function generateProposal() {
   const out = document.getElementById('url-out');
   out.classList.add('visible');
   document.getElementById('url-display').textContent = url;
+  // Warn if URL exceeds typical server header buffer limits (~8KB nginx default).
+  if (url.length > 6000) {
+    console.warn('[Birdie] URL length is ' + url.length + ' chars — may hit server header limits. Consider reducing optional fields.');
+  }
 
   // Guardar en historial local
   saveToHistory({
@@ -3145,10 +3149,16 @@ function entCollectFromForm() {
       on: blockOn && blockOn.checked ? 1 : 0,
       title: b.title,
       video: vid ? (vid.value || '').trim() : (b.video || ''),
-      items: b.items.map((it, ii) => {
+      // Slim payload: store only the bold title of each active item.
+      // Renderer looks up the full text from ENT_DEFAULT_FEATURES by title.
+      items: b.items.reduce((acc, it, ii) => {
         const c = document.getElementById('ent-fi-' + bi + '-' + ii);
-        return { on: c && c.checked ? 1 : 0, text: it.text };
-      }).filter(it => it.on),
+        if (c && c.checked) {
+          const m = String(it.text || '').match(/^\s*\*\*(.+?)\*\*/);
+          acc.push(m ? m[1] : (it.text || '').slice(0, 80));
+        }
+        return acc;
+      }, []),
     };
   }).filter(b => b.on && b.items.length);
 
@@ -3263,17 +3273,43 @@ function renderEntFeaturesProposal(blocks) {
   if (!cont) return;
   const bulletSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   const playSvg = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
-  cont.innerHTML = blocks.map(b => `
+
+  // Build a lookup: block title → { item title → full markdown text }
+  // Used to resolve item titles from the slim payload back to full descriptions.
+  const lookup = {};
+  ENT_DEFAULT_FEATURES.forEach(b => {
+    const m = {};
+    b.items.forEach(it => {
+      const t = String(it.text || '').match(/^\s*\*\*(.+?)\*\*/);
+      if (t) m[t[1]] = it.text;
+    });
+    lookup[b.title] = m;
+  });
+
+  // Normalize each block's items to an array of full text strings.
+  // Accepts both new (string title only) and legacy ({on, text}) formats.
+  const resolve = (block) => {
+    const blockMap = lookup[block.title] || {};
+    return (block.items || []).map(it => {
+      if (typeof it === 'string') {
+        return blockMap[it] || ('**' + it + '** — ');
+      }
+      // legacy object form
+      return it.text || '';
+    });
+  };
+
+  cont.innerHTML = blocks.map(b => {
+    const texts = resolve(b);
+    return `
     <div class="ent-feat-block">
       <div class="ent-feat-block-head">
         <h3>${entEscapeAttr(b.title)}</h3>
         ${b.video ? `<a class="ent-demo-btn" href="${entEscapeAttr(b.video)}" target="_blank" rel="noopener">${playSvg}Video Demo</a>` : ''}
       </div>
       <ul class="ent-feat-list">
-        ${b.items.map(it => {
-          const raw = String(it.text || '');
-          // Parse "**Title** — Description" pattern (em-dash, en-dash or hyphen)
-          const m = raw.match(/^\s*\*\*(.+?)\*\*\s*[—–\-]\s*(.+)$/s);
+        ${texts.map(raw => {
+          const m = String(raw).match(/^\s*\*\*(.+?)\*\*\s*[—–\-]\s*(.+)$/s);
           if (m) {
             return '<li class="ent-feat-row">' +
               '<span class="ent-feat-bullet">' + bulletSvg + '</span>' +
@@ -3290,7 +3326,7 @@ function renderEntFeaturesProposal(blocks) {
         }).join('')}
       </ul>
     </div>
-  `).join('');
+  `;}).join('');
 }
 
 function renderEntROIProposal(d, roi) {
