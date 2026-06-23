@@ -1300,6 +1300,8 @@
             <ul class="feat-list">
               <li><strong>Personalización de columnas</strong> — Configura las columnas relevantes para replicar la visibilidad actual de tu operación.</li>
               <li><strong>Trazabilidad aérea y marítima (multinaviera)</strong> — Automatización desde POD, POL, ETD, ETA, fecha de descarga y retorno de vacío.</li>
+              <li><strong>Actualización automática de fechas y cantidades por etapa</strong> — Sincronización en tiempo real de las fechas clave (ETD, ETA, fecha de despacho, fecha de entrega) y cantidades a través de cada etapa del ciclo de importación, sin recaptura manual entre sistemas.</li>
+              <li><strong>Seguimiento de fechas de confirmación y entrega</strong> — Monitoreo proactivo de las fechas comprometidas por proveedor (confirmación de orden, fecha de embarque, fecha estimada de entrega) contra la operación real, con alertas tempranas ante desviaciones.</li>
               <li><strong>Integración directa con SOIA</strong> — Visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.</li>
               <li><strong>Bitácora colaborativa multiarea</strong> — Registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.</li>
             </ul>
@@ -1318,6 +1320,7 @@
               <li><strong>Gestión segura de documentos</strong> — Carga, organiza, solicita y comparte documentos con agentes aduanales y agentes de carga: factura comercial, packing list, BL, certificados de origen y más.</li>
               <li><strong>Expediente completo por operación</strong> — Garantiza que cada operación cuente con todos sus documentos requeridos.</li>
               <li><strong>Validación automática con IA</strong> — Revisión inteligente de documentos para detectar errores o inconsistencias antes del despacho.</li>
+              <li><strong>Validación de precios y cantidades — PO vs Confirmación vs Invoice</strong> — Reconciliación automática a tres vías entre la orden de compra, la confirmación del proveedor y la factura final. Detecta discrepancias en precios unitarios, cantidades y subtotales antes del pago, evitando sobrecargos, retrasos por reclamos y desfases con tu ERP.</li>
               <li><strong>Retención documental de 5 años</strong> — Acceso inmediato a cualquier expediente en caso de auditorías del SAT o ANAM.</li>
             </ul>
           </div>
@@ -3010,6 +3013,8 @@ const ENT_DEFAULT_FEATURES = [
     items: [
       { text: '**Personalización de columnas** — configura las columnas relevantes para replicar la visibilidad actual de tu operación.' },
       { text: '**Trazabilidad aérea y marítima (multinaviera)** — automatización desde POL, POD, ETD, ETA, fecha de descarga y retorno de vacío.' },
+      { text: '**Actualización automática de fechas y cantidades por etapa** — sincronización en tiempo real de las fechas clave (ETD, ETA, fecha de despacho, fecha de entrega) y cantidades a través de cada etapa del ciclo de importación, sin recaptura manual entre sistemas.' },
+      { text: '**Seguimiento de fechas de confirmación y entrega** — monitoreo proactivo de las fechas comprometidas por proveedor (confirmación de orden, fecha de embarque, fecha estimada de entrega) contra la operación real, con alertas tempranas ante desviaciones para reaccionar antes de impactar la cadena.' },
       { text: '**Integración directa con SOIA** — visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.' },
       { text: '**Bitácora colaborativa multiárea** — registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.' },
     ],
@@ -3020,6 +3025,7 @@ const ENT_DEFAULT_FEATURES = [
       { text: '**Carga, organiza, solicita y comparte documentos** con agentes aduanales y de carga: factura comercial, packing list, BL, certificados de origen y más.' },
       { text: '**Expediente completo por operación** — garantiza que cada operación cuente con todos sus documentos requeridos.' },
       { text: '**Validación automática con IA** — revisión inteligente de documentos para detectar errores o inconsistencias antes del despacho.' },
+      { text: '**Validación de precios y cantidades — PO vs Confirmación vs Invoice** — reconciliación automática a tres vías entre la orden de compra, la confirmación del proveedor y la factura final. Detecta discrepancias en precios unitarios, cantidades y subtotales antes del pago, evitando sobrecargos, retrasos por reclamos y desfases con tu ERP.' },
       { text: '**Retención documental de 5 años** — acceso inmediato a cualquier expediente en caso de auditorías del SAT o ANAM.' },
       { text: '**Notificaciones automáticas por correo** — alertas por cambios de ETA, documentos faltantes en embarques por arribar, Cargo Ready Date (CRD) y más.' },
       { text: '**Integración con WhatsApp** — consulta el estatus de operaciones, contenedores y fechas de llegada desde WhatsApp, sin entrar a la plataforma.' },
