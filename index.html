@@ -3403,7 +3403,10 @@ function renderEntCommercial(d) {
     : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
   document.getElementById('ec-pc-main-period').textContent = isAnnual ? (en ? 'USD / year' : 'USD / año') : (en ? 'USD / month' : 'USD / mes');
   document.getElementById('ec-pc-eq-amount').textContent = fc(moEq);
-  document.getElementById('ec-pc-op-amount').textContent = fc(d.ppo || 0);
+  // Apply 10% annual discount to the per-op price when client is viewing annual billing.
+  // (Matches PYME format behavior so the per-op label is consistent with the subscription card.)
+  const ecPpoEff = isAnnual ? Math.round((d.ppo || 0) * 0.90 * 100) / 100 : (d.ppo || 0);
+  document.getElementById('ec-pc-op-amount').textContent = fc(ecPpoEff);
   document.getElementById('ec-pc-op-tier').textContent = (en ? 'Tier ' : 'Tier ') + (d.tier || 1);
 
   // Detail rows
