@@ -425,6 +425,20 @@
       .roi-summary-grid .roi-cell-label { font-size: 8px !important; margin-bottom: 4px !important; }
       .roi-summary-grid .roi-cell-value { font-size: 18px !important; }
       .roi-summary-grid .roi-cell-unit { font-size: 8px !important; margin-top: 3px !important; }
+      .roi-ramp-title { font-size: 10px !important; margin: 12px 0 6px !important; }
+      .roi-ramp-timeline { gap: 6px !important; margin-bottom: 10px !important; }
+      .roi-ramp-phase { padding: 8px 10px !important; box-shadow: none !important; page-break-inside: avoid; }
+      .roi-ramp-phase .rrp-label { font-size: 8px !important; margin-bottom: 4px !important; }
+      .roi-ramp-phase .rrp-months { font-size: 14px !important; }
+      .roi-ramp-phase .rrp-months span:last-child { font-size: 10px !important; }
+      .roi-ramp-phase .rrp-pct { font-size: 10px !important; margin-bottom: 4px !important; }
+      .roi-ramp-phase .rrp-desc { font-size: 9px !important; line-height: 1.35 !important; }
+      .roi-summary-two { gap: 8px !important; margin-top: 8px !important; }
+      .roi-summary-col { padding: 8px 10px !important; }
+      .roi-summary-col .rsc-head { font-size: 9px !important; margin-bottom: 6px !important; padding-bottom: 4px !important; }
+      .roi-summary-col .roi-cell-value { font-size: 13px !important; }
+      .roi-summary-col .roi-cell-label { font-size: 7px !important; }
+      .roi-summary-col .roi-cell-unit { font-size: 7px !important; }
 
       /* ── PAGE 2: Cotización ─── */
       #t-proposal { padding: 0 24px; page-break-before: always; margin-top: 0; }
@@ -717,6 +731,40 @@
     .roi-summary-grid .roi-cell-value { font-size:28px;font-weight:900;color:white;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.5px; }
     .roi-summary-grid .roi-cell-unit { font-size:10px;color:rgba(255,255,255,0.8);margin-top:6px;letter-spacing:0.3px; }
 
+    /* Ramp-up timeline (vista cliente) */
+    .roi-ramp-title { font-size:14px;font-weight:800;color:var(--navy);letter-spacing:0.4px;text-transform:uppercase;margin:28px 0 12px; }
+    .roi-ramp-timeline { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px; }
+    .roi-ramp-phase { background:white;border:1px solid var(--border);border-radius:var(--r-sm);padding:18px 18px;box-shadow:var(--shadow);position:relative; }
+    .roi-ramp-phase::before { content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-top-left-radius:var(--r-sm);border-bottom-left-radius:var(--r-sm); }
+    .roi-ramp-impl::before { background:#E5E7EB; }
+    .roi-ramp-stab::before { background:#FBBF24; }
+    .roi-ramp-full::before { background:#10B981; }
+    .roi-ramp-phase .rrp-label { font-size:10px;font-weight:800;letter-spacing:1px;color:#6B7280;margin-bottom:8px;text-transform:uppercase; }
+    .roi-ramp-impl .rrp-label { color:#6B7280; }
+    .roi-ramp-stab .rrp-label { color:#92400E; }
+    .roi-ramp-full .rrp-label { color:#065F46; }
+    .roi-ramp-phase .rrp-months { font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-0.5px;margin-bottom:4px;font-variant-numeric:tabular-nums; }
+    .roi-ramp-phase .rrp-months span:last-child { font-size:14px;font-weight:600;color:#6B7280;margin-left:4px; }
+    .roi-ramp-phase .rrp-pct { font-size:13px;font-weight:800;margin-bottom:10px; }
+    .roi-ramp-impl .rrp-pct { color:#6B7280; }
+    .roi-ramp-stab .rrp-pct { color:#92400E; }
+    .roi-ramp-full .rrp-pct { color:#065F46; }
+    .roi-ramp-phase .rrp-desc { font-size:12.5px;color:#4B5563;line-height:1.55; }
+
+    /* 2-column summary (Año 1 vs Año 2+) */
+    .roi-summary-two { display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px; }
+    .roi-summary-col { background:rgba(255,255,255,0.10);border-radius:var(--r-sm);padding:14px 16px; }
+    .roi-summary-col .rsc-head { font-size:11px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.95);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.18); }
+    .roi-summary-col .roi-summary-grid { grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0; }
+    .roi-summary-col .roi-summary-grid > div { padding:12px 8px;background:rgba(255,255,255,0.15); }
+    .roi-summary-col .roi-cell-value { font-size:20px; }
+    .roi-summary-col .roi-cell-label { font-size:9px;margin-bottom:6px; }
+    .roi-summary-col .roi-cell-unit { font-size:9px;margin-top:4px; }
+    @media (max-width: 860px) {
+      .roi-ramp-timeline { grid-template-columns:1fr; }
+      .roi-summary-two { grid-template-columns:1fr; }
+    }
+
     /* ── ETAPAS (form en generador) ── */
     .stage-row { background:#FFFFFF;border:1px solid #C7D2FE;border-radius:8px;padding:10px 12px;margin-bottom:8px;color:#1F2937; }
     .stage-row .stage-row-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; }
@@ -935,12 +983,34 @@
             </div>
           </div>
 
+          <!-- Ramp-up (periodo de adopción) -->
+          <div class="roi-driver" style="background:#FFFBEB">
+            <div class="roi-driver-head" style="cursor:default">
+              <strong>Ramp-up de adopción</strong> <span class="roi-mini">— modela cuándo se materializan los ahorros (Plan 90 días)</span>
+            </div>
+            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
+              <div>
+                <label>Meses de implementación (0% del ahorro)</label>
+                <input type="number" id="roi-impl-months" value="3" min="0" max="12" step="1" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Meses de estabilización (50% del ahorro)</label>
+                <input type="number" id="roi-stab-months" value="3" min="0" max="12" step="1" oninput="updateROIPreview()" />
+              </div>
+            </div>
+            <div style="font-size:10px;color:#92400E;margin-top:4px">💡 El resto del año corre al 100%. Año 2+ siempre asume estado estable.</div>
+          </div>
+
           <div class="roi-preview" id="roi-preview">
-            <div class="roi-preview-row"><span>Costo oculto anual:</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
+            <div class="roi-preview-row"><span>Costo oculto anual (full):</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
             <div class="roi-preview-row"><span>Inversión Birdie (año 1):</span><strong id="roi-prev-invest">$0 MXN</strong></div>
-            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:4px;padding-top:6px"><span>Ahorro neto:</span><strong id="roi-prev-saving">$0 MXN</strong></div>
-            <div class="roi-preview-row"><span>ROI:</span><strong id="roi-prev-roi">0%</strong></div>
-            <div class="roi-preview-row"><span>Payback:</span><strong id="roi-prev-payback">— meses</strong></div>
+            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:6px;padding-top:6px;font-weight:700;color:#78350F"><span>AÑO 1 (con ramp-up)</span><span></span></div>
+            <div class="roi-preview-row"><span>Ahorro neto año 1:</span><strong id="roi-prev-saving-y1">$0 MXN</strong></div>
+            <div class="roi-preview-row"><span>ROI año 1:</span><strong id="roi-prev-roi-y1">0%</strong></div>
+            <div class="roi-preview-row"><span>Payback real:</span><strong id="roi-prev-payback">— meses</strong></div>
+            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:6px;padding-top:6px;font-weight:700;color:#78350F"><span>AÑO 2 EN ADELANTE</span><span></span></div>
+            <div class="roi-preview-row"><span>Ahorro neto año 2+:</span><strong id="roi-prev-saving-y2">$0 MXN</strong></div>
+            <div class="roi-preview-row"><span>ROI año 2+:</span><strong id="roi-prev-roi-y2">0%</strong></div>
           </div>
           <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Ajusta los drivers que apliquen al cliente. Solo los activados se mostrarán en la propuesta.</div>
         </div>
@@ -1381,27 +1451,76 @@
     <div id="t-roi" class="section-tab tx-only no-roi">
       <div class="sec-tag" id="roi-tag">VALOR</div>
       <h1 class="sec-title" id="roi-title">Retorno de Inversión</h1>
-      <p class="sec-body" id="roi-intro">Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita en tu operación, comparados contra la inversión total del primer año.</p>
+      <p class="sec-body" id="roi-intro">Cuantificamos el costo de no tener Birdie. El ROI se modela con un ramp-up realista de adopción: la implementación ocurre en los primeros meses, la estabilización después, y el ahorro pleno arranca cuando Birdie es la operación cotidiana.</p>
       <div class="roi-drivers" id="roi-drivers-container"></div>
+
+      <!-- Ramp-up timeline -->
+      <h3 id="roi-ramp-title" class="roi-ramp-title">Ramp-up esperado de adopción</h3>
+      <div class="roi-ramp-timeline">
+        <div class="roi-ramp-phase roi-ramp-impl">
+          <div class="rrp-label" id="roi-ramp-impl-label">FASE 1 · IMPLEMENTACIÓN</div>
+          <div class="rrp-months"><span id="roi-ramp-impl-m">3</span> <span id="roi-ramp-impl-mu">meses</span></div>
+          <div class="rrp-pct">0% del ahorro</div>
+          <div class="rrp-desc" id="roi-ramp-impl-desc">El equipo se capacita y sube la operación a Birdie; la operación previa sigue activa en paralelo.</div>
+        </div>
+        <div class="roi-ramp-phase roi-ramp-stab">
+          <div class="rrp-label" id="roi-ramp-stab-label">FASE 2 · ESTABILIZACIÓN</div>
+          <div class="rrp-months"><span id="roi-ramp-stab-m">3</span> <span id="roi-ramp-stab-mu">meses</span></div>
+          <div class="rrp-pct">50% del ahorro</div>
+          <div class="rrp-desc" id="roi-ramp-stab-desc">Adopción parcial mientras se consolidan prácticas y se calibran procesos.</div>
+        </div>
+        <div class="roi-ramp-phase roi-ramp-full">
+          <div class="rrp-label" id="roi-ramp-full-label">FASE 3 · OPERACIÓN PLENA</div>
+          <div class="rrp-months"><span id="roi-ramp-full-m">6</span> <span id="roi-ramp-full-mu">meses</span></div>
+          <div class="rrp-pct">100% del ahorro</div>
+          <div class="rrp-desc" id="roi-ramp-full-desc">Birdie es la operación cotidiana — los beneficios se materializan completos.</div>
+        </div>
+      </div>
+
       <div class="roi-summary">
-        <div class="roi-summary-line"><span id="roi-line-hidden-label">Costo oculto anual total</span><strong>$<span id="roi-out-hidden">0</span> MXN</strong></div>
+        <div class="roi-summary-line"><span id="roi-line-hidden-label">Costo oculto anual (full)</span><strong>$<span id="roi-out-hidden">0</span> MXN</strong></div>
         <div class="roi-summary-line"><span id="roi-line-invest-label">Inversión Birdie (año 1)</span><strong>$<span id="roi-out-invest">0</span> MXN</strong></div>
         <div class="roi-summary-divider"></div>
-        <div class="roi-summary-grid">
-          <div>
-            <div class="roi-cell-label" id="roi-cell-saving-label">Ahorro neto</div>
-            <div class="roi-cell-value">$<span id="roi-out-saving">0</span></div>
-            <div class="roi-cell-unit" id="roi-cell-saving-unit">MXN / año</div>
+        <div class="roi-summary-two">
+          <div class="roi-summary-col">
+            <div class="rsc-head" id="roi-y1-head">AÑO 1 (con ramp-up)</div>
+            <div class="roi-summary-grid">
+              <div>
+                <div class="roi-cell-label" id="roi-cell-saving-label">Ahorro neto</div>
+                <div class="roi-cell-value">$<span id="roi-out-saving-y1">0</span></div>
+                <div class="roi-cell-unit" id="roi-cell-saving-unit">MXN / año</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="roi-cell-roi-label">ROI</div>
+                <div class="roi-cell-value"><span id="roi-out-roi-y1">0</span>%</div>
+                <div class="roi-cell-unit" id="roi-cell-roi-unit">retorno año 1</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="roi-cell-payback-label">Payback</div>
+                <div class="roi-cell-value"><span id="roi-out-payback">—</span></div>
+                <div class="roi-cell-unit" id="roi-cell-payback-unit">meses</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div class="roi-cell-label" id="roi-cell-roi-label">ROI</div>
-            <div class="roi-cell-value"><span id="roi-out-roi">0</span>%</div>
-            <div class="roi-cell-unit" id="roi-cell-roi-unit">retorno anual</div>
-          </div>
-          <div>
-            <div class="roi-cell-label" id="roi-cell-payback-label">Payback</div>
-            <div class="roi-cell-value"><span id="roi-out-payback">—</span></div>
-            <div class="roi-cell-unit" id="roi-cell-payback-unit">meses</div>
+          <div class="roi-summary-col">
+            <div class="rsc-head" id="roi-y2-head">AÑO 2 EN ADELANTE (estado estable)</div>
+            <div class="roi-summary-grid">
+              <div>
+                <div class="roi-cell-label" id="roi-cell-saving-y2-label">Ahorro neto</div>
+                <div class="roi-cell-value">$<span id="roi-out-saving-y2">0</span></div>
+                <div class="roi-cell-unit" id="roi-cell-saving-y2-unit">MXN / año</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="roi-cell-roi-y2-label">ROI</div>
+                <div class="roi-cell-value"><span id="roi-out-roi-y2">0</span>%</div>
+                <div class="roi-cell-unit" id="roi-cell-roi-y2-unit">retorno anual</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="roi-cell-rec-label">Recurrente</div>
+                <div class="roi-cell-value">✓</div>
+                <div class="roi-cell-unit" id="roi-cell-rec-unit">cada año</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1786,27 +1905,75 @@
           <div class="sec-tag" id="er-tag">VALOR</div>
           <h1 class="sec-title" id="er-title">Retorno de Inversión</h1>
         </div>      </div>
-      <p class="sec-body" id="er-intro">Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita, comparados contra la inversión total del primer año.</p>
+      <p class="sec-body" id="er-intro">Cuantificamos el costo de no tener Birdie. El ROI se modela con un ramp-up realista de adopción: la implementación ocurre en los primeros meses, la estabilización después, y el ahorro pleno arranca cuando Birdie es la operación cotidiana.</p>
       <div class="roi-drivers" id="ent-roi-drivers-container"></div>
+
+      <h3 id="er-ramp-title" class="roi-ramp-title">Ramp-up esperado de adopción</h3>
+      <div class="roi-ramp-timeline">
+        <div class="roi-ramp-phase roi-ramp-impl">
+          <div class="rrp-label" id="er-ramp-impl-label">FASE 1 · IMPLEMENTACIÓN</div>
+          <div class="rrp-months"><span id="er-ramp-impl-m">3</span> <span id="er-ramp-impl-mu">meses</span></div>
+          <div class="rrp-pct">0% del ahorro</div>
+          <div class="rrp-desc" id="er-ramp-impl-desc">El equipo se capacita y sube la operación a Birdie; la operación previa sigue activa en paralelo.</div>
+        </div>
+        <div class="roi-ramp-phase roi-ramp-stab">
+          <div class="rrp-label" id="er-ramp-stab-label">FASE 2 · ESTABILIZACIÓN</div>
+          <div class="rrp-months"><span id="er-ramp-stab-m">3</span> <span id="er-ramp-stab-mu">meses</span></div>
+          <div class="rrp-pct">50% del ahorro</div>
+          <div class="rrp-desc" id="er-ramp-stab-desc">Adopción parcial mientras se consolidan prácticas y se calibran procesos.</div>
+        </div>
+        <div class="roi-ramp-phase roi-ramp-full">
+          <div class="rrp-label" id="er-ramp-full-label">FASE 3 · OPERACIÓN PLENA</div>
+          <div class="rrp-months"><span id="er-ramp-full-m">6</span> <span id="er-ramp-full-mu">meses</span></div>
+          <div class="rrp-pct">100% del ahorro</div>
+          <div class="rrp-desc" id="er-ramp-full-desc">Birdie es la operación cotidiana — los beneficios se materializan completos.</div>
+        </div>
+      </div>
+
       <div class="roi-summary">
-        <div class="roi-summary-line"><span id="er-line-hidden-label">Costo oculto anual total</span><strong>$<span id="ent-roi-out-hidden">0</span> MXN</strong></div>
+        <div class="roi-summary-line"><span id="er-line-hidden-label">Costo oculto anual (full)</span><strong>$<span id="ent-roi-out-hidden">0</span> MXN</strong></div>
         <div class="roi-summary-line"><span id="er-line-invest-label">Inversión Birdie (año 1)</span><strong>$<span id="ent-roi-out-invest">0</span> MXN</strong></div>
         <div class="roi-summary-divider"></div>
-        <div class="roi-summary-grid">
-          <div>
-            <div class="roi-cell-label" id="er-cell-saving-label">Ahorro neto</div>
-            <div class="roi-cell-value">$<span id="ent-roi-out-saving">0</span></div>
-            <div class="roi-cell-unit" id="er-cell-saving-unit">MXN / año</div>
+        <div class="roi-summary-two">
+          <div class="roi-summary-col">
+            <div class="rsc-head" id="er-y1-head">AÑO 1 (con ramp-up)</div>
+            <div class="roi-summary-grid">
+              <div>
+                <div class="roi-cell-label" id="er-cell-saving-label">Ahorro neto</div>
+                <div class="roi-cell-value">$<span id="ent-roi-out-saving-y1">0</span></div>
+                <div class="roi-cell-unit" id="er-cell-saving-unit">MXN / año</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="er-cell-roi-label">ROI</div>
+                <div class="roi-cell-value"><span id="ent-roi-out-roi-y1">0</span>%</div>
+                <div class="roi-cell-unit" id="er-cell-roi-unit">retorno año 1</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="er-cell-payback-label">Payback</div>
+                <div class="roi-cell-value"><span id="ent-roi-out-payback">—</span></div>
+                <div class="roi-cell-unit" id="er-cell-payback-unit">meses</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div class="roi-cell-label" id="er-cell-roi-label">ROI</div>
-            <div class="roi-cell-value"><span id="ent-roi-out-roi">0</span>%</div>
-            <div class="roi-cell-unit" id="er-cell-roi-unit">retorno anual</div>
-          </div>
-          <div>
-            <div class="roi-cell-label" id="er-cell-payback-label">Payback</div>
-            <div class="roi-cell-value"><span id="ent-roi-out-payback">—</span></div>
-            <div class="roi-cell-unit" id="er-cell-payback-unit">meses</div>
+          <div class="roi-summary-col">
+            <div class="rsc-head" id="er-y2-head">AÑO 2 EN ADELANTE (estado estable)</div>
+            <div class="roi-summary-grid">
+              <div>
+                <div class="roi-cell-label" id="er-cell-saving-y2-label">Ahorro neto</div>
+                <div class="roi-cell-value">$<span id="ent-roi-out-saving-y2">0</span></div>
+                <div class="roi-cell-unit" id="er-cell-saving-y2-unit">MXN / año</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="er-cell-roi-y2-label">ROI</div>
+                <div class="roi-cell-value"><span id="ent-roi-out-roi-y2">0</span>%</div>
+                <div class="roi-cell-unit" id="er-cell-roi-y2-unit">retorno anual</div>
+              </div>
+              <div>
+                <div class="roi-cell-label" id="er-cell-rec-label">Recurrente</div>
+                <div class="roi-cell-value">✓</div>
+                <div class="roi-cell-unit" id="er-cell-rec-unit">cada año</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2113,6 +2280,10 @@ function collectROIFromForm() {
     d1: { on: ck('roi-d1'), collab: num('roi-d1-collab', 0), salary: num('roi-d1-salary', 0), pctManual: num('roi-d1-pctmanual', 0), pctRecovered: num('roi-d1-pctrecovered', 0) },
     d2: { on: ck('roi-d2'), monthly: num('roi-d2-monthly', 0), pctRecovery: num('roi-d2-pctrecovery', 0) },
     d3: { on: ck('roi-d3'), fines: num('roi-d3-fines', 0) },
+    ramp: {
+      implMonths: Math.max(0, Math.min(12, num('roi-impl-months', 3) || 0)),
+      stabMonths: Math.max(0, Math.min(12, num('roi-stab-months', 3) || 0)),
+    },
   };
 }
 
@@ -2149,11 +2320,72 @@ function calcROI(roi, investmentMXN) {
   const d3 = (roi.d3 && roi.d3.on) ? (roi.d3.fines || 0) : 0;
 
   const hidden = d1 + d2 + d3;
-  const saving = hidden - investmentMXN;
-  const roiPct = investmentMXN > 0 ? (saving / investmentMXN) * 100 : 0;
-  const monthlyHidden = hidden / 12;
-  const payback = monthlyHidden > 0 ? (investmentMXN / monthlyHidden) : null;
-  return { d1, d2, d3, hidden, investmentMXN, saving, roiPct, payback };
+  const monthlyFull = hidden / 12;
+
+  // Ramp model: months 1..implMonths → 0% ; next stabMonths → 50% ; rest of year → 100%.
+  // Default 3+3 to align with the documented 90-day implementation plan + 3 months of
+  // operational stabilization before the team is fully on Birdie.
+  const ramp = roi.ramp || {};
+  let implMonths = Math.max(0, Math.min(12, Number(ramp.implMonths != null ? ramp.implMonths : 3) || 0));
+  let stabMonths = Math.max(0, Math.min(12, Number(ramp.stabMonths != null ? ramp.stabMonths : 3) || 0));
+  if (implMonths + stabMonths > 12) {
+    // Clamp so the two phases never overflow year 1.
+    stabMonths = Math.max(0, 12 - implMonths);
+  }
+  const fullMonths = Math.max(0, 12 - implMonths - stabMonths);
+
+  // Year 1 savings = sum of monthly savings across the 3 phases.
+  const savingY1 = monthlyFull * (0 * implMonths + 0.5 * stabMonths + 1 * fullMonths);
+  // Year 2+ steady state = the full annual hidden cost.
+  const savingY2 = hidden;
+
+  // Net & ROI year 1 (subtract investment which includes implementation fee).
+  const netY1   = savingY1 - investmentMXN;
+  const roiPctY1 = investmentMXN > 0 ? (netY1 / investmentMXN) * 100 : 0;
+
+  // Year 2+ assumes no implementation cost — only the annual subscription portion would
+  // recur. For ROI Y2 we keep the original investmentMXN as the reference base so the
+  // comparison is consistent (it represents total year-1 investment that needs to keep
+  // generating value beyond year 1).
+  const netY2   = savingY2 - investmentMXN;
+  const roiPctY2 = investmentMXN > 0 ? (netY2 / investmentMXN) * 100 : 0;
+
+  // Realistic payback: simulate month-by-month cumulative savings until we cross the
+  // investment threshold. Cap simulation at 48 months for sanity.
+  let payback = null;
+  if (investmentMXN > 0 && monthlyFull > 0) {
+    let cumulative = 0;
+    for (let m = 1; m <= 48; m++) {
+      let monthlyRate;
+      if (m <= implMonths) monthlyRate = 0;
+      else if (m <= implMonths + stabMonths) monthlyRate = 0.5;
+      else monthlyRate = 1.0;
+      cumulative += monthlyFull * monthlyRate;
+      if (cumulative >= investmentMXN) {
+        // Interpolate within the month so payback can be fractional.
+        const prev = cumulative - monthlyFull * monthlyRate;
+        const need = investmentMXN - prev;
+        const frac = (monthlyFull * monthlyRate) > 0 ? need / (monthlyFull * monthlyRate) : 1;
+        payback = (m - 1) + frac;
+        break;
+      }
+    }
+    if (payback == null) payback = null; // never breaks even within 48 months
+  }
+
+  // Legacy fields preserved for backward compatibility with any external code path.
+  const saving = netY1;
+  const roiPct = roiPctY1;
+
+  return {
+    d1, d2, d3, hidden,
+    investmentMXN,
+    implMonths, stabMonths, fullMonths,
+    savingY1, netY1, roiPctY1,
+    savingY2, netY2, roiPctY2,
+    payback,
+    saving, roiPct,
+  };
 }
 
 // Build a localized formula breakdown string for each ROI driver, handling both
@@ -2213,12 +2445,14 @@ function updateROIPreview() {
   const investmentUSD = getInvestmentUSDFromForm();
   const investmentMXN = investmentUSD * roi.fx;
   const r = calcROI(roi, investmentMXN);
-  document.getElementById('roi-prev-hidden').textContent  = fmtMXN(r.hidden);
-  document.getElementById('roi-prev-invest').textContent  = fmtMXN(r.investmentMXN);
-  document.getElementById('roi-prev-saving').textContent  = fmtMXN(r.saving);
-  document.getElementById('roi-prev-roi').textContent     = Math.round(r.roiPct) + '%';
-  document.getElementById('roi-prev-payback').textContent = (r.payback != null && isFinite(r.payback))
-    ? r.payback.toFixed(1) + ' meses' : '— meses';
+  document.getElementById('roi-prev-hidden').textContent     = fmtMXN(r.hidden);
+  document.getElementById('roi-prev-invest').textContent     = fmtMXN(r.investmentMXN);
+  document.getElementById('roi-prev-saving-y1').textContent  = fmtMXN(r.netY1);
+  document.getElementById('roi-prev-roi-y1').textContent     = Math.round(r.roiPctY1) + '%';
+  document.getElementById('roi-prev-saving-y2').textContent  = fmtMXN(r.netY2);
+  document.getElementById('roi-prev-roi-y2').textContent     = Math.round(r.roiPctY2) + '%';
+  document.getElementById('roi-prev-payback').textContent    = (r.payback != null && isFinite(r.payback))
+    ? r.payback.toFixed(1) + ' meses' : '> 48 meses';
 }
 
 // ── ETAPAS DE IMPLEMENTACIÓN (form) ────────────────────────────────────────────
@@ -2700,11 +2934,19 @@ function renderROIProposal(d, roi) {
     }).join('');
   }
 
-  document.getElementById('roi-out-hidden').textContent  = fmtNum(r.hidden);
-  document.getElementById('roi-out-invest').textContent  = fmtNum(r.investmentMXN);
-  document.getElementById('roi-out-saving').textContent  = fmtNum(r.saving);
-  document.getElementById('roi-out-roi').textContent     = Math.round(r.roiPct);
-  document.getElementById('roi-out-payback').textContent = (r.payback != null && isFinite(r.payback)) ? r.payback.toFixed(1) : '—';
+  document.getElementById('roi-out-hidden').textContent      = fmtNum(r.hidden);
+  document.getElementById('roi-out-invest').textContent      = fmtNum(r.investmentMXN);
+  document.getElementById('roi-out-saving-y1').textContent   = fmtNum(r.netY1);
+  document.getElementById('roi-out-roi-y1').textContent      = Math.round(r.roiPctY1);
+  document.getElementById('roi-out-saving-y2').textContent   = fmtNum(r.netY2);
+  document.getElementById('roi-out-roi-y2').textContent      = Math.round(r.roiPctY2);
+  document.getElementById('roi-out-payback').textContent     = (r.payback != null && isFinite(r.payback)) ? r.payback.toFixed(1) : '> 48';
+
+  // Ramp timeline phase month labels
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTxt('roi-ramp-impl-m', r.implMonths);
+  setTxt('roi-ramp-stab-m', r.stabMonths);
+  setTxt('roi-ramp-full-m', r.fullMonths);
 }
 
 function renderStagesProposal(items) {
@@ -3429,11 +3671,19 @@ function renderEntROIProposal(d, roi) {
       </div>
     `).join('');
   }
-  document.getElementById('ent-roi-out-hidden').textContent  = fmtN(r.hidden);
-  document.getElementById('ent-roi-out-invest').textContent  = fmtN(r.investmentMXN);
-  document.getElementById('ent-roi-out-saving').textContent  = fmtN(r.saving);
-  document.getElementById('ent-roi-out-roi').textContent     = Math.round(r.roiPct);
-  document.getElementById('ent-roi-out-payback').textContent = (r.payback != null && isFinite(r.payback)) ? r.payback.toFixed(1) : '—';
+  document.getElementById('ent-roi-out-hidden').textContent      = fmtN(r.hidden);
+  document.getElementById('ent-roi-out-invest').textContent      = fmtN(r.investmentMXN);
+  document.getElementById('ent-roi-out-saving-y1').textContent   = fmtN(r.netY1);
+  document.getElementById('ent-roi-out-roi-y1').textContent      = Math.round(r.roiPctY1);
+  document.getElementById('ent-roi-out-saving-y2').textContent   = fmtN(r.netY2);
+  document.getElementById('ent-roi-out-roi-y2').textContent      = Math.round(r.roiPctY2);
+  document.getElementById('ent-roi-out-payback').textContent     = (r.payback != null && isFinite(r.payback)) ? r.payback.toFixed(1) : '> 48';
+
+  // Ramp timeline phase month labels (Enterprise IDs)
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTxt('er-ramp-impl-m', r.implMonths);
+  setTxt('er-ramp-stab-m', r.stabMonths);
+  setTxt('er-ramp-full-m', r.fullMonths);
 }
 
 // Commercial tab: clone of pricing from t-proposal, with own IDs
@@ -3506,9 +3756,26 @@ function applyEnterpriseEnglish(d) {
   t('er-tag','VALUE'); t('er-title','Return on Investment');
   t('er-intro','We quantify the cost of not having Birdie. These are the annual operational savings the platform enables, compared against your year-1 total investment.');
   t('er-line-hidden-label','Total annual hidden cost'); t('er-line-invest-label','Birdie investment (year 1)');
+  t('er-line-hidden-label','Total annual hidden cost (full)');
+  t('er-line-invest-label','Birdie investment (year 1)');
+  t('er-ramp-title','Expected adoption ramp-up');
+  t('er-ramp-impl-label','PHASE 1 · IMPLEMENTATION');
+  t('er-ramp-impl-mu','months');
+  t('er-ramp-impl-desc','The team is trained and the operation is migrated to Birdie; the previous operation stays active in parallel.');
+  t('er-ramp-stab-label','PHASE 2 · STABILIZATION');
+  t('er-ramp-stab-mu','months');
+  t('er-ramp-stab-desc','Partial adoption while practices consolidate and processes get calibrated.');
+  t('er-ramp-full-label','PHASE 3 · FULL OPERATION');
+  t('er-ramp-full-mu','months');
+  t('er-ramp-full-desc','Birdie becomes the daily operation — benefits materialize at full capacity.');
+  t('er-y1-head','YEAR 1 (with ramp-up)');
+  t('er-y2-head','YEAR 2 ONWARDS (steady state)');
   t('er-cell-saving-label','Net savings'); t('er-cell-saving-unit','MXN / year');
-  t('er-cell-roi-label','ROI'); t('er-cell-roi-unit','annual return');
+  t('er-cell-roi-label','ROI'); t('er-cell-roi-unit','year-1 return');
   t('er-cell-payback-label','Payback'); t('er-cell-payback-unit','months');
+  t('er-cell-saving-y2-label','Net savings'); t('er-cell-saving-y2-unit','MXN / year');
+  t('er-cell-roi-y2-label','ROI'); t('er-cell-roi-y2-unit','annual return');
+  t('er-cell-rec-label','Recurring'); t('er-cell-rec-unit','every year');
 
   t('ec-tag','PROPOSAL'); t('ec-intro','Based on your operating volume, we have designed the following investment proposal.');
   t('ec-hero-title','Investment Summary'); t('ec-hero-sub','Choose the billing modality that best fits your company');
@@ -3563,9 +3830,26 @@ function applyEnterpriseSpanish(d) {
   t('er-tag','VALOR'); t('er-title','Retorno de Inversión');
   t('er-intro','Cuantificamos el costo de no tener Birdie. Estos son los ahorros operativos anuales que la plataforma habilita, comparados contra la inversión total del primer año.');
   t('er-line-hidden-label','Costo oculto anual total'); t('er-line-invest-label','Inversión Birdie (año 1)');
+  t('er-line-hidden-label','Costo oculto anual (full)');
+  t('er-line-invest-label','Inversión Birdie (año 1)');
+  t('er-ramp-title','Ramp-up esperado de adopción');
+  t('er-ramp-impl-label','FASE 1 · IMPLEMENTACIÓN');
+  t('er-ramp-impl-mu','meses');
+  t('er-ramp-impl-desc','El equipo se capacita y sube la operación a Birdie; la operación previa sigue activa en paralelo.');
+  t('er-ramp-stab-label','FASE 2 · ESTABILIZACIÓN');
+  t('er-ramp-stab-mu','meses');
+  t('er-ramp-stab-desc','Adopción parcial mientras se consolidan prácticas y se calibran procesos.');
+  t('er-ramp-full-label','FASE 3 · OPERACIÓN PLENA');
+  t('er-ramp-full-mu','meses');
+  t('er-ramp-full-desc','Birdie es la operación cotidiana — los beneficios se materializan completos.');
+  t('er-y1-head','AÑO 1 (con ramp-up)');
+  t('er-y2-head','AÑO 2 EN ADELANTE (estado estable)');
   t('er-cell-saving-label','Ahorro neto'); t('er-cell-saving-unit','MXN / año');
-  t('er-cell-roi-label','ROI'); t('er-cell-roi-unit','retorno anual');
+  t('er-cell-roi-label','ROI'); t('er-cell-roi-unit','retorno año 1');
   t('er-cell-payback-label','Payback'); t('er-cell-payback-unit','meses');
+  t('er-cell-saving-y2-label','Ahorro neto'); t('er-cell-saving-y2-unit','MXN / año');
+  t('er-cell-roi-y2-label','ROI'); t('er-cell-roi-y2-unit','retorno anual');
+  t('er-cell-rec-label','Recurrente'); t('er-cell-rec-unit','cada año');
 
   t('ec-tag','COTIZACIÓN'); t('ec-intro','Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.');
   t('ec-hero-title','Resumen de Inversión'); t('ec-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
