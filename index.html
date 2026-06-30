@@ -883,40 +883,40 @@
               <input type="checkbox" id="roi-d1" checked onchange="updateROIPreview()" />
               <strong>1. Tiempo manual</strong> <span class="roi-mini">— horas-hombre liberadas al automatizar</span>
             </label>
-            <div class="roi-inputs">
+            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
               <div>
-                <label>Horas / mes</label>
-                <input type="number" id="roi-d1-hours" value="40" min="0" step="1" oninput="updateROIPreview()" />
+                <label># Colaboradores</label>
+                <input type="number" id="roi-d1-collab" value="3" min="0" step="1" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>Costo/hora (MXN)</label>
-                <input type="number" id="roi-d1-cost" value="150" min="0" step="10" oninput="updateROIPreview()" />
+                <label>Salario mensual cargado (MXN)</label>
+                <input type="number" id="roi-d1-salary" value="25000" min="0" step="1000" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>% recuperado</label>
-                <input type="number" id="roi-d1-pct" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
+                <label>% tiempo en tareas manuales</label>
+                <input type="number" id="roi-d1-pctmanual" value="40" min="0" max="100" step="5" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>% recuperado con Birdie</label>
+                <input type="number" id="roi-d1-pctrecovered" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
               </div>
             </div>
           </div>
 
-          <!-- Driver 2: Demurrage -->
+          <!-- Driver 2: Demurrage / Detention evitable -->
           <div class="roi-driver">
             <label class="roi-driver-head">
               <input type="checkbox" id="roi-d2" onchange="updateROIPreview()" />
-              <strong>2. Demurrage</strong> <span class="roi-mini">— días extra en puerto evitables</span>
+              <strong>2. Demurrage</strong> <span class="roi-mini">— costo evitable de días extra en puerto</span>
             </label>
-            <div class="roi-inputs">
+            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
               <div>
-                <label>Conts. afectados / mes</label>
-                <input type="number" id="roi-d2-cont" value="0" min="0" step="1" oninput="updateROIPreview()" />
+                <label>Costo promedio mensual pagado (MXN)</label>
+                <input type="number" id="roi-d2-monthly" value="0" min="0" step="1000" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>Días evitables</label>
-                <input type="number" id="roi-d2-days" value="2" min="0" step="0.5" oninput="updateROIPreview()" />
-              </div>
-              <div>
-                <label>Costo USD / día</label>
-                <input type="number" id="roi-d2-rate" value="120" min="0" step="10" oninput="updateROIPreview()" />
+                <label>% posible de recuperación</label>
+                <input type="number" id="roi-d2-pctrecovery" value="60" min="0" max="100" step="5" oninput="updateROIPreview()" />
               </div>
             </div>
           </div>
@@ -2110,23 +2110,86 @@ function collectROIFromForm() {
   return {
     on: ck('roi-toggle'),
     fx: num('roi-fx', 18),
-    d1: { on: ck('roi-d1'), hours: num('roi-d1-hours', 0), cost: num('roi-d1-cost', 0), pct: num('roi-d1-pct', 0) },
-    d2: { on: ck('roi-d2'), cont:  num('roi-d2-cont', 0),  days: num('roi-d2-days', 0), rate: num('roi-d2-rate', 0) },
+    d1: { on: ck('roi-d1'), collab: num('roi-d1-collab', 0), salary: num('roi-d1-salary', 0), pctManual: num('roi-d1-pctmanual', 0), pctRecovered: num('roi-d1-pctrecovered', 0) },
+    d2: { on: ck('roi-d2'), monthly: num('roi-d2-monthly', 0), pctRecovery: num('roi-d2-pctrecovery', 0) },
     d3: { on: ck('roi-d3'), fines: num('roi-d3-fines', 0) },
   };
 }
 
 function calcROI(roi, investmentMXN) {
   const fx = roi.fx > 0 ? roi.fx : 18;
-  const d1 = (roi.d1 && roi.d1.on) ? (roi.d1.hours * roi.d1.cost * (roi.d1.pct / 100) * 12) : 0;
-  const d2 = (roi.d2 && roi.d2.on) ? (roi.d2.cont  * roi.d2.days * (roi.d2.rate * fx) * 12)   : 0;
-  const d3 = (roi.d3 && roi.d3.on) ? (roi.d3.fines)                                            : 0;
+
+  // D1 — Tiempo manual recuperado.
+  // New model: colaboradores × salario mensual × %tiempo manual × %recuperado × 12.
+  // Legacy model (payloads pre-2026-06): horas × costo/hr × % × 12. Detect via presence of `collab`.
+  let d1 = 0;
+  if (roi.d1 && roi.d1.on) {
+    if (roi.d1.collab != null || roi.d1.salary != null || roi.d1.pctManual != null) {
+      d1 = (roi.d1.collab || 0) * (roi.d1.salary || 0)
+           * ((roi.d1.pctManual || 0) / 100)
+           * ((roi.d1.pctRecovered || 0) / 100) * 12;
+    } else {
+      d1 = (roi.d1.hours || 0) * (roi.d1.cost || 0) * ((roi.d1.pct || 0) / 100) * 12;
+    }
+  }
+
+  // D2 — Demurrage evitable.
+  // New model: costo mensual MXN × %recuperación × 12.
+  // Legacy model: contenedores × días × USD/día × FX × 12. Detect via presence of `monthly`.
+  let d2 = 0;
+  if (roi.d2 && roi.d2.on) {
+    if (roi.d2.monthly != null || roi.d2.pctRecovery != null) {
+      d2 = (roi.d2.monthly || 0) * ((roi.d2.pctRecovery || 0) / 100) * 12;
+    } else {
+      d2 = (roi.d2.cont || 0) * (roi.d2.days || 0) * ((roi.d2.rate || 0) * fx) * 12;
+    }
+  }
+
+  // D3 — Cumplimiento (sin cambios).
+  const d3 = (roi.d3 && roi.d3.on) ? (roi.d3.fines || 0) : 0;
+
   const hidden = d1 + d2 + d3;
   const saving = hidden - investmentMXN;
   const roiPct = investmentMXN > 0 ? (saving / investmentMXN) * 100 : 0;
   const monthlyHidden = hidden / 12;
   const payback = monthlyHidden > 0 ? (investmentMXN / monthlyHidden) : null;
   return { d1, d2, d3, hidden, investmentMXN, saving, roiPct, payback };
+}
+
+// Build a localized formula breakdown string for each ROI driver, handling both
+// the new payload shape (D1: collab/salary/pctManual/pctRecovered; D2: monthly/pctRecovery)
+// and the legacy shape (D1: hours/cost/pct; D2: cont/days/rate). Returns '' when off.
+function fmtROIFormula(roi, driver, lang) {
+  const en = lang === 'en';
+  const fmt = n => Math.round(Number(n) || 0).toLocaleString(en ? 'en-US' : 'es-MX');
+  const fx  = roi && roi.fx > 0 ? roi.fx : 18;
+  if (driver === 'd1') {
+    const d = roi && roi.d1;
+    if (!d || !d.on) return '';
+    if (d.collab != null || d.salary != null || d.pctManual != null) {
+      return (d.collab || 0) + (en ? ' collaborators' : ' colaboradores')
+           + ' × $' + fmt(d.salary || 0) + (en ? ' MXN/mo' : ' MXN/mes')
+           + ' × ' + (d.pctManual || 0) + '%' + (en ? ' manual' : ' manual')
+           + ' × ' + (d.pctRecovered || 0) + '%' + (en ? ' recovered' : ' recuperado')
+           + ' × 12';
+    }
+    return (d.hours || 0) + (en ? ' hrs/mo' : ' hrs/mes')
+         + ' × $' + fmt(d.cost || 0) + ' MXN/hr'
+         + ' × ' + (d.pct || 0) + '% × 12';
+  }
+  if (driver === 'd2') {
+    const d = roi && roi.d2;
+    if (!d || !d.on) return '';
+    if (d.monthly != null || d.pctRecovery != null) {
+      return '$' + fmt(d.monthly || 0) + (en ? ' MXN/mo' : ' MXN/mes')
+           + ' × ' + (d.pctRecovery || 0) + '%' + (en ? ' recovery' : ' recuperación')
+           + ' × 12';
+    }
+    return (d.cont || 0) + (en ? ' containers/mo' : ' conts./mes')
+         + ' × ' + (d.days || 0) + (en ? ' days' : ' días')
+         + ' × ($' + fmt(d.rate || 0) + ' USD × ' + fx + ' FX) × 12';
+  }
+  return '';
 }
 
 function getInvestmentUSDFromForm() {
@@ -2586,9 +2649,7 @@ function renderROIProposal(d, roi) {
   if (roi.d1 && roi.d1.on) {
     driverDefs.push({
       title: en ? 'Manual time recovered' : 'Tiempo manual recuperado',
-      formula: (roi.d1.hours) + (en ? ' hrs/mo' : ' hrs/mes') +
-               ' × $' + fmtNum(roi.d1.cost) + ' MXN/' + (en ? 'hr' : 'hr') +
-               ' × ' + roi.d1.pct + '% × 12',
+      formula: fmtROIFormula(roi, 'd1', en ? 'en' : 'es'),
       value: r.d1,
       unit: en ? 'MXN / year' : 'MXN / año',
       note: en
@@ -2599,9 +2660,7 @@ function renderROIProposal(d, roi) {
   if (roi.d2 && roi.d2.on) {
     driverDefs.push({
       title: en ? 'Demurrage avoided' : 'Demurrage evitado',
-      formula: roi.d2.cont + (en ? ' containers/mo' : ' conts./mes') +
-               ' × ' + roi.d2.days + (en ? ' days' : ' días') +
-               ' × ($' + fmtNum(roi.d2.rate) + ' USD × ' + fx + ' FX) × 12',
+      formula: fmtROIFormula(roi, 'd2', en ? 'en' : 'es'),
       value: r.d2,
       unit: en ? 'MXN / year' : 'MXN / año',
       note: en
@@ -3340,13 +3399,13 @@ function renderEntROIProposal(d, roi) {
   const drivers = [];
   if (roi.d1 && roi.d1.on) drivers.push({
     title: en ? 'Manual time recovered' : 'Tiempo manual recuperado',
-    formula: (roi.d1.hours) + (en ? ' hrs/mo' : ' hrs/mes') + ' × $' + fmtN(roi.d1.cost) + ' MXN/hr × ' + roi.d1.pct + '% × 12',
+    formula: fmtROIFormula(roi, 'd1', en ? 'en' : 'es'),
     value: r.d1, unit: en ? 'MXN / year' : 'MXN / año',
     note: en ? 'Person-hours freed up by automating manual processes (tracking, filing, follow-up).' : 'Horas-hombre liberadas al automatizar procesos manuales (tracking, archivado, seguimiento).',
   });
   if (roi.d2 && roi.d2.on) drivers.push({
     title: en ? 'Demurrage avoided' : 'Demurrage evitado',
-    formula: roi.d2.cont + (en ? ' containers/mo' : ' conts./mes') + ' × ' + roi.d2.days + (en ? ' days' : ' días') + ' × ($' + fmtN(roi.d2.rate) + ' USD × ' + fx + ' FX) × 12',
+    formula: fmtROIFormula(roi, 'd2', en ? 'en' : 'es'),
     value: r.d2, unit: en ? 'MXN / year' : 'MXN / año',
     note: en ? 'Extra days at port avoided through anticipated visibility.' : 'Días extra en puerto evitados gracias a la visibilidad anticipada.',
   });
