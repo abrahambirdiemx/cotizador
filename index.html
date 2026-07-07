@@ -2079,6 +2079,251 @@
 <script>
 'use strict';
 
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MODULAR PRICING ENGINE (payload v5+)
+// EOS · ValidAI · MVE + add-ons + bundle discount + base fee.
+// Verified against the 3 canonical examples (Chico, Mediano, Coppel).
+// Legacy DEFAULT_TAB engine kept below for backward-compat with v<5 proposals.
+// ══════════════════════════════════════════════════════════════════════════════
+// ── CONSTANTES: costos reales, defaults de módulos, add-ons ──────────────────
+const BASE_FEE_DEFAULT     = 2400;    // USD anual
+const BASE_INCLUDED_UNITS  = 100;     // por módulo activo (viene incluido en la base)
+const IMPL_FEE_DEFAULT     = 600;     // USD, pago único (editable)
+const MARGIN_FLOOR         = 0.50;    // 50%; warning si algún tramo cae bajo
+const BUNDLE_TIERS         = { 2: 10, 3: 20 };   // # módulos → % descuento
+
+const MOD_DEFAULTS = {
+  eos: {
+    id: 'eos',
+    label: 'EOS · Control y Visibilidad',
+    unit: 'operación',
+    unitPlural: 'operaciones',
+    unitsPerOp: 1,                    // default: 1 op = 1 unidad EOS
+    costPerUnit: 1.60,
+    tiers: [
+      { min: 101,   max: 1000,    price: 6.00 },
+      { min: 1001,  max: 5000,    price: 4.50 },
+      { min: 5001,  max: 18000,   price: 4.00 },
+      { min: 18001, max: 9999999, price: 3.50 },
+    ],
+  },
+  validai: {
+    id: 'validai',
+    label: 'ValidAI · Documentos',
+    unit: 'documento',
+    unitPlural: 'documentos',
+    unitsPerOp: 12,                   // default: 1 op = 12 documentos
+    costPerUnit: 0.42,
+    tiers: [
+      { min: 101,    max: 5000,    price: 1.20 },
+      { min: 5001,   max: 50000,   price: 0.90 },
+      { min: 50001,  max: 210000,  price: 0.75 },
+      { min: 210001, max: 9999999, price: 0.65 },
+    ],
+  },
+  mve: {
+    id: 'mve',
+    label: 'MVE · Manifestación de Valor',
+    unit: 'MVE',
+    unitPlural: 'MVEs',
+    unitsPerOp: 1,                    // default: 1 op = 1 MVE/pedimento
+    costPerUnit: 0.40,
+    availableFrom: '2026-07-20',
+    tiers: [
+      { min: 101,  max: 1000,    price: 4.00 },
+      { min: 1001, max: 5000,    price: 3.00 },
+      { min: 5001, max: 9999999, price: 2.50 },
+    ],
+  },
+};
+
+const ADDON_DEFAULTS = {
+  whatsapp: {
+    id: 'whatsapp',
+    label: 'WhatsApp AI',
+    plans: {
+      std:  { key: 'std',  label: 'Estándar (~1,500 msg/mes)', monthly: 99  },
+      high: { key: 'high', label: 'Alto volumen (~5,000 msg/mes)', monthly: 199 },
+    },
+    defaultPlan: 'std',
+  },
+  kpiDash: {
+    id: 'kpiDash',
+    label: 'Tablero personalizado de KPIs',
+    setup: 750,
+    monthly: 99,
+  },
+  erp: {
+    id: 'erp',
+    label: 'Integración ERP',
+    setup: 0,       // editable
+    monthly: 0,     // editable
+  },
+};
+
+// ── MOTOR ─────────────────────────────────────────────────────────────────────
+// config shape:
+// {
+//   ops: 3000,   // volumen de operaciones anuales del prospecto
+//   base: { annual: 2400, includedPerModule: 100 },
+//   modules: {
+//     eos:     { on: 1, unitsPerOp: 1,  tiers: [...] },
+//     validai: { on: 1, unitsPerOp: 12, tiers: [...] },
+//     mve:     { on: 0, unitsPerOp: 1,  tiers: [...] },
+//   },
+//   addons: {
+//     whatsapp: { on: 0, plan: 'std', monthlyOverride: null },
+//     kpiDash:  { on: 0, setupOverride: null, monthlyOverride: null },
+//     erp:      { on: 0, setupOverride: 0, monthlyOverride: 0 },
+//   },
+//   bundle: { discountPct: null },   // null = auto
+//   impl: 600,
+// }
+function calcModularPricing(config) {
+  const ops        = Math.max(0, Number(config.ops) || 0);
+  const baseAnnual = Number(config.base && config.base.annual != null ? config.base.annual : BASE_FEE_DEFAULT) || 0;
+  const included   = Number(config.base && config.base.includedPerModule != null ? config.base.includedPerModule : BASE_INCLUDED_UNITS) || 0;
+
+  // ── MÓDULOS ──
+  const perModule = {};
+  let modulesSubtotal = 0;
+  let activeModuleCount = 0;
+  const moduleKeys = ['eos', 'validai', 'mve'];
+
+  for (const k of moduleKeys) {
+    const mDef = MOD_DEFAULTS[k];
+    const m    = (config.modules && config.modules[k]) || {};
+    if (!m.on) { perModule[k] = null; continue; }
+
+    activeModuleCount++;
+    const unitsPerOp = Number(m.unitsPerOp != null ? m.unitsPerOp : mDef.unitsPerOp) || 0;
+    const rawVol = Math.max(0, Math.round(ops * unitsPerOp));
+    const tiers = Array.isArray(m.tiers) && m.tiers.length ? m.tiers : mDef.tiers;
+
+    // Blended pricing: cada tramo cobra solo las unidades dentro del rango.
+    // Las primeras `included` unidades vienen incluidas en la base (gratis).
+    // Ceiling superior del cargo = max(tier.max, ...) hasta llegar a rawVol.
+    const chargeFrom = included + 1;  // primera unidad cobrable
+    const chargeTo   = rawVol;
+    let breakdown = [];
+    let modRevenue = 0;
+
+    if (chargeTo >= chargeFrom) {
+      for (const t of tiers) {
+        const tMin = Math.max(t.min, chargeFrom);
+        const tMax = Math.min(t.max, chargeTo);
+        if (tMin > tMax) continue;
+        const units = tMax - tMin + 1;
+        const subtotal = units * Number(t.price || 0);
+        modRevenue += subtotal;
+        breakdown.push({
+          min: t.min,
+          max: t.max,
+          effMin: tMin,
+          effMax: tMax,
+          units,
+          price: Number(t.price || 0),
+          subtotal,
+        });
+      }
+    }
+
+    // Márgen bruto vs costo variable
+    const varUnits = Math.max(0, rawVol - included);
+    const varCost  = varUnits * Number(mDef.costPerUnit || 0);
+    const gross    = modRevenue - varCost;
+    const margin   = modRevenue > 0 ? gross / modRevenue : 0;
+
+    perModule[k] = {
+      key: k,
+      label: mDef.label,
+      unit: mDef.unit,
+      unitPlural: mDef.unitPlural,
+      unitsPerOp,
+      volume: rawVol,
+      includedInBase: Math.min(included, rawVol),
+      billedUnits: Math.max(0, rawVol - included),
+      breakdown,
+      revenue: modRevenue,
+      varCost,
+      gross,
+      margin,
+      belowFloor: breakdown.some(b => b.price < Number(mDef.costPerUnit || 0)),
+      belowMinMargin: modRevenue > 0 ? (margin < MARGIN_FLOOR) : false,
+    };
+    modulesSubtotal += modRevenue;
+  }
+
+  // ── ADD-ONS ──
+  const perAddon = {};
+  let addonsSubtotal = 0;
+
+  // WhatsApp
+  const wa = (config.addons && config.addons.whatsapp) || {};
+  if (wa.on) {
+    const planKey  = wa.plan || ADDON_DEFAULTS.whatsapp.defaultPlan;
+    const planDef  = ADDON_DEFAULTS.whatsapp.plans[planKey] || ADDON_DEFAULTS.whatsapp.plans.std;
+    const monthly  = wa.monthlyOverride != null ? Number(wa.monthlyOverride) : planDef.monthly;
+    const annual   = monthly * 12;
+    perAddon.whatsapp = { key:'whatsapp', label: ADDON_DEFAULTS.whatsapp.label, plan: planKey, planLabel: planDef.label, monthly, annual };
+    addonsSubtotal += annual;
+  } else perAddon.whatsapp = null;
+
+  // KPI Dashboard
+  const kd = (config.addons && config.addons.kpiDash) || {};
+  if (kd.on) {
+    const setup   = kd.setupOverride   != null ? Number(kd.setupOverride)   : ADDON_DEFAULTS.kpiDash.setup;
+    const monthly = kd.monthlyOverride != null ? Number(kd.monthlyOverride) : ADDON_DEFAULTS.kpiDash.monthly;
+    const annual  = setup + monthly * 12;
+    perAddon.kpiDash = { key:'kpiDash', label: ADDON_DEFAULTS.kpiDash.label, setup, monthly, annual };
+    addonsSubtotal += annual;
+  } else perAddon.kpiDash = null;
+
+  // ERP
+  const erp = (config.addons && config.addons.erp) || {};
+  if (erp.on) {
+    const setup   = erp.setupOverride   != null ? Number(erp.setupOverride)   : ADDON_DEFAULTS.erp.setup;
+    const monthly = erp.monthlyOverride != null ? Number(erp.monthlyOverride) : ADDON_DEFAULTS.erp.monthly;
+    const annual  = setup + monthly * 12;
+    perAddon.erp = { key:'erp', label: ADDON_DEFAULTS.erp.label, setup, monthly, annual };
+    addonsSubtotal += annual;
+  } else perAddon.erp = null;
+
+  // ── BUNDLE ──
+  let discountPct;
+  if (config.bundle && config.bundle.discountPct != null) {
+    discountPct = Number(config.bundle.discountPct);
+  } else {
+    discountPct = BUNDLE_TIERS[activeModuleCount] || 0;
+  }
+  const discountable  = modulesSubtotal + addonsSubtotal;
+  const discountAmt   = discountable * (discountPct / 100);
+
+  // ── TOTALES ──
+  const impl = Number(config.impl != null ? config.impl : IMPL_FEE_DEFAULT) || 0;
+  const acv         = baseAnnual + modulesSubtotal + addonsSubtotal - discountAmt;
+  const totalYear1  = acv + impl;
+  const monthlyEq   = acv / 12;
+
+  return {
+    ops,
+    baseAnnual,
+    included,
+    perModule,
+    perAddon,
+    modulesSubtotal,
+    addonsSubtotal,
+    activeModuleCount,
+    discountPct,
+    discountAmt,
+    impl,
+    acv,
+    totalYear1,
+    monthlyEq,
+  };
+}
+
 // ── DEFAULT TABULADOR ──────────────────────────────────────────────────────────
 const DEFAULT_TAB = [
   { id:1, tier:1, label:'0 – 100',         min:1,     max:100,      price:22  },
