@@ -2324,6 +2324,39 @@ function calcModularPricing(config) {
   };
 }
 
+// ── PAYLOAD VERSION & HELPERS ──────────────────────────────────────────────
+const PAYLOAD_VERSION = 5;
+
+// Returns true if a decoded payload uses the modular pricing schema (v5+).
+function isModularPayload(d) {
+  if (!d || typeof d !== 'object') return false;
+  if ((d.v || 0) >= 5) return true;
+  // Also accept legacy `v` bump if modules block is present.
+  if (d.modules && typeof d.modules === 'object') return true;
+  return false;
+}
+
+// Build the runtime config object from a decoded payload (v5+ shape).
+// Used by both the renderer (client-side) and the preview (generator-side).
+function configFromPayload(d) {
+  return {
+    ops:  d.ops || 0,
+    base: (d.base && d.base.annual != null) ? d.base : { annual: BASE_FEE_DEFAULT, includedPerModule: BASE_INCLUDED_UNITS },
+    modules: {
+      eos:     (d.modules && d.modules.eos)     || { on: 0 },
+      validai: (d.modules && d.modules.validai) || { on: 0 },
+      mve:     (d.modules && d.modules.mve)     || { on: 0 },
+    },
+    addons: {
+      whatsapp: (d.addons && d.addons.whatsapp) || { on: 0 },
+      kpiDash:  (d.addons && d.addons.kpiDash)  || { on: 0 },
+      erp:      (d.addons && d.addons.erp)      || { on: 0 },
+    },
+    bundle: d.bundle || { discountPct: null },
+    impl:   d.impl != null ? d.impl : IMPL_FEE_DEFAULT,
+  };
+}
+
 // ── DEFAULT TABULADOR ──────────────────────────────────────────────────────────
 const DEFAULT_TAB = [
   { id:1, tier:1, label:'0 – 100',         min:1,     max:100,      price:22  },
