@@ -807,6 +807,85 @@
       .hist-table th, .hist-table td { padding:8px; }
       .hist-search { width:120px; }
     }
+
+    /* ══════════ MODULAR PRICING PANEL ══════════ */
+    .modular-card { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+    .modular-body { padding: 16px 20px 20px; }
+    .mod-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .mod-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+    .mod-section-head { font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .mod-hint { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+    .mod-hint-inline { font-size: 10px; color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: normal; }
+    .mod-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .mod-inline label { font-size: 11px; color: #374151; font-weight: 600; }
+    .mod-inline input { padding: 6px 8px; font-size: 12px; background: #F9FAFB; border: 1px solid #D1D5DB; border-radius: 5px; color: #1F2937; font-family: 'Inter',sans-serif; box-sizing: border-box; outline: none; width: 90px; text-align: right; font-variant-numeric: tabular-nums; }
+    .mod-inline input:focus { border-color: var(--cyan); background: white; }
+    .mod-inline select { padding: 6px 8px; font-size: 12px; background: #F9FAFB; border: 1px solid #D1D5DB; border-radius: 5px; color: #1F2937; font-family: 'Inter',sans-serif; }
+    .mod-two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 700px) { .mod-two-cols { grid-template-columns: 1fr; } }
+
+    /* Module card */
+    .mod-card { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+    .mod-card.mod-active { background: #ECFEFF; border-color: var(--cyan); }
+    .mod-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .mod-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #1F2937; font-weight: 700; flex: 1; }
+    .mod-toggle input { width: 15px; height: 15px; accent-color: var(--cyan); cursor: pointer; margin: 0; }
+    .mod-badge { font-size: 10px; font-weight: 800; background: #FEF3C7; color: #92400E; border: 1px solid #FBBF24; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .mod-card-body { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+    .mod-vol-info { font-size: 11px; color: #4B5563; margin-left: 4px; }
+    .mod-vol-info strong { color: var(--navy); font-variant-numeric: tabular-nums; }
+
+    /* Tier table */
+    .mod-tiers { margin-top: 10px; }
+    .mod-tiers-head, .mod-tier-row { display: grid; grid-template-columns: 1.2fr 100px 90px; align-items: center; gap: 8px; padding: 5px 0; }
+    .mod-tiers-head { font-size: 9px; font-weight: 800; color: #6B7280; text-transform: uppercase; letter-spacing: 0.6px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .mod-tier-row { font-size: 12px; color: #374151; font-variant-numeric: tabular-nums; }
+    .mod-tier-row + .mod-tier-row { border-top: 1px solid #F3F4F6; }
+    .mod-tier-range { color: #4B5563; }
+    .mod-tier-row input.mod-tier-price { width: 100%; padding: 5px 7px; }
+    .mod-tier-row input.mod-tier-price.mod-below-floor { border-color: #EF4444; background: #FEE2E2; color: #B91C1C; }
+    .mod-tier-row input.mod-tier-price.mod-below-margin { border-color: #F59E0B; background: #FEF3C7; }
+    .mod-margin-badge { font-size: 11px; font-weight: 700; text-align: right; padding: 3px 8px; border-radius: 10px; }
+    .mod-margin-badge.mod-m-ok { background: #D1FAE5; color: #065F46; }
+    .mod-margin-badge.mod-m-warn { background: #FEF3C7; color: #92400E; }
+    .mod-margin-badge.mod-m-bad { background: #FEE2E2; color: #B91C1C; }
+    .mod-subtotal { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 12px; color: #4B5563; display: flex; justify-content: space-between; }
+    .mod-subtotal strong { color: var(--navy); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+    /* Add-on card */
+    .mod-addon { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+    .mod-addon.mod-active { background: #ECFEFF; border-color: var(--cyan); }
+    .mod-addon-body { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+
+    /* Margin panel */
+    .mod-margin-panel { margin-top: 16px; padding: 10px 12px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; }
+    .mod-margin-panel summary { cursor: pointer; font-weight: 700; color: #4B5563; padding: 4px 0; user-select: none; }
+    .mod-margin-panel summary:hover { color: var(--navy); }
+    .mod-margin-panel[open] summary { color: var(--navy); margin-bottom: 10px; }
+    .mod-margin-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 8px; padding: 6px 0; font-size: 11px; color: #374151; align-items: center; }
+    .mod-margin-row + .mod-margin-row { border-top: 1px solid #F3F4F6; }
+    .mod-margin-row.mod-margin-header { font-weight: 800; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; font-size: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .mod-margin-row strong { color: var(--navy); font-variant-numeric: tabular-nums; }
+    .mod-margin-alert { margin-top: 10px; padding: 6px 10px; background: #FEE2E2; color: #B91C1C; border-radius: 6px; font-size: 11px; font-weight: 600; }
+
+    /* Sticky right-side summary */
+    .modular-summary { background: linear-gradient(135deg, var(--navy) 0%, #1a4a7a 100%); border-radius: var(--r); padding: 22px 24px; color: white; position: sticky; top: 24px; box-shadow: var(--shadow-md); }
+    .modular-summary h3 { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(255,255,255,0.85); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+    .ms-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 4px 0; font-size: 12.5px; color: rgba(255,255,255,0.85); }
+    .ms-line strong { color: white; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .ms-line-sub { color: rgba(255,255,255,0.55); font-size: 11px; padding-left: 12px; }
+    .ms-line-subtotal { border-top: 1px dashed rgba(255,255,255,0.2); margin-top: 8px; padding-top: 8px; }
+    .ms-line-discount { color: #6EE7B7; }
+    .ms-line-discount strong { color: #6EE7B7; }
+    .ms-line-acv { color: white; font-weight: 700; margin-top: 4px; }
+    .ms-line-acv strong { font-size: 14px; }
+    .ms-line-total { border-top: 2px solid rgba(255,255,255,0.4); margin-top: 10px; padding-top: 10px; font-size: 14px; color: white; font-weight: 800; }
+    .ms-line-total strong { color: var(--cyan-light); font-size: 20px; letter-spacing: -0.3px; }
+    .ms-line-monthly { color: rgba(255,255,255,0.7); font-size: 11px; }
+    .ms-mod-block { margin: 6px 0; padding-left: 4px; border-left: 2px solid rgba(0,180,216,0.4); padding-top: 4px; padding-bottom: 4px; }
+    .ms-mod-block .ms-line { font-size: 12.5px; }
+    .ms-mod-block .ms-line-sub { font-size: 10.5px; padding-left: 10px; color: rgba(255,255,255,0.5); }
+
   </style>
 </head>
 <body>
@@ -877,6 +956,57 @@
               <button class="lang-btn" onclick="setLang('both',this)">🌐 Ambos</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ══════════ PRICING MODULAR (v5) ══════════ -->
+      <div class="card modular-card" style="margin-bottom:20px;margin-top:20px">
+        <div class="card-header">
+          <h2>💰 Pricing modular</h2>
+          <button class="btn-reset" onclick="resetModularToDefaults()">↺ Restaurar tarifas</button>
+        </div>
+        <div class="card-body modular-body">
+          <div class="mod-section">
+            <div class="mod-section-head">Base de plataforma</div>
+            <div class="mod-inline">
+              <label>Fee anual (USD)</label>
+              <input type="number" id="mod-base-annual" value="2400" min="0" step="50" oninput="updateModularSummary()" />
+              <span class="mod-hint">Incluye las primeras 100 uds/año por módulo activo</span>
+            </div>
+          </div>
+
+          <div class="mod-section">
+            <div class="mod-section-head">Módulos <span class="mod-hint-inline">— cada tramo cobra solo las unidades dentro del rango (blended)</span></div>
+            <div id="mod-modules-container"></div>
+          </div>
+
+          <div class="mod-section">
+            <div class="mod-section-head">Add-ons</div>
+            <div id="mod-addons-container"></div>
+          </div>
+
+          <div class="mod-section mod-two-cols">
+            <div>
+              <div class="mod-section-head">Descuento bundle</div>
+              <div class="mod-inline">
+                <label>% descuento:</label>
+                <input type="number" id="mod-bundle-pct" placeholder="auto" min="0" max="100" step="1" oninput="updateModularSummary()" />
+                <span class="mod-hint" id="mod-bundle-auto-info">auto: 2 mód → 10%, 3 mód → 20%</span>
+              </div>
+            </div>
+            <div>
+              <div class="mod-section-head">Implementación</div>
+              <div class="mod-inline">
+                <label>Fee único (USD):</label>
+                <input type="number" id="mod-impl" value="600" min="0" step="50" oninput="updateModularSummary()" />
+              </div>
+            </div>
+          </div>
+
+          <details class="mod-margin-panel">
+            <summary>▸ Ver márgenes internos (solo vendedor)</summary>
+            <div id="mod-margin-content"></div>
+          </details>
         </div>
       </div>
 
@@ -2444,44 +2574,370 @@ function applyOverrides(p, ops) {
 
 // ── GENERATOR FUNCTIONS ────────────────────────────────────────────────────────
 function updatePricing() {
-  const ops = parseInt(document.getElementById('inp-ops').value);
-  const result = document.getElementById('ps-result');
-  const empty  = document.getElementById('ps-empty');
-  const badge  = document.getElementById('ops-badge');
-  // Manual override fields visibility
-  const ovrToggle = document.getElementById('override-toggle');
-  const ovrFields = document.getElementById('override-fields');
-  if (ovrToggle && ovrFields) {
-    ovrFields.style.display = ovrToggle.checked ? 'block' : 'none';
+  // Legacy signature kept — the transactional pricing summary was replaced by
+  // the modular one. This just triggers a modular refresh so any caller of the
+  // old function name (inp-ops oninput, erp-toggle, etc.) still keeps the
+  // right sidebar in sync.
+  try { updateModularSummary(); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MODULAR GENERATOR UI — render/read/update the modular pricing panel + summary
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Formatters shared across modular UI
+function mfmt(n)  { return Math.round(n).toLocaleString('en-US'); }
+function mfmt2(n) { return (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+
+// Escape helper (short — reuse the entEscapeAttr pattern if available)
+function _esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Renders the 3 module cards (EOS/ValidAI/MVE) into #mod-modules-container.
+// Called once on init. After render, each input rewrites via updateModularSummary().
+function renderModulesPanel() {
+  const container = document.getElementById('mod-modules-container');
+  if (!container) return;
+  const keys = ['eos', 'validai', 'mve'];
+  const badgeUntil = new Date('2026-07-20T00:00:00');
+  const showMveBadge = new Date() < badgeUntil;
+
+  container.innerHTML = keys.map(k => {
+    const m = MOD_DEFAULTS[k];
+    const isMve = k === 'mve';
+    const badge = (isMve && showMveBadge)
+      ? '<span class="mod-badge">Disponible desde 20-jul-2026</span>'
+      : '';
+    const tiersHtml = m.tiers.map((t, ti) => {
+      const range = (t.max >= 9999999)
+        ? (mfmt(t.min) + '+')
+        : (mfmt(t.min) + ' – ' + mfmt(t.max));
+      return `
+        <div class="mod-tier-row" data-tier-idx="${ti}">
+          <span class="mod-tier-range">${range}</span>
+          <input type="number" class="mod-tier-price" id="mod-${k}-t${ti}" value="${t.price}" min="0" step="0.05" oninput="updateModularSummary()" />
+          <span class="mod-margin-badge" id="mod-${k}-t${ti}-m">—</span>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="mod-card" id="mod-${k}-card" data-module="${k}">
+        <div class="mod-card-head">
+          <label class="mod-toggle">
+            <input type="checkbox" id="mod-${k}-on" onchange="onModuleToggle('${k}')" />
+            <span>${_esc(m.label)}</span>
+          </label>
+          ${badge}
+        </div>
+        <div class="mod-card-body" id="mod-${k}-fields" style="display:none">
+          <div class="mod-inline" style="margin-bottom:10px">
+            <label>Unidades por operación:</label>
+            <input type="number" id="mod-${k}-upo" value="${m.unitsPerOp}" min="0" step="0.1" oninput="updateModularSummary()" />
+            <span class="mod-vol-info">Volumen: <strong id="mod-${k}-vol">0</strong> ${_esc(m.unitPlural)}</span>
+          </div>
+          <div class="mod-tiers">
+            <div class="mod-tiers-head">
+              <span>Rango (${_esc(m.unitPlural)})</span>
+              <span>$/unidad</span>
+              <span>Margen</span>
+            </div>
+            ${tiersHtml}
+          </div>
+          <div class="mod-subtotal">
+            <span>Subtotal ${_esc(m.label)}</span>
+            <strong>$<span id="mod-${k}-subtotal">0</span></strong>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function onModuleToggle(key) {
+  const card    = document.getElementById('mod-' + key + '-card');
+  const fields  = document.getElementById('mod-' + key + '-fields');
+  const on      = document.getElementById('mod-' + key + '-on').checked;
+  if (card)   card.classList.toggle('mod-active', on);
+  if (fields) fields.style.display = on ? 'block' : 'none';
+  updateModularSummary();
+}
+
+// Renders the 3 add-on cards.
+function renderAddonsPanel() {
+  const container = document.getElementById('mod-addons-container');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="mod-addon" id="mod-wa-card">
+      <label class="mod-toggle">
+        <input type="checkbox" id="mod-wa-on" onchange="onAddonToggle('wa')" />
+        <span>WhatsApp AI</span>
+      </label>
+      <div class="mod-addon-body" id="mod-wa-fields" style="display:none">
+        <div class="mod-inline">
+          <label>Plan:</label>
+          <select id="mod-wa-plan" onchange="updateModularSummary()">
+            <option value="std">Estándar (~1,500 msg/mes) — $99/mes</option>
+            <option value="high">Alto volumen (~5,000 msg/mes) — $199/mes</option>
+          </select>
+          <label>Override mensual:</label>
+          <input type="number" id="mod-wa-monthly" placeholder="auto" min="0" step="1" oninput="updateModularSummary()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="mod-addon" id="mod-kd-card">
+      <label class="mod-toggle">
+        <input type="checkbox" id="mod-kd-on" onchange="onAddonToggle('kd')" />
+        <span>Tablero personalizado de KPIs</span>
+      </label>
+      <div class="mod-addon-body" id="mod-kd-fields" style="display:none">
+        <div class="mod-inline">
+          <label>Setup único:</label>
+          <input type="number" id="mod-kd-setup" value="750" min="0" step="50" oninput="updateModularSummary()" />
+          <label>Mensual:</label>
+          <input type="number" id="mod-kd-monthly" value="99" min="0" step="1" oninput="updateModularSummary()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="mod-addon" id="mod-erp-card">
+      <label class="mod-toggle">
+        <input type="checkbox" id="mod-erp-on" onchange="onAddonToggle('erp')" />
+        <span>Integración ERP</span>
+      </label>
+      <div class="mod-addon-body" id="mod-erp-fields" style="display:none">
+        <div class="mod-inline">
+          <label>Setup único:</label>
+          <input type="number" id="mod-erp-setup" value="0" min="0" step="100" oninput="updateModularSummary()" />
+          <label>Mensual:</label>
+          <input type="number" id="mod-erp-monthly" value="0" min="0" step="10" oninput="updateModularSummary()" />
+        </div>
+      </div>
+    </div>`;
+}
+
+function onAddonToggle(key) {
+  const card   = document.getElementById('mod-' + key + '-card');
+  const fields = document.getElementById('mod-' + key + '-fields');
+  const on     = document.getElementById('mod-' + key + '-on').checked;
+  if (card)   card.classList.toggle('mod-active', on);
+  if (fields) fields.style.display = on ? 'block' : 'none';
+  updateModularSummary();
+}
+
+// Reads every input in the modular panel and returns a config object ready
+// for calcModularPricing.
+function readModularConfig() {
+  const num = (id, dflt) => {
+    const el = document.getElementById(id);
+    if (!el) return dflt;
+    const v = parseNum(el.value);
+    return isNaN(v) ? dflt : v;
+  };
+  const ck = id => { const el = document.getElementById(id); return el && el.checked ? 1 : 0; };
+  const ops = parseInt(document.getElementById('inp-ops').value) || 0;
+
+  function moduleCfg(key) {
+    const on = ck('mod-' + key + '-on');
+    const upo = num('mod-' + key + '-upo', MOD_DEFAULTS[key].unitsPerOp);
+    const tiers = MOD_DEFAULTS[key].tiers.map((t, ti) => ({
+      min: t.min,
+      max: t.max,
+      price: num('mod-' + key + '-t' + ti, t.price),
+    }));
+    return { on, unitsPerOp: upo, tiers };
   }
-  if (!ops || ops < 1) {
-    result.style.display = 'none'; empty.style.display = 'block'; badge.style.display = 'none'; return;
+
+  // Add-on plan override
+  const waPlanEl = document.getElementById('mod-wa-plan');
+  const waMonthlyRaw = document.getElementById('mod-wa-monthly');
+  const waMonthlyOverride = waMonthlyRaw && waMonthlyRaw.value !== '' ? parseNum(waMonthlyRaw.value) : null;
+
+  return {
+    ops,
+    base: {
+      annual: num('mod-base-annual', BASE_FEE_DEFAULT),
+      includedPerModule: BASE_INCLUDED_UNITS,
+    },
+    modules: {
+      eos:     moduleCfg('eos'),
+      validai: moduleCfg('validai'),
+      mve:     moduleCfg('mve'),
+    },
+    addons: {
+      whatsapp: { on: ck('mod-wa-on'), plan: (waPlanEl ? waPlanEl.value : 'std'), monthlyOverride: waMonthlyOverride },
+      kpiDash:  { on: ck('mod-kd-on'), setupOverride: num('mod-kd-setup', ADDON_DEFAULTS.kpiDash.setup), monthlyOverride: num('mod-kd-monthly', ADDON_DEFAULTS.kpiDash.monthly) },
+      erp:      { on: ck('mod-erp-on'), setupOverride: num('mod-erp-setup', ADDON_DEFAULTS.erp.setup), monthlyOverride: num('mod-erp-monthly', ADDON_DEFAULTS.erp.monthly) },
+    },
+    bundle: { discountPct: (document.getElementById('mod-bundle-pct') && document.getElementById('mod-bundle-pct').value !== '') ? parseNum(document.getElementById('mod-bundle-pct').value) : null },
+    impl: num('mod-impl', IMPL_FEE_DEFAULT),
+  };
+}
+
+// Refreshes the sticky Resumen de Inversión + inline margin badges on each input change.
+function updateModularSummary() {
+  const cfg = readModularConfig();
+  const r = calcModularPricing(cfg);
+
+  // Update per-tier margin badges + per-module volume + subtotal
+  ['eos','validai','mve'].forEach(k => {
+    const info = r.perModule[k];
+    const volEl = document.getElementById('mod-' + k + '-vol');
+    const subEl = document.getElementById('mod-' + k + '-subtotal');
+    if (volEl) volEl.textContent = mfmt(info ? info.volume : 0);
+    if (subEl) subEl.textContent = mfmt(info ? info.revenue : 0);
+    // per-tier margin badges
+    MOD_DEFAULTS[k].tiers.forEach((t, ti) => {
+      const badge = document.getElementById('mod-' + k + '-t' + ti + '-m');
+      const priceEl = document.getElementById('mod-' + k + '-t' + ti);
+      if (!badge || !priceEl) return;
+      const p = parseNum(priceEl.value) || 0;
+      const cost = MOD_DEFAULTS[k].costPerUnit;
+      const margin = p > 0 ? (p - cost) / p : 0;
+      badge.textContent = (margin * 100).toFixed(0) + '%';
+      priceEl.classList.remove('mod-below-floor', 'mod-below-margin');
+      badge.classList.remove('mod-m-ok', 'mod-m-warn', 'mod-m-bad');
+      if (p < cost) {
+        priceEl.classList.add('mod-below-floor');
+        badge.classList.add('mod-m-bad');
+      } else if (margin < MARGIN_FLOOR) {
+        priceEl.classList.add('mod-below-margin');
+        badge.classList.add('mod-m-warn');
+      } else {
+        badge.classList.add('mod-m-ok');
+      }
+    });
+  });
+
+  // Bundle auto info label
+  const bundleAutoInfo = document.getElementById('mod-bundle-auto-info');
+  if (bundleAutoInfo) {
+    const autoPct = (BUNDLE_TIERS[r.activeModuleCount] || 0);
+    bundleAutoInfo.textContent = 'auto: ' + r.activeModuleCount + ' módulo(s) → ' + autoPct + '%';
   }
-  const p = calcPricing(ops);
-  if (!p) { result.style.display = 'none'; empty.style.display = 'block'; badge.style.display = 'none'; return; }
-  const ovrInfo = applyOverrides(p, ops);
-  empty.style.display = 'none'; result.style.display = 'block'; badge.style.display = 'flex';
-  badge.textContent = `Tier ${p.tier}`;
-  document.getElementById('ps-tier').textContent        = `⚡ Tier ${p.tier}`;
-  document.getElementById('ps-ppo').textContent         = fc(p.ppo);
-  document.getElementById('ps-acv').textContent         = fc(p.acv);
-  document.getElementById('ps-monthly').textContent     = fc(p.monthly);
-  document.getElementById('ps-annual-disc').textContent = fc(p.annualDisc);
-  document.getElementById('ps-saving').textContent      = fc(p.saving);
-  document.getElementById('ps-impl').textContent        = fc(p.impl);
-  // Dynamic sublabel for implementation
-  const implSub = document.getElementById('ps-impl-sub');
-  if (implSub) {
-    implSub.textContent = ovrInfo.implOverridden
-      ? 'Monto ajustado manualmente · onboarding + configuración'
-      : '15% del ACV · onboarding + configuración';
+
+  // Right-side sticky summary
+  const empty   = document.getElementById('mod-summary-empty');
+  const content = document.getElementById('mod-summary-content');
+  const anyActive = r.activeModuleCount > 0 || r.perAddon.whatsapp || r.perAddon.kpiDash || r.perAddon.erp;
+  const hasOps = cfg.ops > 0;
+  if (empty && content) {
+    if (!anyActive || !hasOps) {
+      empty.style.display = 'block';
+      content.style.display = 'none';
+    } else {
+      empty.style.display = 'none';
+      content.style.display = 'block';
+    }
   }
-  // ERP toggle
-  const erpOn = document.getElementById('erp-toggle').checked;
-  document.getElementById('erp-price-row').style.display = erpOn ? 'block' : 'none';
-  // Refresh ROI preview if active
+
+  document.getElementById('ms-base').textContent = mfmt(r.baseAnnual);
+
+  // Modules list
+  const modList = document.getElementById('ms-modules-list');
+  if (modList) {
+    let html = '';
+    ['eos','validai','mve'].forEach(k => {
+      const m = r.perModule[k];
+      if (!m) return;
+      html += '<div class="ms-mod-block">';
+      html += '<div class="ms-line"><span>' + _esc(m.label) + '</span><strong>$' + mfmt(m.revenue) + '</strong></div>';
+      html += '<div class="ms-line ms-line-sub"><span>' + mfmt(m.volume) + ' ' + _esc(m.unitPlural) + ' · ' + mfmt(m.includedInBase) + ' incluidas · ' + mfmt(m.billedUnits) + ' cobradas</span><span></span></div>';
+      html += '</div>';
+    });
+    modList.innerHTML = html;
+  }
+
+  // Addons list
+  const addonList = document.getElementById('ms-addons-list');
+  if (addonList) {
+    let html = '';
+    if (r.perAddon.whatsapp) {
+      const a = r.perAddon.whatsapp;
+      html += '<div class="ms-line"><span>' + _esc(a.label) + ' (' + _esc(a.planLabel) + ')</span><strong>$' + mfmt(a.annual) + '</strong></div>';
+    }
+    if (r.perAddon.kpiDash) {
+      const a = r.perAddon.kpiDash;
+      html += '<div class="ms-line"><span>' + _esc(a.label) + '</span><strong>$' + mfmt(a.annual) + '</strong></div>';
+      html += '<div class="ms-line ms-line-sub"><span>Setup $' + mfmt(a.setup) + ' + $' + mfmt(a.monthly) + '/mes × 12</span><span></span></div>';
+    }
+    if (r.perAddon.erp) {
+      const a = r.perAddon.erp;
+      html += '<div class="ms-line"><span>' + _esc(a.label) + '</span><strong>$' + mfmt(a.annual) + '</strong></div>';
+      if (a.setup || a.monthly) {
+        html += '<div class="ms-line ms-line-sub"><span>Setup $' + mfmt(a.setup) + ' + $' + mfmt(a.monthly) + '/mes × 12</span><span></span></div>';
+      }
+    }
+    addonList.innerHTML = html;
+  }
+
+  const discountRow = document.getElementById('ms-discount-row');
+  if (r.discountAmt > 0) {
+    if (discountRow) discountRow.style.display = '';
+    document.getElementById('ms-bundle-pct').textContent = r.discountPct;
+    document.getElementById('ms-discount').textContent = mfmt(r.discountAmt);
+  } else if (discountRow) {
+    discountRow.style.display = 'none';
+  }
+
+  document.getElementById('ms-subtotal').textContent = mfmt(r.baseAnnual + r.modulesSubtotal + r.addonsSubtotal);
+  document.getElementById('ms-acv').textContent = mfmt(r.acv);
+  const implRow = document.getElementById('ms-impl-row');
+  if (r.impl > 0) {
+    if (implRow) implRow.style.display = '';
+    document.getElementById('ms-impl').textContent = mfmt(r.impl);
+  } else if (implRow) {
+    implRow.style.display = 'none';
+  }
+  document.getElementById('ms-total').textContent = mfmt(r.totalYear1);
+  document.getElementById('ms-monthly').textContent = mfmt(r.monthlyEq);
+
+  // Update margin internal panel
+  const margContent = document.getElementById('mod-margin-content');
+  if (margContent) {
+    let alerts = [];
+    let rows = ['<div class="mod-margin-row mod-margin-header"><span>Módulo</span><span>Revenue</span><span>Costo var.</span><span>Margen</span></div>'];
+    ['eos','validai','mve'].forEach(k => {
+      const m = r.perModule[k];
+      if (!m) return;
+      const margePct = (m.margin * 100).toFixed(0) + '%';
+      rows.push('<div class="mod-margin-row"><span>' + _esc(MOD_DEFAULTS[k].label) + '</span><strong>$' + mfmt(m.revenue) + '</strong><span>$' + mfmt(m.varCost) + '</span><strong>' + margePct + '</strong></div>');
+      if (m.belowFloor)     alerts.push(MOD_DEFAULTS[k].label + ': 1+ tramo bajo costo real');
+      if (m.belowMinMargin) alerts.push(MOD_DEFAULTS[k].label + ': margen ' + margePct + ' < 50% mínimo');
+    });
+    margContent.innerHTML = rows.join('') + (alerts.length ? '<div class="mod-margin-alert">⚠ ' + alerts.map(_esc).join('<br>⚠ ') + '</div>' : '');
+  }
+
+  // Also refresh ROI preview since investmentUSD depends on the modular total.
   try { if (document.getElementById('roi-toggle') && document.getElementById('roi-toggle').checked) updateROIPreview(); } catch(e) {}
 }
+
+// Restores every input to its default from MOD_DEFAULTS / ADDON_DEFAULTS.
+function resetModularToDefaults() {
+  if (!confirm('¿Restaurar todas las tarifas y multiplicadores al valor de lista?')) return;
+  document.getElementById('mod-base-annual').value = BASE_FEE_DEFAULT;
+  document.getElementById('mod-impl').value = IMPL_FEE_DEFAULT;
+  const bp = document.getElementById('mod-bundle-pct'); if (bp) bp.value = '';
+
+  ['eos','validai','mve'].forEach(k => {
+    const m = MOD_DEFAULTS[k];
+    const upo = document.getElementById('mod-' + k + '-upo');
+    if (upo) upo.value = m.unitsPerOp;
+    m.tiers.forEach((t, ti) => {
+      const el = document.getElementById('mod-' + k + '-t' + ti);
+      if (el) el.value = t.price;
+    });
+  });
+
+  const kdS  = document.getElementById('mod-kd-setup');    if (kdS)  kdS.value  = ADDON_DEFAULTS.kpiDash.setup;
+  const kdM  = document.getElementById('mod-kd-monthly');  if (kdM)  kdM.value  = ADDON_DEFAULTS.kpiDash.monthly;
+  const erpS = document.getElementById('mod-erp-setup');   if (erpS) erpS.value = ADDON_DEFAULTS.erp.setup;
+  const erpM = document.getElementById('mod-erp-monthly'); if (erpM) erpM.value = ADDON_DEFAULTS.erp.monthly;
+  const waM  = document.getElementById('mod-wa-monthly');  if (waM)  waM.value  = '';
+
+  updateModularSummary();
+}
+
 
 function setLang(l, btn) {
   LANG = l;
@@ -2703,15 +3159,13 @@ function fmtROIFormula(roi, driver, lang) {
 }
 
 function getInvestmentUSDFromForm() {
-  const opsEl = document.getElementById('inp-ops');
-  const ops = parseInt(opsEl ? opsEl.value : 0) || 0;
-  if (!ops) return 0;
-  const p = calcPricing(ops);
-  if (!p) return 0;
-  applyOverrides(p, ops);
-  const erpOn  = document.getElementById('erp-toggle').checked;
-  const erpAmt = erpOn ? (parseNum(document.getElementById('erp-price').value) || 0) : 0;
-  return (p.acv || 0) + (p.impl || 0) + (erpAmt || 0);
+  // Investment (year 1) is now driven by the modular pricing panel.
+  // ROI compares this against the hidden cost the drivers estimate.
+  try {
+    const cfg = readModularConfig();
+    const r = calcModularPricing(cfg);
+    return r.totalYear1 || 0;
+  } catch(e) { return 0; }
 }
 
 function fmtMXN(n) { return '$' + Math.round(n).toLocaleString('en-US') + ' MXN'; }
@@ -2800,50 +3254,78 @@ function generateProposal() {
   const ct   = document.getElementById('inp-contact').value.trim();
   const ops  = parseInt(document.getElementById('inp-ops').value);
   const note = document.getElementById('inp-note').value.trim();
-  const erpOn = document.getElementById('erp-toggle').checked;
-  const erpAmt = erpOn ? (parseNum(document.getElementById('erp-price').value) || 0) : 0;
-  const pilotOn = document.getElementById('pilot-toggle').checked;
-  const pilotCost = pilotOn ? (parseNum(document.getElementById('pilot-cost').value) || 0) : 0;
-  const pilotMonths = pilotOn ? (parseInt(document.getElementById('pilot-months').value) || 2) : 0;
+
+  // Modular pricing config drives the payload.
+  const cfg = readModularConfig();
+  const r   = calcModularPricing(cfg);
+
+  // Legacy add-ons (kept independent from the modular add-ons for now).
+  const pilotOn    = document.getElementById('pilot-toggle').checked;
+  const pilotCost  = pilotOn ? (parseNum(document.getElementById('pilot-cost').value) || 0) : 0;
+  const pilotMonths= pilotOn ? (parseInt(document.getElementById('pilot-months').value) || 2) : 0;
   const pilotScope = pilotOn ? document.getElementById('pilot-scope').value.trim() : '';
 
-  // Etapas de implementación
   const stagesOn = document.getElementById('stages-toggle').checked;
   let stagesItems = [];
   if (stagesOn) {
     collectStagesFromForm();
     stagesItems = STAGES
-      .map(s => ({ title: (s.title || '').trim(), subtitle: (s.subtitle || '').trim(), text: (s.text || '').trim() }))
+      .map(s => ({ title: (s.title||'').trim(), subtitle: (s.subtitle||'').trim(), text: (s.text||'').trim() }))
       .filter(s => s.title || s.subtitle || s.text);
   }
 
-  // Retorno de inversión
-  const roiOn = document.getElementById('roi-toggle').checked;
+  const roiOn   = document.getElementById('roi-toggle').checked;
   const roiData = roiOn ? collectROIFromForm() : { on: 0 };
 
   if (!co)  { alert('Ingresa el nombre de la empresa');  document.getElementById('inp-company').focus(); return; }
   if (!ct)  { alert('Ingresa el nombre del contacto');   document.getElementById('inp-contact').focus(); return; }
   if (!ops) { alert('Ingresa el número de operaciones'); document.getElementById('inp-ops').focus(); return; }
-
-  const p = calcPricing(ops);
-  if (!p) { alert('Operaciones fuera de rango'); return; }
-  applyOverrides(p, ops);
+  if (r.activeModuleCount === 0) {
+    if (!confirm('No hay ningún módulo activo. ¿Generar propuesta solo con base + add-ons?')) return;
+  }
 
   const today = new Date();
   const valid = new Date(today); valid.setDate(valid.getDate() + 30);
 
+  // Derived legacy fields so the (still v4) client renderer keeps working
+  // for basic PYME/Enterprise summary elements until Phase 8 replaces it
+  // with the modular breakdown.
+  const acv     = r.acv;                       // year 1 subscription value (post-bundle)
+  const monthly = acv / 12;
+  const annualDisc = acv * 0.90;
+  const moDisc  = annualDisc / 12;
+  const saving  = acv - annualDisc;
+  // ppo/tier are less meaningful in the modular world; expose the EOS-effective
+  // rate if EOS active, else the blended effective across all modules/ops.
+  const eosM = r.perModule && r.perModule.eos;
+  const ppo  = (eosM && eosM.volume > 0) ? (eosM.revenue / eosM.volume) : (ops > 0 ? (r.modulesSubtotal / ops) : 0);
+  const tier = null;
+
   const data = {
-    v:4, co, ct, ops, lang: LANG, logo:'', note,
+    v: PAYLOAD_VERSION,     // 5
+    fmt: ACTIVE_FMT,
+    co, ct, ops, lang: LANG, logo: '', note,
     date: today.toISOString().split('T')[0],
     valid: valid.toISOString().split('T')[0],
-    ppo: p.ppo, acv: p.acv, mo: p.monthly,
-    ann: p.annualDisc, moDisc: p.moDisc,
-    saving: p.saving, impl: p.impl, tier: p.tier,
-    erp: erpAmt,
-    pilot: pilotOn ? { on:1, cost:pilotCost, months:pilotMonths, scope:pilotScope } : { on:0 },
+
+    // ── Modular payload (canonical from v5) ──
+    base:    { annual: r.baseAnnual, includedPerModule: BASE_INCLUDED_UNITS },
+    modules: cfg.modules,
+    addons:  cfg.addons,
+    bundle:  { discountPct: r.discountPct },
+
+    // ── Derived / legacy mirror for backward-compatible rendering ──
+    ppo, acv, mo: monthly,
+    ann: annualDisc, moDisc,
+    saving, impl: r.impl, tier,
+    erp: (r.perAddon.erp ? r.perAddon.erp.annual : 0),
+
+    // Legacy add-ons unchanged
+    pilot:  pilotOn ? { on:1, cost:pilotCost, months:pilotMonths, scope:pilotScope } : { on:0 },
     stages: (stagesOn && stagesItems.length > 0) ? { on:1, items: stagesItems } : { on:0 },
-    roi: roiOn ? roiData : { on:0 },
-    fmt: ACTIVE_FMT,
+    roi:    roiOn ? roiData : { on: 0 },
+
+    // Enterprise block (unchanged)
     ent: (ACTIVE_FMT === 'ent') ? entCollectFromForm() : null,
   };
 
@@ -2853,27 +3335,29 @@ function generateProposal() {
   const out = document.getElementById('url-out');
   out.classList.add('visible');
   document.getElementById('url-display').textContent = url;
-  // Warn if URL exceeds typical server header buffer limits (~8KB nginx default).
   if (url.length > 6000) {
-    console.warn('[Birdie] URL length is ' + url.length + ' chars — may hit server header limits. Consider reducing optional fields.');
+    console.warn('[Birdie] URL length ' + url.length + ' chars — may hit server header limits.');
   }
 
-  // Guardar en historial local
+  // Save to local history
   saveToHistory({
     id: (crypto.randomUUID && crypto.randomUUID()) || (Date.now() + '-' + Math.random().toString(36).slice(2,8)),
     url,
     company: co,
     contact: ct,
     ops,
-    acv: p.acv,
-    impl: p.impl,
-    tier: p.tier,
+    acv,
+    impl: r.impl,
+    tier,
     lang: LANG,
-    erp: erpAmt,
-    pilot: pilotOn ? { cost: pilotCost, months: pilotMonths } : null,
+    erp: (r.perAddon.erp ? r.perAddon.erp.annual : 0),
+    pilot:  pilotOn ? { cost: pilotCost, months: pilotMonths } : null,
     stages: (stagesOn && stagesItems.length > 0) ? stagesItems.length : 0,
-    roi: roiOn ? 1 : 0,
-    fmt: ACTIVE_FMT,
+    roi:    roiOn ? 1 : 0,
+    fmt:    ACTIVE_FMT,
+    model:  'modular',
+    modules: Object.keys(cfg.modules).filter(k => cfg.modules[k].on),
+    totalYear1: r.totalYear1,
     createdAt: new Date().toISOString(),
     validUntil: data.valid,
   });
@@ -4178,6 +4662,7 @@ function birdieInit() {
     if (overlay) overlay.classList.add('hidden');
     if (genView) genView.style.display = 'block';
     try { renderHistory(); } catch(e) {}
+    try { renderModulesPanel(); renderAddonsPanel(); updateModularSummary(); } catch(e) { console.error(e); }
   } else {
     // Show overlay only here
     if (overlay) overlay.classList.remove('hidden');
@@ -4226,6 +4711,7 @@ async function birdieCheckPw() {
       if (pv) pv.style.display = 'none';
       document.getElementById('generator-view').style.display = 'block';
       try { renderHistory(); } catch(e) {}
+      try { renderModulesPanel(); renderAddonsPanel(); updateModularSummary(); } catch(e) { console.error(e); }
     } else {
       err.style.display = 'block';
       input.value = ''; input.focus();
