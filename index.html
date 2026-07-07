@@ -886,6 +886,12 @@
     .ms-mod-block .ms-line { font-size: 12.5px; }
     .ms-mod-block .ms-line-sub { font-size: 10.5px; padding-left: 10px; color: rgba(255,255,255,0.5); }
 
+    /* Tier visibility toggle */
+    .mod-tier-row.mod-tier-hidden { display: none; }
+    .mod-tier-row.mod-tier-applicable { background: #ECFEFF; border-radius: 6px; padding-left: 6px; padding-right: 6px; }
+    .mod-tiers-toggle-btn { margin-top: 8px; padding: 5px 10px; background: transparent; border: 1px dashed #D1D5DB; color: #4B5563; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: 'Inter',sans-serif; width: 100%; }
+    .mod-tiers-toggle-btn:hover { background: #F8FAFC; color: var(--navy); border-color: var(--navy); }
+
   </style>
 </head>
 <body>
@@ -1259,71 +1265,7 @@
             <div id="ps-impl-sub" style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;">15% del ACV · onboarding + configuración</div>
           </div>
 
-          <!-- MANUAL OVERRIDE (suscripción + implementación) -->
-          <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan-light);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:0">
-              <input type="checkbox" id="override-toggle" onchange="updatePricing()" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer" />
-              Ajuste manual de costos
-            </label>
-            <div id="override-fields" style="display:none;margin-top:10px">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px">
-                <div>
-                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Suscripción anual (USD)</div>
-                  <div style="display:flex;align-items:center;gap:4px">
-                    <span style="font-size:12px;color:rgba(255,255,255,0.5)">$</span>
-                    <input type="number" id="override-sub" min="0" step="100" placeholder="auto"
-                      oninput="updatePricing()"
-                      style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Implementación (USD)</div>
-                  <div style="display:flex;align-items:center;gap:4px">
-                    <span style="font-size:12px;color:rgba(255,255,255,0.5)">$</span>
-                    <input type="number" id="override-impl" min="0" step="100" placeholder="auto"
-                      oninput="updatePricing()"
-                      style="width:100%;padding:6px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
-                  </div>
-                </div>
-              </div>
-              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px">💡 Deja el campo vacío para usar el cálculo automático. La suscripción anual recalcula mensual, anual con descuento y precio/operación.</div>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border-radius:8px;">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--cyan-light);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:8px">
-              <input type="checkbox" id="erp-toggle" onchange="updatePricing()" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer" />
-              Incluir Integración ERP (opcional)
-            </label>
-            <div id="erp-price-row" style="display:none">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                <span style="font-size:11px;color:rgba(255,255,255,0.5)">Monto:</span>
-                <span style="font-size:11px;color:rgba(255,255,255,0.5)">$</span>
-                <input type="number" id="erp-price" value="0" min="0" step="100"
-                  oninput="updatePricing()"
-                  style="width:100px;padding:4px 8px;font-size:13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-family:Inter,sans-serif" />
-                <span style="font-size:11px;color:rgba(255,255,255,0.5)">USD</span>
-              </div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.4)">Pago único · parametrización + puesta en marcha</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Tabulador -->
-      <div class="card">
-        <div class="card-header">
-          <h2>💰 Tabulador de precios</h2>
-          <button class="tab-toggle" onclick="toggleTabulador(this)">Editar ▾</button>
-        </div>
-        <div class="tabulador-panel" id="tab-panel">
-          <p class="tab-info">Ajusta los precios por operación. Los cambios persisten en este navegador.</p>
-          <table class="tab-table">
-            <thead><tr><th>Tier</th><th>Operaciones anuales</th><th>Precio / op (USD)</th></tr></thead>
-            <tbody id="tab-body"></tbody>
-          </table>
-          <button class="btn-reset" onclick="resetTabulador()">↺ Restaurar precios originales</button>
+          <!-- (Override manual + ERP toggle + Tabulador removidos — el panel Pricing modular en la columna izquierda es la fuente de verdad.) -->
         </div>
       </div>
     </div>
@@ -2243,7 +2185,7 @@ const MOD_DEFAULTS = {
     label: 'ValidAI · Documentos',
     unit: 'documento',
     unitPlural: 'documentos',
-    unitsPerOp: 12,                   // default: 1 op = 12 documentos
+    unitsPerOp: 2,                   // default: 1 op = 12 documentos
     costPerUnit: 0.42,
     tiers: [
       { min: 101,    max: 5000,    price: 1.20 },
@@ -2609,12 +2551,15 @@ function renderModulesPanel() {
     const badge = (isMve && showMveBadge)
       ? '<span class="mod-badge">Disponible desde 20-jul-2026</span>'
       : '';
+    const hint = (k === 'validai')
+      ? '<span class="mod-hint" style="margin-left:8px">Subir a 8-12 si es cliente doc-heavy</span>'
+      : '';
     const tiersHtml = m.tiers.map((t, ti) => {
       const range = (t.max >= 9999999)
         ? (mfmt(t.min) + '+')
         : (mfmt(t.min) + ' – ' + mfmt(t.max));
       return `
-        <div class="mod-tier-row" data-tier-idx="${ti}">
+        <div class="mod-tier-row" data-tier-idx="${ti}" data-module="${k}">
           <span class="mod-tier-range">${range}</span>
           <input type="number" class="mod-tier-price" id="mod-${k}-t${ti}" value="${t.price}" min="0" step="0.05" oninput="updateModularSummary()" />
           <span class="mod-margin-badge" id="mod-${k}-t${ti}-m">—</span>
@@ -2635,14 +2580,18 @@ function renderModulesPanel() {
             <label>Unidades por operación:</label>
             <input type="number" id="mod-${k}-upo" value="${m.unitsPerOp}" min="0" step="0.1" oninput="updateModularSummary()" />
             <span class="mod-vol-info">Volumen: <strong id="mod-${k}-vol">0</strong> ${_esc(m.unitPlural)}</span>
+            ${hint}
           </div>
-          <div class="mod-tiers">
+          <div class="mod-tiers" id="mod-${k}-tiers" data-show-all="0">
             <div class="mod-tiers-head">
               <span>Rango (${_esc(m.unitPlural)})</span>
               <span>$/unidad</span>
               <span>Margen</span>
             </div>
-            ${tiersHtml}
+            <div class="mod-tiers-body">
+              ${tiersHtml}
+            </div>
+            <button type="button" class="mod-tiers-toggle-btn" id="mod-${k}-tiers-toggle" onclick="toggleTierVisibility('${k}')">▾ Ver todos los tramos</button>
           </div>
           <div class="mod-subtotal">
             <span>Subtotal ${_esc(m.label)}</span>
@@ -2651,6 +2600,36 @@ function renderModulesPanel() {
         </div>
       </div>`;
   }).join('');
+}
+
+// Toggles whether all tier rows are visible or just the applicable one.
+function toggleTierVisibility(key) {
+  const container = document.getElementById('mod-' + key + '-tiers');
+  if (!container) return;
+  const showAll = container.dataset.showAll === '1' ? '0' : '1';
+  container.dataset.showAll = showAll;
+  const btn = document.getElementById('mod-' + key + '-tiers-toggle');
+  if (btn) btn.textContent = showAll === '1' ? '▴ Ocultar tramos no aplicables' : '▾ Ver todos los tramos';
+  updateTierVisibility(key);
+}
+// Hides tier rows that don't contain the current effective volume, unless
+// the "show all" toggle for that module is active.
+function updateTierVisibility(key) {
+  const container = document.getElementById('mod-' + key + '-tiers');
+  if (!container) return;
+  const showAll = container.dataset.showAll === '1';
+  const upoEl = document.getElementById('mod-' + key + '-upo');
+  const upo   = upoEl ? (parseNum(upoEl.value) || 0) : 0;
+  const opsEl = document.getElementById('inp-ops');
+  const ops   = opsEl ? (parseInt(opsEl.value) || 0) : 0;
+  const vol   = Math.max(0, Math.round(ops * upo));
+  const tiers = MOD_DEFAULTS[key].tiers;
+  container.querySelectorAll('.mod-tier-row').forEach((row, ti) => {
+    const t = tiers[ti];
+    const applicable = (vol >= t.min && vol <= t.max) || (vol < tiers[0].min && ti === 0);
+    row.classList.toggle('mod-tier-hidden', !showAll && !applicable);
+    row.classList.toggle('mod-tier-applicable', applicable);
+  });
 }
 
 function onModuleToggle(key) {
@@ -2781,6 +2760,7 @@ function updateModularSummary() {
 
   // Update per-tier margin badges + per-module volume + subtotal
   ['eos','validai','mve'].forEach(k => {
+    try { updateTierVisibility(k); } catch(e) {}
     const info = r.perModule[k];
     const volEl = document.getElementById('mod-' + k + '-vol');
     const subEl = document.getElementById('mod-' + k + '-subtotal');
@@ -2816,81 +2796,44 @@ function updateModularSummary() {
     bundleAutoInfo.textContent = 'auto: ' + r.activeModuleCount + ' módulo(s) → ' + autoPct + '%';
   }
 
-  // Right-side sticky summary
-  const empty   = document.getElementById('mod-summary-empty');
-  const content = document.getElementById('mod-summary-content');
+  // Legacy pricing-summary sidebar (ps-* IDs) — populate from modular totals so
+  // the visual card the user is used to keeps working, driven by the new engine.
+  const psEmpty = document.getElementById('ps-empty');
+  const psResult = document.getElementById('ps-result');
   const anyActive = r.activeModuleCount > 0 || r.perAddon.whatsapp || r.perAddon.kpiDash || r.perAddon.erp;
   const hasOps = cfg.ops > 0;
-  if (empty && content) {
+  if (psEmpty && psResult) {
     if (!anyActive || !hasOps) {
-      empty.style.display = 'block';
-      content.style.display = 'none';
+      psEmpty.style.display = 'block';
+      psResult.style.display = 'none';
     } else {
-      empty.style.display = 'none';
-      content.style.display = 'block';
+      psEmpty.style.display = 'none';
+      psResult.style.display = 'block';
     }
   }
 
-  document.getElementById('ms-base').textContent = mfmt(r.baseAnnual);
+  // Populate the classic pricing-summary card
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  // Tier badge no longer strictly a single tier — show a summary of active modules.
+  const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k]).map(k => MOD_DEFAULTS[k].label.split(' · ')[0]);
+  const tierBadge = document.getElementById('ps-tier');
+  if (tierBadge) tierBadge.textContent = activeMods.length ? ('⚡ ' + activeMods.join(' + ')) : '⚡ Sin módulos';
 
-  // Modules list
-  const modList = document.getElementById('ms-modules-list');
-  if (modList) {
-    let html = '';
-    ['eos','validai','mve'].forEach(k => {
-      const m = r.perModule[k];
-      if (!m) return;
-      html += '<div class="ms-mod-block">';
-      html += '<div class="ms-line"><span>' + _esc(m.label) + '</span><strong>$' + mfmt(m.revenue) + '</strong></div>';
-      html += '<div class="ms-line ms-line-sub"><span>' + mfmt(m.volume) + ' ' + _esc(m.unitPlural) + ' · ' + mfmt(m.includedInBase) + ' incluidas · ' + mfmt(m.billedUnits) + ' cobradas</span><span></span></div>';
-      html += '</div>';
-    });
-    modList.innerHTML = html;
-  }
+  // Effective ppo = ACV / ops (blended across all active modules).
+  const ppoEff = cfg.ops > 0 ? (r.acv / cfg.ops) : 0;
+  setTxt('ps-ppo',         mfmt2(ppoEff));
+  setTxt('ps-acv',         mfmt(r.acv));
+  setTxt('ps-monthly',     mfmt(r.acv / 12));
+  const annualDisc = r.acv * 0.9;
+  const savingAmt  = r.acv * 0.1;
+  setTxt('ps-annual-disc', mfmt(annualDisc));
+  setTxt('ps-saving',      mfmt(savingAmt));
+  setTxt('ps-impl',        mfmt(r.impl));
+  const implSub = document.getElementById('ps-impl-sub');
+  if (implSub) implSub.textContent = 'Fee único · onboarding + configuración';
 
-  // Addons list
-  const addonList = document.getElementById('ms-addons-list');
-  if (addonList) {
-    let html = '';
-    if (r.perAddon.whatsapp) {
-      const a = r.perAddon.whatsapp;
-      html += '<div class="ms-line"><span>' + _esc(a.label) + ' (' + _esc(a.planLabel) + ')</span><strong>$' + mfmt(a.annual) + '</strong></div>';
-    }
-    if (r.perAddon.kpiDash) {
-      const a = r.perAddon.kpiDash;
-      html += '<div class="ms-line"><span>' + _esc(a.label) + '</span><strong>$' + mfmt(a.annual) + '</strong></div>';
-      html += '<div class="ms-line ms-line-sub"><span>Setup $' + mfmt(a.setup) + ' + $' + mfmt(a.monthly) + '/mes × 12</span><span></span></div>';
-    }
-    if (r.perAddon.erp) {
-      const a = r.perAddon.erp;
-      html += '<div class="ms-line"><span>' + _esc(a.label) + '</span><strong>$' + mfmt(a.annual) + '</strong></div>';
-      if (a.setup || a.monthly) {
-        html += '<div class="ms-line ms-line-sub"><span>Setup $' + mfmt(a.setup) + ' + $' + mfmt(a.monthly) + '/mes × 12</span><span></span></div>';
-      }
-    }
-    addonList.innerHTML = html;
-  }
-
-  const discountRow = document.getElementById('ms-discount-row');
-  if (r.discountAmt > 0) {
-    if (discountRow) discountRow.style.display = '';
-    document.getElementById('ms-bundle-pct').textContent = r.discountPct;
-    document.getElementById('ms-discount').textContent = mfmt(r.discountAmt);
-  } else if (discountRow) {
-    discountRow.style.display = 'none';
-  }
-
-  document.getElementById('ms-subtotal').textContent = mfmt(r.baseAnnual + r.modulesSubtotal + r.addonsSubtotal);
-  document.getElementById('ms-acv').textContent = mfmt(r.acv);
-  const implRow = document.getElementById('ms-impl-row');
-  if (r.impl > 0) {
-    if (implRow) implRow.style.display = '';
-    document.getElementById('ms-impl').textContent = mfmt(r.impl);
-  } else if (implRow) {
-    implRow.style.display = 'none';
-  }
-  document.getElementById('ms-total').textContent = mfmt(r.totalYear1);
-  document.getElementById('ms-monthly').textContent = mfmt(r.monthlyEq);
+  // Update tier visibility one more time (in case ops changed).
+  ['eos','validai','mve'].forEach(k => { try { updateTierVisibility(k); } catch(e) {} });
 
   // Update margin internal panel
   const margContent = document.getElementById('mod-margin-content');
@@ -2908,7 +2851,7 @@ function updateModularSummary() {
     margContent.innerHTML = rows.join('') + (alerts.length ? '<div class="mod-margin-alert">⚠ ' + alerts.map(_esc).join('<br>⚠ ') + '</div>' : '');
   }
 
-  // Also refresh ROI preview since investmentUSD depends on the modular total.
+    // Also refresh ROI preview since investmentUSD depends on the modular total.
   try { if (document.getElementById('roi-toggle') && document.getElementById('roi-toggle').checked) updateROIPreview(); } catch(e) {}
 }
 
