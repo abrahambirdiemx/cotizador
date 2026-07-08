@@ -221,6 +221,36 @@
     .feat-list li strong { color: var(--navy); }
 
     /* Commercial proposal */
+    /* Composición de la propuesta (breakdown modular vista cliente) */
+    .proposal-modules-breakdown { margin: 28px 0 8px; }
+    .proposal-modules-breakdown h3 { font-size: 14px; font-weight: 800; color: var(--navy); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 14px; }
+    .pmb-card { background: white; border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); padding: 18px 22px; margin-bottom: 12px; }
+    .pmb-card.pmb-addon { background: #F8FAFC; }
+    .pmb-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .pmb-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), var(--cyan-dark)); color: white; display: flex; align-items: center; justify-content: center; }
+    .pmb-icon svg { width: 22px; height: 22px; }
+    .pmb-card.pmb-mve .pmb-icon { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .pmb-card.pmb-validai .pmb-icon { background: linear-gradient(135deg, #6366F1, #4338CA); }
+    .pmb-card.pmb-addon .pmb-icon { background: linear-gradient(135deg, #10B981, #059669); width: 36px; height: 36px; border-radius: 8px; }
+    .pmb-card.pmb-addon .pmb-icon svg { width: 18px; height: 18px; }
+    .pmb-title-block { flex: 1; min-width: 200px; }
+    .pmb-title-block h4 { font-size: 15px; font-weight: 800; color: var(--navy); letter-spacing: -0.2px; margin-bottom: 2px; }
+    .pmb-title-block .pmb-sub { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .pmb-amount { font-size: 18px; font-weight: 900; color: var(--navy); letter-spacing: -0.3px; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    .pmb-desc { font-size: 13px; color: #4B5563; line-height: 1.6; margin-top: 12px; }
+    /* Print sizing */
+    @media print {
+      .proposal-modules-breakdown h3 { font-size: 11px !important; margin-bottom: 8px !important; }
+      .pmb-card { padding: 10px 14px !important; box-shadow: none !important; margin-bottom: 6px !important; page-break-inside: avoid; }
+      .pmb-icon { width: 30px !important; height: 30px !important; border-radius: 7px !important; }
+      .pmb-icon svg { width: 16px !important; height: 16px !important; }
+      .pmb-card.pmb-addon .pmb-icon { width: 26px !important; height: 26px !important; }
+      .pmb-title-block h4 { font-size: 12px !important; }
+      .pmb-title-block .pmb-sub { font-size: 10px !important; }
+      .pmb-amount { font-size: 13px !important; }
+      .pmb-desc { font-size: 10.5px !important; line-height: 1.4 !important; margin-top: 6px !important; }
+    }
+
     .pricing-hero { background: linear-gradient(135deg, var(--navy) 0%, #1a4a7a 100%); border-radius: var(--r); padding: 36px 40px; color: white; margin: 36px 0; }
     .pricing-hero h2 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
     .pricing-hero .ph-sub { color: var(--cyan-light); font-size: 14px; margin-bottom: 28px; }
@@ -1622,6 +1652,12 @@
       <h1 class="sec-title">Propuesta para <span id="pr-company">tu empresa</span></h1>
       <p class="sec-body" id="pr-intro">Con base en el volumen de operaciones de <span id="pr-company2">tu empresa</span>, hemos diseñado la siguiente propuesta de inversión.</p>
 
+      <!-- Composición modular (solo si el payload es v5+) -->
+      <div class="proposal-modules-breakdown" id="pr-modules-breakdown" style="display:none">
+        <h3 id="pr-modules-breakdown-title">Composición de tu propuesta</h3>
+        <div id="pr-modules-breakdown-list"></div>
+      </div>
+
       <div class="pricing-hero">
         <h2 id="pr-hero-title">Resumen de Inversión</h2>
         <p class="ph-sub" id="pr-hero-sub">Elige la modalidad de pago que mejor se adapte a tu empresa</p>
@@ -2079,6 +2115,12 @@
         </div>      </div>
       <p class="sec-body" id="ec-intro">Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.</p>
 
+      <!-- Composición modular (solo si el payload es v5+) -->
+      <div class="proposal-modules-breakdown" id="ec-modules-breakdown" style="display:none">
+        <h3 id="ec-modules-breakdown-title">Composición de tu propuesta</h3>
+        <div id="ec-modules-breakdown-list"></div>
+      </div>
+
       <!-- Pricing hero (clonado a partir del t-proposal pero con IDs propios para no chocar) -->
       <div class="pricing-hero">
         <h2 id="ec-hero-title">Resumen de Inversión</h2>
@@ -2412,6 +2454,131 @@ function calcModularPricing(config) {
     totalYear1,
     monthlyEq,
   };
+}
+
+// ── PROPOSAL MODULES BREAKDOWN (client view) ───────────────────────────────
+// Renders active modules and add-ons as descriptive cards inside the client's
+// Propuesta Comercial section. Only invoked when the payload is v5+ (modular).
+
+const MODULE_DESCRIPTIONS = {
+  eos: {
+    label: 'EOS · Control y Visibilidad',
+    unitPlural: 'operaciones',
+    desc_es: 'Rastreo en tiempo real y tabla de control de todas tus operaciones marítimas, aéreas y de paquetería, con integración directa a SOIA. Tu equipo deja de perseguir información por correo — todas las áreas ven el mismo dato al mismo tiempo, y las fechas críticas se actualizan solas etapa por etapa.',
+    desc_en: 'Real-time tracking and control board of all your maritime, air and parcel operations, with direct SOIA integration. Your team stops chasing information by email — every area sees the same data at the same time, and critical dates update automatically stage by stage.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
+  },
+  validai: {
+    label: 'ValidAI · Documentos',
+    unitPlural: 'documentos',
+    desc_es: 'Extracción, validación y verificación automática de documentos comerciales con IA. Detecta errores e inconsistencias antes del despacho, y reconcilia a tres vías PO vs Confirmación vs Invoice para evitar sobrecargos, retrasos por reclamos y desfases con tu ERP.',
+    desc_en: 'AI-powered extraction, validation and verification of commercial documents. Detects errors and inconsistencies before customs clearance, and reconciles PO vs Confirmation vs Invoice three-way to avoid overcharges, delays and ERP mismatches.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>'
+  },
+  mve: {
+    label: 'MVE · Manifestación de Valor Electrónica',
+    unitPlural: 'MVEs',
+    desc_es: 'Generación automática del formato E2 y transmisión directa a VUCEM con e.firma, a partir de los documentos que ya viven en Birdie. Valida datos antes de transmitir para prevenir multas y despachos detenidos, y deja el expediente listo para auditorías del SAT.',
+    desc_en: 'Automatic E2 form generation and direct VUCEM transmission with e.firma, from the documents already in Birdie. Validates data before transmission to prevent fines and stopped clearances, and leaves the audit trail ready for SAT reviews.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>'
+  },
+};
+
+const ADDON_DESCRIPTIONS = {
+  whatsapp: {
+    label: 'WhatsApp AI',
+    desc_es: 'Agente conversacional que atiende consultas de tu equipo directamente en WhatsApp: estatus de operaciones, fechas críticas, documentos, alertas. Sin entrar a la plataforma, con respuestas en segundos.',
+    desc_en: 'Conversational agent that answers your team\'s queries directly in WhatsApp: operation status, critical dates, documents, alerts. Without opening the platform, with responses in seconds.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
+  },
+  kpiDash: {
+    label: 'Tablero personalizado de KPIs',
+    desc_es: 'Dashboard a la medida de los indicadores logísticos y financieros que definas contigo. Setup único de configuración más hosting y ajustes menores mensuales para mantener las vistas al día conforme evoluciona tu operación.',
+    desc_en: 'Custom dashboard of the logistics and financial KPIs we define together. One-time setup plus monthly hosting and minor tweaks to keep the views current as your operation evolves.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
+  },
+  erp: {
+    label: 'Integración ERP',
+    desc_es: 'Conexión y sincronización con tu ERP (catálogos, costos, pagos de pedimento) para que los datos fluyan sin recaptura ni doble trabajo entre sistemas. Setup único de parametrización más soporte continuo.',
+    desc_en: 'Connection and sync with your ERP (catalogs, costs, pedimento payments) so data flows without recapture or double work between systems. One-time setup fee plus ongoing support.',
+    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>'
+  },
+};
+
+function _fmtNum(n, en) { return Math.round(Number(n) || 0).toLocaleString(en ? 'en-US' : 'es-MX'); }
+function _escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Renders module + add-on cards into the given container ID. If the payload is
+// not modular (v<5), hides the section entirely.
+function renderProposalModulesBreakdown(d, containerElId, listElId) {
+  const container = document.getElementById(containerElId);
+  const list = document.getElementById(listElId);
+  if (!container || !list) return;
+
+  if (!isModularPayload(d)) {
+    container.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+
+  const en = (typeof ACTIVE_LANG !== 'undefined' && ACTIVE_LANG === 'en');
+  // Compute per-module amounts using the modular engine so numbers match the summary.
+  let cfg, r;
+  try {
+    cfg = configFromPayload(d);
+    r = calcModularPricing(cfg);
+  } catch(e) { console.error(e); container.style.display = 'none'; return; }
+
+  const html = [];
+
+  // Modules
+  ['eos','validai','mve'].forEach(k => {
+    const m = r.perModule[k];
+    if (!m || !m.revenue) return;
+    const meta = MODULE_DESCRIPTIONS[k];
+    const desc = en ? meta.desc_en : meta.desc_es;
+    html.push(
+      '<div class="pmb-card pmb-' + k + '">' +
+        '<div class="pmb-head">' +
+          '<div class="pmb-icon">' + meta.iconSvg + '</div>' +
+          '<div class="pmb-title-block">' +
+            '<h4>' + _escHtml(meta.label) + '</h4>' +
+            '<div class="pmb-sub">' + _fmtNum(m.volume, en) + ' ' + _escHtml(meta.unitPlural) + ' / año</div>' +
+          '</div>' +
+          '<div class="pmb-amount">$' + _fmtNum(m.revenue, en) + '</div>' +
+        '</div>' +
+        '<p class="pmb-desc">' + _escHtml(desc) + '</p>' +
+      '</div>'
+    );
+  });
+
+  // Add-ons
+  ['whatsapp','kpiDash','erp'].forEach(k => {
+    const a = r.perAddon[k];
+    if (!a) return;
+    const meta = ADDON_DESCRIPTIONS[k];
+    const desc = en ? meta.desc_en : meta.desc_es;
+    html.push(
+      '<div class="pmb-card pmb-addon">' +
+        '<div class="pmb-head">' +
+          '<div class="pmb-icon">' + meta.iconSvg + '</div>' +
+          '<div class="pmb-title-block">' +
+            '<h4>' + _escHtml(meta.label) + '</h4>' +
+          '</div>' +
+          '<div class="pmb-amount">$' + _fmtNum(a.annual, en) + '</div>' +
+        '</div>' +
+        '<p class="pmb-desc">' + _escHtml(desc) + '</p>' +
+      '</div>'
+    );
+  });
+
+  if (html.length === 0) {
+    container.style.display = 'none';
+    list.innerHTML = '';
+  } else {
+    container.style.display = '';
+    list.innerHTML = html.join('');
+  }
 }
 
 // ── PAYLOAD VERSION & HELPERS ──────────────────────────────────────────────
@@ -3577,6 +3744,9 @@ function renderProposal(d) {
     if (stagesSection) stagesSection.classList.add('no-stages');
   }
 
+  // Modular breakdown (composición) — solo v5+
+  try { renderProposalModulesBreakdown(d, 'pr-modules-breakdown', 'pr-modules-breakdown-list'); } catch(e) { console.error(e); }
+
   // Retorno de inversión
   const roi = d.roi || { on: 0 };
   const roiTab = document.getElementById('tab-roi');
@@ -3822,6 +3992,7 @@ function applyEnglish(d) {
   t('pr-hero-title','Investment Summary'); t('pr-hero-sub','Choose the payment plan that best fits your company');
   t('bill-monthly-btn','Monthly'); t('bill-annual-btn','Annual · 10% off');
   t('pr-detail-title','Cost breakdown');
+  t('pr-modules-breakdown-title','Your proposal composition');
   t('th-concept','Concept'); t('th-desc','Description'); t('th-amount','Amount (USD)');
   document.getElementById('impl-note-text').innerHTML = 'The implementation fee is charged <strong>once</strong> at contract signing. From year two onward, only the annual subscription renews.';
   t('inc-title-text','Included in the subscription');
@@ -3883,6 +4054,7 @@ function applySpanish(d) {
   t('pr-hero-title','Resumen de Inversión'); t('pr-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
   t('bill-monthly-btn','Mensual'); t('bill-annual-btn','Anual · 10% descuento');
   t('pr-detail-title','Detalle del costo');
+  t('pr-modules-breakdown-title','Composición de tu propuesta');
   t('th-concept','Concepto'); t('th-desc','Descripción'); t('th-amount','Monto (USD)');
   document.getElementById('impl-note-text').innerHTML = 'El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.';
   t('inc-title-text','Incluido en la suscripción');
@@ -4460,6 +4632,9 @@ function renderEntCommercial(d) {
   const total = (d.erp || 0) + (d.impl || 0) + (isAnnual ? (d.ann || 0) : (d.acv || 0));
   document.getElementById('ec-row-total-amount').textContent = '$' + fc(total);
   document.getElementById('ec-row-meq-amount').textContent = '$' + fc((isAnnual ? d.moDisc : d.mo) || 0) + '/mes';
+
+  // Modular breakdown (composición) — solo v5+
+  try { renderProposalModulesBreakdown(d, 'ec-modules-breakdown', 'ec-modules-breakdown-list'); } catch(e) { console.error(e); }
 }
 
 // ── ES/EN for enterprise labels ───────────────────────────────────────────────
@@ -4512,7 +4687,8 @@ function applyEnterpriseEnglish(d) {
 
   t('ec-tag','PROPOSAL'); t('ec-intro','Based on your operating volume, we have designed the following investment proposal.');
   t('ec-hero-title','Investment Summary'); t('ec-hero-sub','Choose the billing modality that best fits your company');
-  t('ec-detail-title','Cost detail'); t('ec-th-concept','Concept'); t('ec-th-desc','Description'); t('ec-th-amount','Amount (USD)');
+  t('ec-detail-title','Cost detail');
+  t('ec-modules-breakdown-title','Your proposal composition'); t('ec-th-concept','Concept'); t('ec-th-desc','Description'); t('ec-th-amount','Amount (USD)');
   t('ec-row-sub','Subscription'); t('ec-row-disc-label','Annual discount (10%)'); t('ec-row-impl','Implementation'); t('ec-row-erp','ERP integration (optional)');
   t('ec-row-total','Total year one'); t('ec-row-meq-label','Monthly equivalent (from year 2)');
   t('ec-impl-note','The implementation fee is charged once at contract signing. From year two onward, only the annual subscription renews.');
@@ -4586,7 +4762,8 @@ function applyEnterpriseSpanish(d) {
 
   t('ec-tag','COTIZACIÓN'); t('ec-intro','Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.');
   t('ec-hero-title','Resumen de Inversión'); t('ec-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
-  t('ec-detail-title','Detalle del costo'); t('ec-th-concept','Concepto'); t('ec-th-desc','Descripción'); t('ec-th-amount','Monto (USD)');
+  t('ec-detail-title','Detalle del costo');
+  t('ec-modules-breakdown-title','Composición de tu propuesta'); t('ec-th-concept','Concepto'); t('ec-th-desc','Descripción'); t('ec-th-amount','Monto (USD)');
   t('ec-row-sub','Suscripción'); t('ec-row-disc-label','Descuento anual (10%)'); t('ec-row-impl','Implementación'); t('ec-row-erp','Integración ERP (opcional)');
   t('ec-row-total','Total primer año'); t('ec-row-meq-label','Equivalente mensual (a partir del año 2)');
   t('ec-impl-note','El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.');
