@@ -3423,10 +3423,12 @@ function generateProposal() {
   const annualDisc = acv * 0.90;
   const moDisc  = annualDisc / 12;
   const saving  = acv - annualDisc;
-  // ppo/tier are less meaningful in the modular world; expose the EOS-effective
-  // rate if EOS active, else the blended effective across all modules/ops.
-  const eosM = r.perModule && r.perModule.eos;
-  const ppo  = (eosM && eosM.volume > 0) ? (eosM.revenue / eosM.volume) : (ops > 0 ? (r.modulesSubtotal / ops) : 0);
+  // ppo = blended cost per operation of the entire proposal (ACV / ops).
+  // This is what the client expects to see under 'Por Operación' — the
+  // effective per-op price of the whole package (base + all active modules
+  // + all add-ons − bundle discount). The Mensual/Anual toggle in the client
+  // view multiplies this by 0.90 on annual mode as expected.
+  const ppo  = ops > 0 ? (acv / ops) : 0;
   const tier = null;
 
   const data = {
