@@ -221,6 +221,72 @@
     .feat-list li strong { color: var(--navy); }
 
     /* Commercial proposal */
+    /* Módulos flip cards (Funcionalidades tab) */
+    .mod-flip-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin:32px 0; perspective:1600px; }
+    .mod-flip { min-height:440px; cursor:pointer; position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+    .mod-flip.flipped { transform:rotateY(180deg); }
+    .mod-flip-face { position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--r); overflow:hidden; }
+    .mod-flip-front { background:linear-gradient(155deg, var(--navy) 0%, #1a4a7a 100%); color:white; padding:32px 26px; display:flex; flex-direction:column; box-shadow:0 12px 32px rgba(10,38,71,0.25); }
+    .mod-flip-front.mod-flip-eos     { background:linear-gradient(155deg, var(--navy) 0%, var(--cyan-dark) 100%); }
+    .mod-flip-front.mod-flip-validai { background:linear-gradient(155deg, #4338CA 0%, #6366F1 100%); }
+    .mod-flip-front.mod-flip-mve     { background:linear-gradient(155deg, #B45309 0%, #F59E0B 100%); }
+    .mod-flip-front .mfi-icon-wrap { width:72px; height:72px; background:rgba(255,255,255,0.15); border-radius:18px; display:flex; align-items:center; justify-content:center; margin-bottom:24px; }
+    .mod-flip-front .mfi-icon-wrap svg { width:36px; height:36px; color:white; }
+    .mod-flip-front h3 { font-size:22px; font-weight:900; letter-spacing:-0.4px; margin-bottom:8px; line-height:1.15; }
+    .mod-flip-front .mfi-sub { font-size:12px; color:rgba(255,255,255,0.7); font-weight:700; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:16px; }
+    .mod-flip-front .mfi-tag { font-size:14px; color:rgba(255,255,255,0.9); line-height:1.55; font-weight:500; margin-bottom:auto; }
+    .mod-flip-front .mfi-cta { margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.15); font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; text-transform:uppercase; letter-spacing:0.6px; display:flex; align-items:center; justify-content:space-between; }
+    .mod-flip-front .mfi-cta svg { width:18px; height:18px; transition:transform 0.2s; }
+    .mod-flip:hover .mod-flip-front .mfi-cta svg { transform:translateX(4px); }
+    .mod-flip-back { transform:rotateY(180deg); background:white; border:1px solid var(--border); padding:26px 24px; box-shadow:0 12px 32px rgba(10,38,71,0.10); display:flex; flex-direction:column; }
+    .mod-flip-back .mfb-head { display:flex; align-items:center; gap:10px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--border); font-size:13px; font-weight:800; color:var(--navy); letter-spacing:0.3px; text-transform:uppercase; }
+    .mod-flip-back .mfb-head svg { width:16px; height:16px; }
+    .mod-flip-back ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; overflow-y:auto; }
+    .mod-flip-back li { display:flex; gap:10px; align-items:flex-start; font-size:12.5px; color:#374151; line-height:1.5; }
+    .mod-flip-back li::before { content:''; flex-shrink:0; width:16px; height:16px; margin-top:2px; border-radius:50%; background:var(--cyan-pale); background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%230E5E73%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%2220 6 9 17 4 12%22/></svg>'); background-size:11px 11px; background-position:center; background-repeat:no-repeat; }
+    .mod-flip-back li strong { color:var(--navy); font-weight:800; }
+    .mod-flip-back .mfb-flip-back-btn { margin-top:auto; padding-top:14px; border-top:1px solid var(--border); font-size:11px; color:var(--cyan-dark); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; text-align:center; cursor:pointer; }
+    @media (max-width: 900px) {
+      .mod-flip-grid { grid-template-columns:1fr; }
+    }
+    @media print {
+      .mod-flip-grid { grid-template-columns:repeat(3, 1fr) !important; gap:8px !important; margin:12px 0 !important; perspective:none !important; }
+      .mod-flip { min-height:auto !important; transform:none !important; cursor:default !important; }
+      .mod-flip-face { position:relative !important; inset:auto !important; backface-visibility:visible !important; }
+      .mod-flip-front { display:none !important; }
+      .mod-flip-back { transform:none !important; padding:12px 14px !important; box-shadow:none !important; page-break-inside:avoid; }
+      .mod-flip-back .mfb-head { padding-bottom:8px !important; margin-bottom:8px !important; font-size:11px !important; }
+      .mod-flip-back li { font-size:10px !important; line-height:1.4 !important; gap:6px !important; }
+      .mod-flip-back li::before { width:12px !important; height:12px !important; background-size:9px 9px !important; }
+      .mod-flip-back .mfb-flip-back-btn { display:none !important; }
+    }
+
+    /* Bundle callout (Propuesta Comercial) */
+    .bundle-callout { display:flex; align-items:center; gap:18px; padding:20px 24px; background:linear-gradient(135deg, #D1FAE5 0%, #ECFEFF 100%); border:2px solid var(--cyan); border-radius:var(--r); margin:24px 0; box-shadow:var(--shadow); }
+    .bundle-callout .bc-icon { flex-shrink:0; width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg, var(--cyan-dark), #10B981); color:white; display:flex; align-items:center; justify-content:center; }
+    .bundle-callout .bc-icon svg { width:28px; height:28px; }
+    .bundle-callout .bc-body { flex:1; min-width:0; }
+    .bundle-callout .bc-title { font-size:15px; font-weight:900; color:var(--navy); margin-bottom:4px; letter-spacing:-0.2px; }
+    .bundle-callout .bc-desc { font-size:13px; color:#065F46; line-height:1.5; }
+    .bundle-callout .bc-total { flex-shrink:0; text-align:right; }
+    .bundle-callout .bc-total-label { font-size:10px; font-weight:800; color:#065F46; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px; }
+    .bundle-callout .bc-total-pct { font-size:34px; font-weight:900; color:#065F46; letter-spacing:-1px; line-height:1; }
+    .bundle-callout .bc-total-detail { font-size:11px; color:#065F46; margin-top:4px; opacity:0.8; }
+    @media (max-width: 700px) {
+      .bundle-callout { flex-direction:column; align-items:flex-start; text-align:left; }
+      .bundle-callout .bc-total { text-align:left; }
+    }
+    @media print {
+      .bundle-callout { padding:10px 14px !important; margin:10px 0 !important; box-shadow:none !important; page-break-inside:avoid; }
+      .bundle-callout .bc-icon { width:36px !important; height:36px !important; border-radius:9px !important; }
+      .bundle-callout .bc-icon svg { width:20px !important; height:20px !important; }
+      .bundle-callout .bc-title { font-size:12px !important; }
+      .bundle-callout .bc-desc { font-size:10px !important; line-height:1.4 !important; }
+      .bundle-callout .bc-total-pct { font-size:22px !important; }
+      .bundle-callout .bc-total-label { font-size:8px !important; }
+      .bundle-callout .bc-total-detail { font-size:9px !important; }
+    }
+
     /* Composición de la propuesta (breakdown modular vista cliente) */
     .proposal-modules-breakdown { margin: 28px 0 8px; }
     .proposal-modules-breakdown h3 { font-size: 14px; font-weight: 800; color: var(--navy); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 14px; }
@@ -1456,193 +1522,83 @@
     <!-- ─── FUNCIONALIDADES ───────────────── -->
     <div id="t-features" class="section-tab tx-only">
       <div class="sec-tag" id="ft-tag">PLATAFORMA</div>
-      <h1 class="sec-title" id="ft-title">Todo lo que necesitas para gestionar tus importaciones</h1>
-      <p class="sec-body" id="ft-body">Birdie integra en una sola plataforma todas las herramientas que tu equipo necesita para operar con eficiencia, visibilidad y control total sobre cada operación de comercio exterior.</p>
+      <h1 class="sec-title" id="ft-title">Módulos</h1>
+      <p class="sec-body" id="ft-body">Birdie se compone de tres módulos activables. Cada uno es autónomo y cobra por su unidad de negocio. Da clic en cualquiera para ver el detalle.</p>
 
-      <div class="accordion" id="features-accordion">
+      <div class="mod-flip-grid" id="features-flip-grid">
 
-        <!-- 1. Gestión Operativa -->
-        <div class="acc-item open">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-            <span class="acc-title">Sistema de Gestión Operativa</span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
+        <!-- EOS -->
+        <div class="mod-flip" onclick="flipModuleCard(this)" data-module="eos">
+          <div class="mod-flip-face mod-flip-front mod-flip-eos">
+            <div class="mfi-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div class="mfi-sub">Módulo 1</div>
+            <h3>EOS · Control y Visibilidad</h3>
+            <p class="mfi-tag">Rastreo en tiempo real, integración a SOIA, alertas proactivas, colaboración multiárea e indicadores logísticos — todo en una sola tabla de control.</p>
+            <div class="mfi-cta"><span>Ver detalle</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          </div>
+          <div class="mod-flip-face mod-flip-back">
+            <div class="mfb-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>EOS · Control y Visibilidad</div>
+            <ul>
               <li><strong>Personalización de columnas</strong> — Configura las columnas relevantes para replicar la visibilidad actual de tu operación.</li>
-              <li><strong>Trazabilidad aérea y marítima (multinaviera)</strong> — Automatización desde POD, POL, ETD, ETA, fecha de descarga y retorno de vacío.</li>
-              <li><strong>Actualización automática de fechas y cantidades por etapa</strong> — Sincronización en tiempo real de las fechas clave (ETD, ETA, fecha de despacho, fecha de entrega) y cantidades a través de cada etapa del ciclo de importación, sin recaptura manual entre sistemas.</li>
-              <li><strong>Seguimiento de fechas de confirmación y entrega</strong> — Monitoreo proactivo de las fechas comprometidas por proveedor (confirmación de orden, fecha de embarque, fecha estimada de entrega) contra la operación real, con alertas tempranas ante desviaciones.</li>
-              <li><strong>Integración directa con SOIA</strong> — Visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.</li>
-              <li><strong>Bitácora colaborativa multiarea</strong> — Registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.</li>
+              <li><strong>Trazabilidad aérea y marítima (multinaviera)</strong> — Automatización desde POL, POD, ETD, ETA, fecha de descarga y retorno de vacío.</li>
+              <li><strong>Actualización automática de fechas y cantidades por etapa</strong> — Sincronización en tiempo real sin recaptura entre sistemas.</li>
+              <li><strong>Seguimiento de fechas de confirmación y entrega</strong> — Monitoreo proactivo contra la operación real con alertas ante desviaciones.</li>
+              <li><strong>Integración directa con SOIA</strong> — Visibilidad en despacho aduanal, fechas de pago de pedimento y desaduanamiento.</li>
+              <li><strong>Bitácora colaborativa multiárea</strong> — Registro compartido entre compras, finanzas, almacén y demás áreas.</li>
+              <li><strong>Notificaciones automáticas</strong> — Cambios de ETA, documentos faltantes, Cargo Ready Date y más.</li>
+              <li><strong>Integración con WhatsApp</strong> — Consulta estatus, contenedores y fechas desde WhatsApp sin entrar a la plataforma.</li>
+              <li><strong>Vistas por área</strong> — Compras, finanzas y almacén ven lo que les importa, sin perder la visión global.</li>
+              <li><strong>Indicadores logísticos en tiempo real</strong> — Tiempos de despacho, eficiencia y costos acumulados desde el primer día.</li>
+              <li><strong>Tableros personalizados</strong> — Dashboards a la medida de tu operación a partir del tercer mes.</li>
             </ul>
+            <div class="mfb-flip-back-btn" onclick="flipModuleCard(this.parentElement.parentElement, event)">↩ Volver</div>
           </div>
         </div>
 
-        <!-- 2. Control Documental -->
-        <div class="acc-item">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
-            <span class="acc-title">Control Documental</span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
-              <li><strong>Gestión segura de documentos</strong> — Carga, organiza, solicita y comparte documentos con agentes aduanales y agentes de carga: factura comercial, packing list, BL, certificados de origen y más.</li>
-              <li><strong>Expediente completo por operación</strong> — Garantiza que cada operación cuente con todos sus documentos requeridos.</li>
-              <li><strong>Validación automática con IA</strong> — Revisión inteligente de documentos para detectar errores o inconsistencias antes del despacho.</li>
-              <li><strong>Validación de precios y cantidades — PO vs Confirmación vs Invoice</strong> — Reconciliación automática a tres vías entre la orden de compra, la confirmación del proveedor y la factura final. Detecta discrepancias en precios unitarios, cantidades y subtotales antes del pago, evitando sobrecargos, retrasos por reclamos y desfases con tu ERP.</li>
-              <li><strong>Retención documental de 5 años</strong> — Acceso inmediato a cualquier expediente en caso de auditorías del SAT o ANAM.</li>
+        <!-- ValidAI -->
+        <div class="mod-flip" onclick="flipModuleCard(this)" data-module="validai">
+          <div class="mod-flip-face mod-flip-front mod-flip-validai">
+            <div class="mfi-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg></div>
+            <div class="mfi-sub">Módulo 2</div>
+            <h3>ValidAI · Documentos</h3>
+            <p class="mfi-tag">Extracción, validación y verificación automática de documentos comerciales con IA. Reconciliación PO vs Confirmación vs Invoice antes del pago.</p>
+            <div class="mfi-cta"><span>Ver detalle</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          </div>
+          <div class="mod-flip-face mod-flip-back">
+            <div class="mfb-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>ValidAI · Documentos</div>
+            <ul>
+              <li><strong>Gestión segura de documentos</strong> — Carga, organiza, solicita y comparte con agentes aduanales: factura, packing list, BL, certificados de origen y más.</li>
+              <li><strong>Expediente completo por operación</strong> — Cada operación cuenta con todos sus documentos requeridos antes del despacho.</li>
+              <li><strong>Validación automática con IA</strong> — Revisión inteligente para detectar errores o inconsistencias antes del despacho.</li>
+              <li><strong>Validación PO vs Confirmación vs Invoice</strong> — Reconciliación automática a tres vías. Detecta discrepancias en precios, cantidades y subtotales antes del pago.</li>
+              <li><strong>Retención documental de 5 años</strong> — Acceso inmediato para auditorías del SAT o ANAM.</li>
             </ul>
+            <div class="mfb-flip-back-btn" onclick="flipModuleCard(this.parentElement.parentElement, event)">↩ Volver</div>
           </div>
         </div>
 
-        <!-- 3. Alertas Inteligentes -->
-        <div class="acc-item">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-            <span class="acc-title">Alertas Inteligentes <span style="display:inline-flex;align-items:center;gap:4px;margin-left:8px;background:#25D366;color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              WhatsApp
-            </span></span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
-              <li><strong>Notificaciones automáticas por correo</strong> — Alertas por cambios de ETA, documentos faltantes en embarques por arribar, alertas de Cargo Ready Date (CRD) y más.</li>
-              <li><strong>Integración con WhatsApp</strong> — Consulta el estatus de operaciones, contenedores y fechas de llegada directamente desde WhatsApp, sin necesidad de ingresar a la plataforma.</li>
-            </ul>
+        <!-- MVE -->
+        <div class="mod-flip" onclick="flipModuleCard(this)" data-module="mve">
+          <div class="mod-flip-face mod-flip-front mod-flip-mve">
+            <div class="mfi-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div class="mfi-sub">Módulo 3</div>
+            <h3>MVE · Manifestación de Valor Electrónica</h3>
+            <p class="mfi-tag">Generación automática del formato E2 y transmisión directa a VUCEM con e.firma. Valida datos antes de transmitir para prevenir multas y despachos detenidos.</p>
+            <div class="mfi-cta"><span>Ver detalle</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
           </div>
-        </div>
-
-        <!-- 4. Colaboración Multiórea -->
-        <div class="acc-item">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-            <span class="acc-title">Colaboración con Diferentes Áreas</span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
-              <li><strong>Fuentes de información por área</strong> — Construimos vistas específicas para compras, finanzas, almacén y cualquier otra área que requiera visibilidad operativa.</li>
-              <li><strong>Implementación detallada por equipo</strong> — Cada equipo de trabajo recibe su configuración y capacitación específica según sus necesidades.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 5. KPIs y Analítica -->
-        <div class="acc-item">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-            <span class="acc-title">Tableros de KPIs y Analítica</span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
-              <li><strong>Indicadores logísticos en tiempo real</strong> — Tiempos promedio de despacho aduanal, eficiencia logística, costos acumulados y más, disponibles desde el primer día.</li>
-              <li><strong>Tableros personalizados</strong> — A partir del tercer mes de colaboración, se desarrollan dashboards de indicadores personalizados para la operación del cliente.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 6. MVE · Manifestación de Valor Electrónica -->
-        <div class="acc-item">
-          <button class="acc-header" onclick="toggleAcc(this)">
-            <div class="acc-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
-            <span class="acc-title">MVE · Manifestación de Valor Electrónica</span>
-            <span class="acc-chevron">▾</span>
-          </button>
-          <div class="acc-body">
-            <ul class="feat-list">
-              <li><strong>Generación automática del formato E2 y la hoja de cálculo de valor</strong> — A partir de los documentos que ya viven en Birdie (factura, transporte, pagos, incoterms), sin recaptura.</li>
+          <div class="mod-flip-face mod-flip-back">
+            <div class="mfb-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>MVE · Manifestación de Valor</div>
+            <ul>
+              <li><strong>Generación automática del formato E2 y hoja de cálculo de valor</strong> — A partir de los documentos que ya viven en Birdie (factura, transporte, pagos, incoterms), sin recaptura.</li>
               <li><strong>Cálculo de incrementables y valor en aduana</strong> — Automático, sin hojas de cálculo paralelas.</li>
               <li><strong>Validación previa antes de transmitir</strong> — Detecta datos faltantes o inconsistentes antes de mandar la MVE a VUCEM, evitando multas y despachos detenidos.</li>
               <li><strong>Transmisión directa a VUCEM con e.firma</strong> — Antes o al momento del despacho, con acuse inmediato.</li>
               <li><strong>Expediente trazable por operación</strong> — Listo para auditoría del SAT con retención de 5 años.</li>
             </ul>
+            <div class="mfb-flip-back-btn" onclick="flipModuleCard(this.parentElement.parentElement, event)">↩ Volver</div>
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- ─── RETORNO DE INVERSIÓN ──────────── -->
-    <div id="t-roi" class="section-tab tx-only no-roi">
-      <div class="sec-tag" id="roi-tag">VALOR</div>
-      <h1 class="sec-title" id="roi-title">Retorno de Inversión</h1>
-      <p class="sec-body" id="roi-intro">Cuantificamos el costo de no tener Birdie. El ROI se modela con un ramp-up realista de adopción: la implementación ocurre en los primeros meses, la estabilización después, y el ahorro pleno arranca cuando Birdie es la operación cotidiana.</p>
-      <div class="roi-drivers" id="roi-drivers-container"></div>
-
-      <!-- Ramp-up timeline -->
-      <h3 id="roi-ramp-title" class="roi-ramp-title">Ramp-up esperado de adopción</h3>
-      <div class="roi-ramp-timeline">
-        <div class="roi-ramp-phase roi-ramp-impl">
-          <div class="rrp-label" id="roi-ramp-impl-label">FASE 1 · IMPLEMENTACIÓN</div>
-          <div class="rrp-months"><span id="roi-ramp-impl-m">3</span> <span id="roi-ramp-impl-mu">meses</span></div>
-          <div class="rrp-pct">0% del ahorro</div>
-          <div class="rrp-desc" id="roi-ramp-impl-desc">El equipo se capacita y sube la operación a Birdie; la operación previa sigue activa en paralelo.</div>
-        </div>
-        <div class="roi-ramp-phase roi-ramp-stab">
-          <div class="rrp-label" id="roi-ramp-stab-label">FASE 2 · ESTABILIZACIÓN</div>
-          <div class="rrp-months"><span id="roi-ramp-stab-m">3</span> <span id="roi-ramp-stab-mu">meses</span></div>
-          <div class="rrp-pct">50% del ahorro</div>
-          <div class="rrp-desc" id="roi-ramp-stab-desc">Adopción parcial mientras se consolidan prácticas y se calibran procesos.</div>
-        </div>
-        <div class="roi-ramp-phase roi-ramp-full">
-          <div class="rrp-label" id="roi-ramp-full-label">FASE 3 · OPERACIÓN PLENA</div>
-          <div class="rrp-months"><span id="roi-ramp-full-m">6</span> <span id="roi-ramp-full-mu">meses</span></div>
-          <div class="rrp-pct">100% del ahorro</div>
-          <div class="rrp-desc" id="roi-ramp-full-desc">Birdie es la operación cotidiana — los beneficios se materializan completos.</div>
-        </div>
-      </div>
-
-      <div class="roi-summary">
-        <div class="roi-summary-line"><span id="roi-line-hidden-label">Costo oculto anual (full)</span><strong>$<span id="roi-out-hidden">0</span> MXN</strong></div>
-        <div class="roi-summary-line"><span id="roi-line-invest-label">Inversión Birdie (año 1)</span><strong>$<span id="roi-out-invest">0</span> MXN</strong></div>
-        <div class="roi-summary-divider"></div>
-        <div class="roi-summary-two">
-          <div class="roi-summary-col">
-            <div class="rsc-head" id="roi-y1-head">AÑO 1 (con ramp-up)</div>
-            <div class="roi-summary-grid">
-              <div>
-                <div class="roi-cell-label" id="roi-cell-saving-label">Ahorro neto</div>
-                <div class="roi-cell-value">$<span id="roi-out-saving-y1">0</span></div>
-                <div class="roi-cell-unit" id="roi-cell-saving-unit">MXN / año</div>
-              </div>
-              <div>
-                <div class="roi-cell-label" id="roi-cell-roi-label">ROI</div>
-                <div class="roi-cell-value"><span id="roi-out-roi-y1">0</span>%</div>
-                <div class="roi-cell-unit" id="roi-cell-roi-unit">retorno año 1</div>
-              </div>
-              <div>
-                <div class="roi-cell-label" id="roi-cell-payback-label">Payback</div>
-                <div class="roi-cell-value"><span id="roi-out-payback">—</span></div>
-                <div class="roi-cell-unit" id="roi-cell-payback-unit">meses</div>
-              </div>
-            </div>
-          </div>
-          <div class="roi-summary-col">
-            <div class="rsc-head" id="roi-y2-head">AÑO 2 EN ADELANTE (estado estable)</div>
-            <div class="roi-summary-grid">
-              <div>
-                <div class="roi-cell-label" id="roi-cell-saving-y2-label">Ahorro neto</div>
-                <div class="roi-cell-value">$<span id="roi-out-saving-y2">0</span></div>
-                <div class="roi-cell-unit" id="roi-cell-saving-y2-unit">MXN / año</div>
-              </div>
-              <div>
-                <div class="roi-cell-label" id="roi-cell-roi-y2-label">ROI</div>
-                <div class="roi-cell-value"><span id="roi-out-roi-y2">0</span>%</div>
-                <div class="roi-cell-unit" id="roi-cell-roi-y2-unit">retorno anual</div>
-              </div>
-              <div>
-                <div class="roi-cell-label" id="roi-cell-rec-label">Recurrente</div>
-                <div class="roi-cell-value">✓</div>
-                <div class="roi-cell-unit" id="roi-cell-rec-unit">cada año</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1651,6 +1607,20 @@
       <div class="sec-tag" id="pr-tag">COTIZACIÓN</div>
       <h1 class="sec-title">Propuesta para <span id="pr-company">tu empresa</span></h1>
       <p class="sec-body" id="pr-intro">Con base en el volumen de operaciones de <span id="pr-company2">tu empresa</span>, hemos diseñado la siguiente propuesta de inversión.</p>
+
+      <!-- Bundle callout (solo visible si hay >=2 módulos activos, v5+) -->
+      <div class="bundle-callout" id="pr-bundle-callout" style="display:none">
+        <div class="bc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div class="bc-body">
+          <div class="bc-title" id="pr-bundle-title">Bundle Enterprise activo</div>
+          <div class="bc-desc" id="pr-bundle-desc">Por combinar módulos activaste un descuento del 10% adicional. Si pagas anual, se apila con otro 10% para un total del 20% de descuento.</div>
+        </div>
+        <div class="bc-total">
+          <div class="bc-total-label" id="pr-bundle-total-label">Descuento total</div>
+          <div class="bc-total-pct" id="pr-bundle-total-pct">20%</div>
+          <div class="bc-total-detail" id="pr-bundle-total-detail">10% bundle + 10% anual</div>
+        </div>
+      </div>
 
       <div class="pricing-hero">
         <h2 id="pr-hero-title">Resumen de Inversión</h2>
@@ -1690,7 +1660,7 @@
 
       <!-- Composición modular (solo si el payload es v5+) -->
       <div class="proposal-modules-breakdown" id="pr-modules-breakdown" style="display:none">
-        <h3 id="pr-modules-breakdown-title">Composición de tu propuesta</h3>
+        <h3 id="pr-modules-breakdown-title">Módulos</h3>
         <div id="pr-modules-breakdown-list"></div>
       </div>
 
@@ -2115,6 +2085,20 @@
         </div>      </div>
       <p class="sec-body" id="ec-intro">Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.</p>
 
+      <!-- Bundle callout (solo visible si hay >=2 módulos activos, v5+) -->
+      <div class="bundle-callout" id="ec-bundle-callout" style="display:none">
+        <div class="bc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+        <div class="bc-body">
+          <div class="bc-title" id="ec-bundle-title">Bundle Enterprise activo</div>
+          <div class="bc-desc" id="ec-bundle-desc">Por combinar módulos activaste un descuento del 10% adicional. Si pagas anual, se apila con otro 10% para un total del 20% de descuento.</div>
+        </div>
+        <div class="bc-total">
+          <div class="bc-total-label" id="ec-bundle-total-label">Descuento total</div>
+          <div class="bc-total-pct" id="ec-bundle-total-pct">20%</div>
+          <div class="bc-total-detail" id="ec-bundle-total-detail">10% bundle + 10% anual</div>
+        </div>
+      </div>
+
       <!-- Pricing hero (clonado a partir del t-proposal pero con IDs propios para no chocar) -->
       <div class="pricing-hero">
         <h2 id="ec-hero-title">Resumen de Inversión</h2>
@@ -2149,7 +2133,7 @@
 
       <!-- Composición modular (solo si el payload es v5+) -->
       <div class="proposal-modules-breakdown" id="ec-modules-breakdown" style="display:none">
-        <h3 id="ec-modules-breakdown-title">Composición de tu propuesta</h3>
+        <h3 id="ec-modules-breakdown-title">Módulos</h3>
         <div id="ec-modules-breakdown-list"></div>
       </div>
 
@@ -2578,6 +2562,28 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
   } else {
     container.style.display = '';
     list.innerHTML = html.join('');
+  }
+
+  // Bundle callout: shown when >= 2 active modules (matches the modular engine's
+  // BUNDLE_TIERS auto rule). If <2 modules, hidden.
+  const prefix = (containerElId && containerElId.indexOf('ec-') === 0) ? 'ec' : 'pr';
+  const bundleEl = document.getElementById(prefix + '-bundle-callout');
+  if (bundleEl) {
+    const bundlePct = r.discountPct || 0;
+    if (r.activeModuleCount >= 2 && bundlePct > 0) {
+      bundleEl.style.display = '';
+      // 10% bundle base + 10% annual stacked = 20% shown as headline "total"
+      const annualBonus = 10;
+      const totalPct = bundlePct + annualBonus;
+      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      setTxt(prefix + '-bundle-total-pct', totalPct + '%');
+      setTxt(prefix + '-bundle-total-detail', bundlePct + '% bundle + ' + annualBonus + '% anual');
+      setTxt(prefix + '-bundle-desc',
+        'Por combinar ' + r.activeModuleCount + ' módulos activaste un descuento del ' + bundlePct
+        + '% adicional. Si pagas anual, se apila con otro 10% para un total del ' + totalPct + '% de descuento.');
+    } else {
+      bundleEl.style.display = 'none';
+    }
   }
 }
 
@@ -3071,6 +3077,13 @@ function setLang(l, btn) {
   LANG = l;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+// Flip a module card between front (title/tagline) and back (feature list).
+function flipModuleCard(cardEl, ev) {
+  if (ev) { ev.stopPropagation(); }
+  if (!cardEl) return;
+  cardEl.classList.toggle('flipped');
 }
 
 function toggleAcc(btn) {
@@ -3994,7 +4007,7 @@ function applyEnglish(d) {
   t('pr-hero-title','Investment Summary'); t('pr-hero-sub','Choose the payment plan that best fits your company');
   t('bill-monthly-btn','Monthly'); t('bill-annual-btn','Annual · 10% off');
   t('pr-detail-title','Cost breakdown');
-  t('pr-modules-breakdown-title','Your proposal composition');
+  t('pr-modules-breakdown-title','Modules');
   t('th-concept','Concept'); t('th-desc','Description'); t('th-amount','Amount (USD)');
   document.getElementById('impl-note-text').innerHTML = 'The implementation fee is charged <strong>once</strong> at contract signing. From year two onward, only the annual subscription renews.';
   t('inc-title-text','Included in the subscription');
@@ -4056,7 +4069,7 @@ function applySpanish(d) {
   t('pr-hero-title','Resumen de Inversión'); t('pr-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
   t('bill-monthly-btn','Mensual'); t('bill-annual-btn','Anual · 10% descuento');
   t('pr-detail-title','Detalle del costo');
-  t('pr-modules-breakdown-title','Composición de tu propuesta');
+  t('pr-modules-breakdown-title','Módulos');
   t('th-concept','Concepto'); t('th-desc','Descripción'); t('th-amount','Monto (USD)');
   document.getElementById('impl-note-text').innerHTML = 'El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.';
   t('inc-title-text','Incluido en la suscripción');
@@ -4211,7 +4224,7 @@ const ENT_DEFAULT_PHASES = [
 
 const ENT_DEFAULT_FEATURES = [
   {
-    title: 'Sistema de Gestión Operativa',
+    title: 'EOS · Control y Visibilidad',
     items: [
       { text: '**Personalización de columnas** — configura las columnas relevantes para replicar la visibilidad actual de tu operación.' },
       { text: '**Trazabilidad aérea y marítima (multinaviera)** — automatización desde POL, POD, ETD, ETA, fecha de descarga y retorno de vacío.' },
@@ -4219,32 +4232,22 @@ const ENT_DEFAULT_FEATURES = [
       { text: '**Seguimiento de fechas de confirmación y entrega** — monitoreo proactivo de las fechas comprometidas por proveedor (confirmación de orden, fecha de embarque, fecha estimada de entrega) contra la operación real, con alertas tempranas ante desviaciones para reaccionar antes de impactar la cadena.' },
       { text: '**Integración directa con SOIA** — visibilidad en despacho aduanal, fechas de pago de pedimento, importe y fecha de desaduanamiento.' },
       { text: '**Bitácora colaborativa multiárea** — registro de operaciones compartido entre compras, finanzas, almacén y demás áreas.' },
+      { text: '**Notificaciones automáticas por correo** — alertas por cambios de ETA, documentos faltantes en embarques por arribar, Cargo Ready Date (CRD) y más.' },
+      { text: '**Integración con WhatsApp** — consulta el estatus de operaciones, contenedores y fechas de llegada desde WhatsApp, sin entrar a la plataforma.' },
+      { text: '**Fuentes de información por área** — construimos vistas específicas para compras, finanzas, almacén y cualquier área que requiera visibilidad operativa.' },
+      { text: '**Implementación detallada por equipo** — cada equipo recibe su configuración y capacitación específica según sus necesidades.' },
+      { text: '**Indicadores logísticos en tiempo real** — tiempos promedio de despacho aduanal, eficiencia logística, costos acumulados y más, desde el primer día.' },
+      { text: '**Tableros personalizados** — a partir del tercer mes, se desarrollan dashboards de indicadores personalizados para tu operación.' },
     ],
   },
   {
-    title: 'Gestión segura de documentos',
+    title: 'ValidAI · Documentos',
     items: [
       { text: '**Carga, organiza, solicita y comparte documentos** con agentes aduanales y de carga: factura comercial, packing list, BL, certificados de origen y más.' },
       { text: '**Expediente completo por operación** — garantiza que cada operación cuente con todos sus documentos requeridos.' },
       { text: '**Validación automática con IA** — revisión inteligente de documentos para detectar errores o inconsistencias antes del despacho.' },
       { text: '**Validación de precios y cantidades — PO vs Confirmación vs Invoice** — reconciliación automática a tres vías entre la orden de compra, la confirmación del proveedor y la factura final. Detecta discrepancias en precios unitarios, cantidades y subtotales antes del pago, evitando sobrecargos, retrasos por reclamos y desfases con tu ERP.' },
       { text: '**Retención documental de 5 años** — acceso inmediato a cualquier expediente en caso de auditorías del SAT o ANAM.' },
-      { text: '**Notificaciones automáticas por correo** — alertas por cambios de ETA, documentos faltantes en embarques por arribar, Cargo Ready Date (CRD) y más.' },
-      { text: '**Integración con WhatsApp** — consulta el estatus de operaciones, contenedores y fechas de llegada desde WhatsApp, sin entrar a la plataforma.' },
-    ],
-  },
-  {
-    title: 'Colaboración entre áreas',
-    items: [
-      { text: '**Fuentes de información por área** — construimos vistas específicas para compras, finanzas, almacén y cualquier área que requiera visibilidad operativa.' },
-      { text: '**Implementación detallada por equipo** — cada equipo recibe su configuración y capacitación específica según sus necesidades.' },
-    ],
-  },
-  {
-    title: 'Indicadores y tableros',
-    items: [
-      { text: '**Indicadores logísticos en tiempo real** — tiempos promedio de despacho aduanal, eficiencia logística, costos acumulados y más, desde el primer día.' },
-      { text: '**Tableros personalizados** — a partir del tercer mes, se desarrollan dashboards de indicadores personalizados para tu operación.' },
     ],
   },
   {
@@ -4690,7 +4693,7 @@ function applyEnterpriseEnglish(d) {
   t('ec-tag','PROPOSAL'); t('ec-intro','Based on your operating volume, we have designed the following investment proposal.');
   t('ec-hero-title','Investment Summary'); t('ec-hero-sub','Choose the billing modality that best fits your company');
   t('ec-detail-title','Cost detail');
-  t('ec-modules-breakdown-title','Your proposal composition'); t('ec-th-concept','Concept'); t('ec-th-desc','Description'); t('ec-th-amount','Amount (USD)');
+  t('ec-modules-breakdown-title','Modules'); t('ec-th-concept','Concept'); t('ec-th-desc','Description'); t('ec-th-amount','Amount (USD)');
   t('ec-row-sub','Subscription'); t('ec-row-disc-label','Annual discount (10%)'); t('ec-row-impl','Implementation'); t('ec-row-erp','ERP integration (optional)');
   t('ec-row-total','Total year one'); t('ec-row-meq-label','Monthly equivalent (from year 2)');
   t('ec-impl-note','The implementation fee is charged once at contract signing. From year two onward, only the annual subscription renews.');
@@ -4765,7 +4768,7 @@ function applyEnterpriseSpanish(d) {
   t('ec-tag','COTIZACIÓN'); t('ec-intro','Con base en el volumen de operaciones, hemos diseñado la siguiente propuesta de inversión.');
   t('ec-hero-title','Resumen de Inversión'); t('ec-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
   t('ec-detail-title','Detalle del costo');
-  t('ec-modules-breakdown-title','Composición de tu propuesta'); t('ec-th-concept','Concepto'); t('ec-th-desc','Descripción'); t('ec-th-amount','Monto (USD)');
+  t('ec-modules-breakdown-title','Módulos'); t('ec-th-concept','Concepto'); t('ec-th-desc','Descripción'); t('ec-th-amount','Monto (USD)');
   t('ec-row-sub','Suscripción'); t('ec-row-disc-label','Descuento anual (10%)'); t('ec-row-impl','Implementación'); t('ec-row-erp','Integración ERP (opcional)');
   t('ec-row-total','Total primer año'); t('ec-row-meq-label','Equivalente mensual (a partir del año 2)');
   t('ec-impl-note','El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.');
