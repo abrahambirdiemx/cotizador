@@ -1032,9 +1032,10 @@
             <div class="mod-section-head">Base de plataforma</div>
             <div class="mod-inline">
               <label>Fee anual (USD)</label>
-              <input type="number" id="mod-base-annual" value="2400" min="0" step="50" oninput="updateModularSummary()" />
-              <span class="mod-hint">Incluye las primeras 100 uds/año por módulo activo</span>
+              <input type="number" id="mod-base-annual" value="" placeholder="auto" min="0" step="50" oninput="updateModularSummary()" />
+              <span class="mod-hint">Auto según ops · Incluye las primeras 100 uds/año por módulo activo</span>
             </div>
+            <div class="mod-hint" id="mod-base-tier-hint" style="margin-top:6px">Tabla base: 0-500 ops → $100/mes · 501-1k → $175 · 1k-3k → $300 · 3k-7k → $600 · 7k+ → $750</div>
           </div>
 
           <div class="mod-section">
@@ -2152,7 +2153,26 @@
 // Legacy DEFAULT_TAB engine kept below for backward-compat with v<5 proposals.
 // ══════════════════════════════════════════════════════════════════════════════
 // ── CONSTANTES: costos reales, defaults de módulos, add-ons ──────────────────
-const BASE_FEE_DEFAULT     = 2400;    // USD anual
+const BASE_FEE_DEFAULT     = 1200;    // USD anual (fallback si ops = 0)
+// Base fee escalonada por volumen anual de operaciones. La tarifa se deriva
+// automáticamente de ops (aplicando el tramo cuyos min/max lo contienen).
+// El vendedor puede sobreescribir manualmente en el input; si el input queda
+// vacío se usa este tabulador.
+const BASE_FEE_TIERS = [
+  { min: 0,    max: 500,     monthly: 100 },   // $1,200/año
+  { min: 501,  max: 1000,    monthly: 175 },   // $2,100/año
+  { min: 1001, max: 3000,    monthly: 300 },   // $3,600/año
+  { min: 3001, max: 7000,    monthly: 600 },   // $7,200/año
+  { min: 7001, max: 9999999, monthly: 750 },   // $9,000/año
+];
+function getBaseTierByOps(ops) {
+  const n = Math.max(0, Number(ops) || 0);
+  for (const t of BASE_FEE_TIERS) {
+    if (n >= t.min && n <= t.max) return t;
+  }
+  return BASE_FEE_TIERS[BASE_FEE_TIERS.length - 1];
+}
+function getBaseAnnualByOps(ops) { return getBaseTierByOps(ops).monthly * 12; }
 const BASE_INCLUDED_UNITS  = 100;     // por módulo activo (viene incluido en la base)
 const IMPL_FEE_DEFAULT     = 600;     // USD, pago único (editable)
 const MARGIN_FLOOR         = 0.50;    // 50%; warning si algún tramo cae bajo
@@ -2875,7 +2895,13 @@ function readModularConfig() {
   return {
     ops,
     base: {
-      annual: num('mod-base-annual', BASE_FEE_DEFAULT),
+      annual: (function() {
+        const el = document.getElementById('mod-base-annual');
+        const raw = el ? (el.value || '').trim() : '';
+        if (raw === '') return getBaseAnnualByOps(ops);
+        const v = parseNum(raw);
+        return isNaN(v) ? getBaseAnnualByOps(ops) : v;
+      })(),
       includedPerModule: BASE_INCLUDED_UNITS,
     },
     modules: {
@@ -2998,7 +3024,7 @@ function updateModularSummary() {
 // Restores every input to its default from MOD_DEFAULTS / ADDON_DEFAULTS.
 function resetModularToDefaults() {
   if (!confirm('¿Restaurar todas las tarifas y multiplicadores al valor de lista?')) return;
-  document.getElementById('mod-base-annual').value = BASE_FEE_DEFAULT;
+  document.getElementById('mod-base-annual').value = '';   // vacío = auto (tier según ops)
   document.getElementById('mod-impl').value = IMPL_FEE_DEFAULT;
   const bp = document.getElementById('mod-bundle-pct'); if (bp) bp.value = '';
 
