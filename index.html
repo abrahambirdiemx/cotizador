@@ -1623,36 +1623,7 @@
             <th id="th-amount">Monto (USD)</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><strong id="td-sub-label">Suscripción</strong></td>
-            <td id="td-sub-desc">—</td>
-            <td id="td-sub-amt">$0</td>
-          </tr>
-          <tr id="tr-annual-saving" style="display:none">
-            <td><strong id="td-disc-label">Descuento anual (10%)</strong></td>
-            <td id="td-disc-desc">Pago adelantado por 12 meses</td>
-            <td id="td-disc-amt" style="color:var(--success)">-$0</td>
-          </tr>
-          <tr style="background:#fafcff">
-            <td><strong id="td-impl-label">Implementación</strong></td>
-            <td id="td-impl-desc">Configuración personalizada de la plataforma según los flujos operativos, documentos y reglas de negocio del cliente. Capacitación, acompañamiento y puesta en marcha (Go-Live) con soporte dedicado durante la fase de estabilización.</td>
-            <td id="td-impl-amt">$0</td>
-          </tr>
-          <tr id="tr-erp" style="display:none;background:#f0fdf4">
-            <td><strong id="td-erp-label">Integración ERP</strong> <span style="font-size:11px;color:var(--text-muted);font-weight:400">(opcional)</span></td>
-            <td id="td-erp-desc">Parametrización inicial del sistema de acuerdo con la operación del cliente. Carga y estructuración de datos maestros iniciales. Pruebas de funcionamiento y puesta en marcha.</td>
-            <td id="td-erp-amt">$0</td>
-          </tr>
-          <tr class="total-row">
-            <td colspan="2"><strong id="td-total-label">Total primer año</strong></td>
-            <td id="td-total-amt"><strong>$0</strong></td>
-          </tr>
-          <tr id="tr-mo-sub" style="background:#f0f9ff">
-            <td colspan="2" style="font-size:12px;color:var(--text-muted)"><span id="td-mo-sub-label">Equivalente mensual (a partir del año 2)</span></td>
-            <td id="td-mo-sub-amt" style="font-size:12px;color:var(--cyan-dark);font-weight:700">$0/mes</td>
-          </tr>
-        </tbody>
+        <tbody id="pr-breakdown-tbody"><!-- rows rendered dynamically per payload --></tbody>
       </table>
 
       <div class="impl-note">
@@ -2092,14 +2063,7 @@
         <thead>
           <tr><th id="ec-th-concept">Concepto</th><th id="ec-th-desc">Descripción</th><th id="ec-th-amount">Monto (USD)</th></tr>
         </thead>
-        <tbody>
-          <tr><td><strong id="ec-row-sub">Suscripción</strong></td><td id="ec-row-sub-desc">—</td><td id="ec-row-sub-amount">$0</td></tr>
-          <tr id="ec-row-discount" style="display:none"><td><strong id="ec-row-disc-label">Descuento anual (10%)</strong></td><td id="ec-row-disc-desc">Pago adelantado por 12 meses</td><td id="ec-row-disc-amount" style="color:var(--success);font-weight:700">-$0</td></tr>
-          <tr><td><strong id="ec-row-impl">Implementación</strong></td><td id="ec-row-impl-desc">Configuración personalizada, capacitación y acompañamiento de Go-Live.</td><td id="ec-row-impl-amount">$0</td></tr>
-          <tr id="ec-row-erp-row" style="display:none"><td><strong id="ec-row-erp">Integración ERP (opcional)</strong></td><td id="ec-row-erp-desc">Parametrización y conexión con el ERP del cliente.</td><td id="ec-row-erp-amount">$0</td></tr>
-          <tr style="background:var(--cyan-pale);font-weight:800;color:var(--navy)"><td colspan="2" id="ec-row-total">Total primer año</td><td><strong id="ec-row-total-amount">$0</strong></td></tr>
-          <tr><td colspan="2" id="ec-row-meq-label" style="font-size:12px;color:var(--text-muted)">Equivalente mensual (a partir del año 2)</td><td id="ec-row-meq-amount" style="font-size:12px;color:var(--text-muted)">$0/mes</td></tr>
-        </tbody>
+        <tbody id="ec-breakdown-tbody"><!-- rows rendered dynamically per payload --></tbody>
       </table>
       <div class="impl-note" id="ec-impl-note">El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.</div>
 
@@ -2409,6 +2373,163 @@ function calcModularPricing(config) {
   };
 }
 
+// ── BREAKDOWN ROW BUILDER (client view — Detalle del costo) ─────────────────
+// Renders per-module + per-add-on rows directly inside the breakdown table's
+// tbody. Called from applyPricingToProposal (PYME) and renderEntCommercial
+// (Enterprise). Handles v5+ (modular) and legacy v<5 payloads.
+const _BREAK_MODULE_DESC_ES = {
+  eos:     'Rastreo en tiempo real, integración SOIA, alertas proactivas, colaboración multiárea e indicadores logísticos — tabla de control única para toda tu operación.',
+  validai: 'Extracción y validación de documentos con IA, expediente completo, reconciliación PO / Confirmación / Invoice y retención documental de 5 años.',
+  mve:     'Generación automática del formato E2, cálculo de valor en aduana, validación previa y transmisión directa a VUCEM con e.firma.',
+};
+const _BREAK_MODULE_DESC_EN = {
+  eos:     'Real-time tracking, SOIA integration, proactive alerts, cross-team collaboration and real-time KPIs — a single control board for your whole operation.',
+  validai: 'AI-based document extraction and validation, complete file per operation, PO / Confirmation / Invoice reconciliation, and 5-year document retention.',
+  mve:     'Automatic E2 form generation, customs value calculation, pre-transmission validation and direct VUCEM transmission with e.firma.',
+};
+const _BREAK_MODULE_LABEL = {
+  eos:     'EOS · Control y Visibilidad',
+  validai: 'ValidAI · Documentos',
+  mve:     'MVE · Manifestación de Valor Electrónica',
+};
+const _BREAK_ADDON_DESC_ES = {
+  whatsapp: 'Agente conversacional en WhatsApp: estatus, alertas y respuestas al equipo sin entrar a la plataforma.',
+  kpiDash:  'Dashboard a medida de indicadores logísticos y financieros. Setup único más hosting y ajustes mensuales.',
+  erp:      'Conexión y sincronización con tu ERP para que datos, catálogos y costos fluyan sin recaptura entre sistemas.',
+};
+const _BREAK_ADDON_DESC_EN = {
+  whatsapp: 'Conversational agent in WhatsApp: status, alerts and answers for the team without opening the platform.',
+  kpiDash:  'Custom dashboard of logistics and financial KPIs. One-time setup plus monthly hosting and tweaks.',
+  erp:      'Connection and sync with your ERP so data, catalogs and costs flow between systems without recapture.',
+};
+const _BREAK_ADDON_LABEL = {
+  whatsapp: 'WhatsApp AI',
+  kpiDash:  'Tablero personalizado de KPIs',
+  erp:      'Integración ERP',
+};
+
+function _brkFmt(n, en) { return Math.round(Number(n) || 0).toLocaleString(en ? 'en-US' : 'es-MX'); }
+function _brkEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Builds and injects the breakdown rows into the given tbody element.
+// Returns true on success, false if tbody missing.
+function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
+  if (!tbodyEl) return false;
+  const rows = [];
+  const pushRow = (label, desc, amount, opts) => {
+    opts = opts || {};
+    const cls = opts.class ? ' class="' + opts.class + '"' : '';
+    const style = opts.style ? ' style="' + opts.style + '"' : '';
+    const amountStyle = opts.amountStyle ? ' style="' + opts.amountStyle + '"' : '';
+    rows.push('<tr' + cls + style + '><td><strong>' + _brkEsc(label) + '</strong></td><td>' + desc + '</td><td' + amountStyle + '>' + amount + '</td></tr>');
+  };
+
+  if (isModularPayload(d)) {
+    // ── Modular breakdown ──
+    let cfg, r;
+    try { cfg = configFromPayload(d); r = calcModularPricing(cfg); }
+    catch(e) { console.error(e); return false; }
+
+    // Base Birdie
+    const baseLabel = en ? 'Birdie base' : 'Base Birdie';
+    const baseDesc = en
+      ? 'Cloud infrastructure, unlimited users, secure storage, 9×5 technical support and continuous updates. Includes the first 100 units/year per active module.'
+      : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro, soporte técnico 9×5 y actualizaciones continuas. Incluye las primeras 100 unidades/año por módulo activo.';
+    pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
+
+    // Modules
+    ['eos','validai','mve'].forEach(k => {
+      const m = r.perModule[k];
+      if (!m || !m.revenue) return;
+      const label = _BREAK_MODULE_LABEL[k];
+      const desc = en ? _BREAK_MODULE_DESC_EN[k] : _BREAK_MODULE_DESC_ES[k];
+      const volLabel = _brkFmt(m.volume, en) + ' ' + _brkEsc(m.unitPlural) + (en ? '/year' : '/año');
+      const combinedDesc = _brkEsc(desc) + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLabel + '</div>';
+      pushRow(label, combinedDesc, '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
+    });
+
+    // Add-ons
+    ['whatsapp','kpiDash','erp'].forEach(k => {
+      const a = r.perAddon[k];
+      if (!a) return;
+      const desc = en ? _BREAK_ADDON_DESC_EN[k] : _BREAK_ADDON_DESC_ES[k];
+      pushRow(_BREAK_ADDON_LABEL[k], _brkEsc(desc), '$' + _brkFmt(a.annual, en), { style: 'background:#f0fdf4' });
+    });
+
+    // Bundle discount
+    if (r.discountAmt > 0) {
+      pushRow(
+        (en ? 'Bundle discount' : 'Descuento bundle') + ' (' + r.discountPct + '%)',
+        en ? 'By combining ' + r.activeModuleCount + ' modules' : 'Por combinar ' + r.activeModuleCount + ' módulos',
+        '−$' + _brkFmt(r.discountAmt, en),
+        { amountStyle: 'color:var(--success);font-weight:700' }
+      );
+    }
+
+    // Annual discount (client-side)
+    if (isAnnual) {
+      const annualSaving = r.acv * 0.10;
+      pushRow(
+        en ? 'Annual discount (10%)' : 'Descuento anual (10%)',
+        en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
+        '−$' + _brkFmt(annualSaving, en),
+        { amountStyle: 'color:var(--success);font-weight:700' }
+      );
+    }
+
+    // Implementation
+    pushRow(
+      en ? 'Implementation' : 'Implementación',
+      _brkEsc(en
+        ? 'Personalized platform configuration, team training and Go-Live support during the stabilization phase.'
+        : 'Configuración personalizada de la plataforma, capacitación al equipo y acompañamiento durante la fase de estabilización (Go-Live).'),
+      '$' + _brkFmt(r.impl, en),
+      { style: 'background:#fafcff' }
+    );
+
+    // Total
+    const subAmt = isAnnual ? (r.acv * 0.9) : r.acv;
+    const total  = subAmt + r.impl;
+    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>$' + _brkFmt(total, en) + '</strong></td></tr>');
+  } else {
+    // ── Legacy (v<5) breakdown ──
+    const subLabel = isAnnual ? (en ? 'Annual Subscription' : 'Suscripción Anual') : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
+    pushRow(
+      subLabel,
+      _brkEsc((en ? 'Birdie Platform' : 'Plataforma Birdie') + ' · ' + (d.ops || 0).toLocaleString(en ? 'en-US' : 'es-MX') + ' ' + (en ? 'ops/year' : 'ops/año')),
+      '$' + _brkFmt(d.acv || 0, en)
+    );
+    if (isAnnual && (d.saving || 0) > 0) {
+      pushRow(
+        en ? 'Annual discount (10%)' : 'Descuento anual (10%)',
+        en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
+        '−$' + _brkFmt(d.saving || 0, en),
+        { amountStyle: 'color:var(--success);font-weight:700' }
+      );
+    }
+    pushRow(
+      en ? 'Implementation' : 'Implementación',
+      _brkEsc(en ? 'Configuration, training, Go-Live support.' : 'Configuración, capacitación y acompañamiento de Go-Live.'),
+      '$' + _brkFmt(d.impl || 0, en),
+      { style: 'background:#fafcff' }
+    );
+    if ((d.erp || 0) > 0) {
+      pushRow(
+        en ? 'ERP Integration (optional)' : 'Integración ERP (opcional)',
+        en ? 'Parametrization and go-live.' : 'Parametrización y puesta en marcha.',
+        '$' + _brkFmt(d.erp || 0, en),
+        { style: 'background:#f0fdf4' }
+      );
+    }
+    const subAmt = isAnnual ? (d.ann || 0) : (d.acv || 0);
+    const total  = subAmt + (d.impl || 0) + (d.erp || 0);
+    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>$' + _brkFmt(total, en) + '</strong></td></tr>');
+  }
+
+  tbodyEl.innerHTML = rows.join('');
+  return true;
+}
+
 // ── PROPOSAL MODULES BREAKDOWN (client view) ───────────────────────────────
 // Renders active modules and add-ons as descriptive cards inside the client's
 // Propuesta Comercial section. Only invoked when the payload is v5+ (modular).
@@ -2464,15 +2585,17 @@ function _escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c =
 // Renders module + add-on cards into the given container ID. If the payload is
 // not modular (v<5), hides the section entirely.
 function renderProposalModulesBreakdown(d, containerElId, listElId) {
+  // The old pmb-card 'Composición de tu propuesta' block was removed from
+  // the client's Propuesta Comercial view. Module details now live inside
+  // the 'Detalle del costo' table. This function is kept for backward-compat
+  // (old callers) but always hides the container.
   const container = document.getElementById(containerElId);
   const list = document.getElementById(listElId);
-  if (!container || !list) return;
+  if (container) container.style.display = 'none';
+  if (list) list.innerHTML = '';
 
-  if (!isModularPayload(d)) {
-    container.style.display = 'none';
-    list.innerHTML = '';
-    return;
-  }
+  // We still compute r to keep the bundle-callout side effect working below.
+  if (!isModularPayload(d)) return;
 
   const en = (typeof ACTIVE_LANG !== 'undefined' && ACTIVE_LANG === 'en');
   // Compute per-module amounts using the modular engine so numbers match the summary.
@@ -2482,15 +2605,17 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
     r = calcModularPricing(cfg);
   } catch(e) { console.error(e); container.style.display = 'none'; return; }
 
-  const html = [];
+  // Skip module cards — they no longer render in the client view. But still
+  // build 'r' so the bundle-callout logic below has data to work with.
+  const _skipped_html = [];
 
-  // Modules
+  // Modules (skipped)
   ['eos','validai','mve'].forEach(k => {
     const m = r.perModule[k];
     if (!m || !m.revenue) return;
     const meta = MODULE_DESCRIPTIONS[k];
     const desc = en ? meta.desc_en : meta.desc_es;
-    html.push(
+    _skipped_html.push(
       '<div class="pmb-card pmb-' + k + '">' +
         '<div class="pmb-head">' +
           '<div class="pmb-icon">' + meta.iconSvg + '</div>' +
@@ -2511,7 +2636,7 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
     if (!a) return;
     const meta = ADDON_DESCRIPTIONS[k];
     const desc = en ? meta.desc_en : meta.desc_es;
-    html.push(
+    _skipped_html.push(
       '<div class="pmb-card pmb-addon">' +
         '<div class="pmb-head">' +
           '<div class="pmb-icon">' + meta.iconSvg + '</div>' +
@@ -2525,12 +2650,12 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
     );
   });
 
-  if (html.length === 0) {
+  if (_skipped_html.length === 0) {
     container.style.display = 'none';
     list.innerHTML = '';
   } else {
     container.style.display = '';
-    list.innerHTML = html.join('');
+    list.innerHTML = _skipped_html.join('');
   }
 
   // Bundle callout: shown when >= 2 active modules (matches the modular engine's
@@ -3889,35 +4014,8 @@ function applyPricingToProposal(d, billing, en) {
   document.getElementById('pr-company').textContent  = d.co;
   document.getElementById('pr-company2').textContent = d.co;
 
-  // Breakdown
-  const subLabel = isAnnual ? (en ? 'Annual Subscription' : 'Suscripción Anual') : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
-  document.getElementById('td-sub-label').textContent = subLabel;
-  document.getElementById('td-sub-desc').textContent  =
-    `${en ? 'Birdie Platform' : 'Plataforma Birdie'} · ${d.ops.toLocaleString()} ${en ? 'ops/year' : 'ops/año'} · Tier ${d.tier}`;
-  document.getElementById('td-sub-amt').textContent   = `$${fc(d.acv)}`;
-
-  document.getElementById('td-disc-label').textContent = en ? 'Annual discount (10%)' : 'Descuento anual (10%)';
-  document.getElementById('td-disc-desc').textContent  = en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses';
-  document.getElementById('td-disc-amt').textContent   = isAnnual ? `-$${fc(d.saving)}` : '';
-
-  document.getElementById('td-impl-label').textContent = en ? 'Implementation' : 'Implementación';
-  document.getElementById('td-impl-amt').textContent   = `$${fc(d.impl)}`;
-
-  // ERP row
-  const erpAmt = d.erp || 0;
-  const trErp = document.getElementById('tr-erp');
-  if (erpAmt > 0) {
-    trErp.style.display = '';
-    document.getElementById('td-erp-amt').textContent = `$${fc(erpAmt)}`;
-  } else {
-    trErp.style.display = 'none';
-  }
-
-  const totalY1 = subAmt + d.impl + erpAmt;
-  document.getElementById('td-total-label').textContent = en ? 'Total First Year' : 'Total primer año';
-  document.getElementById('td-total-amt').innerHTML     = `<strong>$${fc(totalY1)}</strong>`;
-  document.getElementById('td-mo-sub-label').textContent = isAnnual ? (en ? 'Monthly equivalent (yr 2+)' : 'Equivalente mensual (a partir del año 2)') : (en ? 'Monthly payment' : 'Pago mensual');
-  document.getElementById('td-mo-sub-amt').textContent = `$${fc(moEq)} / ${en ? 'mo' : 'mes'}`;
+  // Breakdown (v5+ or legacy — handled by renderBreakdownRows)
+  try { renderBreakdownRows(d, document.getElementById('pr-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
 }
 
 function setBillingMode(mode, btn) {
@@ -4596,15 +4694,8 @@ function renderEntCommercial(d) {
   document.getElementById('ec-pc-op-amount').textContent = fc(ecPpoEff);
   document.getElementById('ec-pc-op-tier').textContent = (en ? 'Tier ' : 'Tier ') + (d.tier || 1);
 
-  // Detail rows
-  document.getElementById('ec-row-sub-desc').textContent = en ? 'Annual platform subscription.' : 'Suscripción anual a la plataforma.';
-  document.getElementById('ec-row-sub-amount').textContent = '$' + fc(d.acv || 0);
-  document.getElementById('ec-row-disc-amount').textContent = '-$' + fc(d.saving || 0);
-  document.getElementById('ec-row-impl-amount').textContent = '$' + fc(d.impl || 0);
-  document.getElementById('ec-row-erp-amount').textContent = '$' + fc(d.erp || 0);
-  const total = (d.erp || 0) + (d.impl || 0) + (isAnnual ? (d.ann || 0) : (d.acv || 0));
-  document.getElementById('ec-row-total-amount').textContent = '$' + fc(total);
-  document.getElementById('ec-row-meq-amount').textContent = '$' + fc((isAnnual ? d.moDisc : d.mo) || 0) + '/mes';
+  // Detail rows (v5+ or legacy — handled by renderBreakdownRows)
+  try { renderBreakdownRows(d, document.getElementById('ec-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
 
   // Modular breakdown (composición) — solo v5+
   try { renderProposalModulesBreakdown(d, 'ec-modules-breakdown', 'ec-modules-breakdown-list'); } catch(e) { console.error(e); }
