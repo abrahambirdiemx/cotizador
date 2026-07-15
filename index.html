@@ -2650,13 +2650,11 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
     );
   });
 
-  if (_skipped_html.length === 0) {
-    container.style.display = 'none';
-    list.innerHTML = '';
-  } else {
-    container.style.display = '';
-    list.innerHTML = _skipped_html.join('');
-  }
+  // The pmb-card 'Módulos' block was moved into the Detalle del costo table.
+  // Keep the container permanently hidden. (_skipped_html was built above only
+  // to preserve the shape of the function for backward-compat; we discard it.)
+  if (container) container.style.display = 'none';
+  if (list) list.innerHTML = '';
 
   // Bundle callout: shown when >= 2 active modules (matches the modular engine's
   // BUNDLE_TIERS auto rule). If <2 modules, hidden.
