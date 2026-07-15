@@ -1033,7 +1033,7 @@
             <div class="mod-inline">
               <label>Fee anual (USD)</label>
               <input type="number" id="mod-base-annual" value="" placeholder="auto" min="0" step="50" oninput="updateModularSummary()" />
-              <span class="mod-hint">Auto según ops · Incluye las primeras 100 uds/año por módulo activo</span>
+              <span class="mod-hint">Auto según ops · Infraestructura, soporte y actualizaciones incluidos</span>
             </div>
             <div class="mod-hint" id="mod-base-tier-hint" style="margin-top:6px">Tabla base: 0-500 ops → $100/mes · 501-1k → $175 · 1k-3k → $300 · 3k-7k → $600 · 7k+ → $750</div>
           </div>
@@ -2433,8 +2433,8 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
     // Base Birdie
     const baseLabel = en ? 'Birdie base' : 'Base Birdie';
     const baseDesc = en
-      ? 'Cloud infrastructure, unlimited users, secure storage, 9×5 technical support and continuous updates. Includes the first 100 units/year per active module.'
-      : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro, soporte técnico 9×5 y actualizaciones continuas. Incluye las primeras 100 unidades/año por módulo activo.';
+      ? 'Cloud infrastructure, unlimited users, secure document storage, 9×5 technical support and continuous platform updates.'
+      : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro de documentos, soporte técnico 9×5 y actualizaciones continuas de la plataforma.';
     pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
 
     // Modules
