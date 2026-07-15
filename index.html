@@ -3979,7 +3979,6 @@ function applyPricingToProposal(d, billing, en) {
   // Billing toggle buttons
   document.getElementById('bill-monthly-btn').classList.toggle('active', !isAnnual);
   document.getElementById('bill-annual-btn').classList.toggle('active', isAnnual);
-  document.getElementById('tr-annual-saving').style.display = isAnnual ? '' : 'none';
   document.getElementById('disc-chip').style.display = isAnnual ? '' : 'none';
 
   const subAmt  = isAnnual ? d.ann : d.acv;   // what they pay for subscription
@@ -4674,8 +4673,6 @@ function renderEntCommercial(d) {
   document.getElementById('ec-bill-monthly-btn').classList.toggle('active', !isAnnual);
   document.getElementById('ec-bill-annual-btn').classList.toggle('active',  isAnnual);
   document.getElementById('ec-disc-chip').style.display = isAnnual ? '' : 'none';
-  document.getElementById('ec-row-discount').style.display = isAnnual ? '' : 'none';
-  document.getElementById('ec-row-erp-row').style.display = (d.erp && d.erp > 0) ? '' : 'none';
 
   document.getElementById('ec-company').textContent = d.co || (en ? 'your company' : 'tu empresa');
   document.getElementById('ec-chip-saving').textContent = fc(d.saving || 0);
@@ -4753,8 +4750,6 @@ function applyEnterpriseEnglish(d) {
   t('ec-hero-title','Investment Summary'); t('ec-hero-sub','Choose the billing modality that best fits your company');
   t('ec-detail-title','Cost detail');
   t('ec-modules-breakdown-title','Modules'); t('ec-th-concept','Concept'); t('ec-th-desc','Description'); t('ec-th-amount','Amount (USD)');
-  t('ec-row-sub','Subscription'); t('ec-row-disc-label','Annual discount (10%)'); t('ec-row-impl','Implementation'); t('ec-row-erp','ERP integration (optional)');
-  t('ec-row-total','Total year one'); t('ec-row-meq-label','Monthly equivalent (from year 2)');
   t('ec-impl-note','The implementation fee is charged once at contract signing. From year two onward, only the annual subscription renews.');
   t('ec-next-title','Next steps');
   t('ec-next-1','Validate this plan and scope with the client team.');
@@ -4828,8 +4823,6 @@ function applyEnterpriseSpanish(d) {
   t('ec-hero-title','Resumen de Inversión'); t('ec-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
   t('ec-detail-title','Detalle del costo');
   t('ec-modules-breakdown-title','Módulos'); t('ec-th-concept','Concepto'); t('ec-th-desc','Descripción'); t('ec-th-amount','Monto (USD)');
-  t('ec-row-sub','Suscripción'); t('ec-row-disc-label','Descuento anual (10%)'); t('ec-row-impl','Implementación'); t('ec-row-erp','Integración ERP (opcional)');
-  t('ec-row-total','Total primer año'); t('ec-row-meq-label','Equivalente mensual (a partir del año 2)');
   t('ec-impl-note','El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.');
   t('ec-next-title','Siguientes pasos');
   t('ec-next-1','Validar este plan y el alcance con el equipo del cliente.');
