@@ -3764,7 +3764,8 @@ function renderProposal(d) {
   const en = ACTIVE_LANG === 'en';
 
   // Page title
-  document.title = `${d.co} — ${en ? (fmt === 'ent' ? 'Enterprise Proposal' : 'Commercial Proposal') : (fmt === 'ent' ? 'Propuesta Enterprise' : 'Propuesta Comercial')} · Birdie`;
+  const isEnt = fmt === 'ent' || !!d.entp;
+  document.title = `${d.co} — ${en ? (isEnt ? 'Enterprise Proposal' : 'Commercial Proposal') : (isEnt ? 'Propuesta Enterprise' : 'Propuesta Comercial')} · Birdie`;
 
   // Validity
   const validStr = fmtDate(d.valid, ACTIVE_LANG);
@@ -3779,7 +3780,9 @@ function renderProposal(d) {
   document.getElementById('c-tier').textContent =
     (d.tier != null ? `Tier ${d.tier} · ` : '') +
     `${d.ops.toLocaleString()} ${en ? 'ops/year' : 'ops/año'}`;
-  document.getElementById('c-tag').textContent = en ? 'COMMERCIAL PROPOSAL' : 'PROPUESTA COMERCIAL';
+  document.getElementById('c-tag').textContent = d.entp
+    ? (en ? 'ENTERPRISE PROPOSAL' : 'PROPUESTA ENTERPRISE')
+    : (en ? 'COMMERCIAL PROPOSAL' : 'PROPUESTA COMERCIAL');
   document.getElementById('c-subtitle').textContent = 'IA para tu comercio exterior';
   document.getElementById('c-for-label').textContent = en ? 'For:' : 'Para:';
   document.getElementById('c-scroll').textContent = en ? 'Explore proposal' : 'Explorar propuesta';
@@ -4097,7 +4100,7 @@ function applyEnglish(d) {
   t('tc7-h','7. Limitation of Liability'); t('tc7-p','Birdie\'s liability is limited to the amount of the contracted annual subscription. Birdie is not responsible for clearance delays attributable to customs authorities or client-provided information.');
   t('cta-title','Ready to digitalize your imports?');
   t('cta-sub','For questions or clarifications, please contact:');
-  t('c-tag','COMMERCIAL PROPOSAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','For:'); t('c-scroll','Explore proposal');
+  t('c-tag', (PROP_DATA && PROP_DATA.entp) ? 'ENTERPRISE PROPOSAL' : 'COMMERCIAL PROPOSAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','For:'); t('c-scroll','Explore proposal');
   t('note-label','Note');
   t('st-tag','PROCESS');
   t('st-title','Implementation Stages');
@@ -4148,7 +4151,7 @@ function applySpanish(d) {
   document.getElementById('tc-intro').innerHTML = 'Esta propuesta está sujeta a los siguientes términos. Para cualquier duda contáctanos en <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('cta-title','¿Listo para digitalizar tus importaciones?');
   t('cta-sub','Para dudas o aclaraciones favor de contactar a:');
-  t('c-tag','PROPUESTA COMERCIAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','Para:'); t('c-scroll','Explorar propuesta');
+  t('c-tag', (PROP_DATA && PROP_DATA.entp) ? 'PROPUESTA ENTERPRISE' : 'PROPUESTA COMERCIAL'); t('c-subtitle','IA para tu comercio exterior'); t('c-for-label','Para:'); t('c-scroll','Explorar propuesta');
   t('note-label','Nota');
   t('st-tag','PROCESO');
   t('st-title','Etapas de Implementación');
