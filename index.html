@@ -2137,7 +2137,7 @@ function getBaseTierByOps(ops) {
   return BASE_FEE_TIERS[BASE_FEE_TIERS.length - 1];
 }
 function getBaseAnnualByOps(ops) { return getBaseTierByOps(ops).monthly * 12; }
-const BASE_INCLUDED_UNITS  = 100;     // por módulo activo (viene incluido en la base)
+const BASE_INCLUDED_UNITS  = 0;       // Ruta B (jul-2026): sin unidades incluidas — se cobra el volumen completo
 const IMPL_FEE_DEFAULT     = 600;     // USD, pago único (editable)
 const MARGIN_FLOOR         = 0.50;    // 50%; warning si algún tramo cae bajo
 const BUNDLE_TIERS         = { 2: 10, 3: 20 };   // # módulos → % descuento
