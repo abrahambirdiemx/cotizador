@@ -1029,16 +1029,6 @@
         </div>
         <div class="card-body modular-body">
           <div class="mod-section">
-            <div class="mod-section-head">Base de plataforma</div>
-            <div class="mod-inline">
-              <label>Fee anual (USD)</label>
-              <input type="number" id="mod-base-annual" value="" placeholder="auto" min="0" step="50" oninput="updateModularSummary()" />
-              <span class="mod-hint">Auto según ops · Infraestructura, soporte y actualizaciones incluidos</span>
-            </div>
-            <div class="mod-hint" id="mod-base-tier-hint" style="margin-top:6px">Tabla base: 0-500 ops → $100/mes · 501-1k → $175 · 1k-3k → $300 · 3k-7k → $600 · 7k+ → $750</div>
-          </div>
-
-          <div class="mod-section">
             <div class="mod-section-head">Módulos <span class="mod-hint-inline">— cada tramo cobra solo las unidades dentro del rango (blended)</span></div>
             <div id="mod-modules-container"></div>
           </div>
@@ -2427,12 +2417,15 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
     try { cfg = configFromPayload(d); r = calcModularPricing(cfg); }
     catch(e) { console.error(e); return false; }
 
-    // Base Birdie
-    const baseLabel = en ? 'Birdie base' : 'Base Birdie';
-    const baseDesc = en
-      ? 'Cloud infrastructure, unlimited users, secure document storage, 9×5 technical support and continuous platform updates.'
-      : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro de documentos, soporte técnico 9×5 y actualizaciones continuas de la plataforma.';
-    pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
+    // Base Birdie — solo si la propuesta trae tarifa base (ligas viejas). Las
+    // cotizaciones nuevas van sin base (jul-2026): base=0 → no se muestra la fila.
+    if (r.baseAnnual > 0) {
+      const baseLabel = en ? 'Birdie base' : 'Base Birdie';
+      const baseDesc = en
+        ? 'Cloud infrastructure, unlimited users, secure document storage, 9×5 technical support and continuous platform updates.'
+        : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro de documentos, soporte técnico 9×5 y actualizaciones continuas de la plataforma.';
+      pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
+    }
 
     // Modules
     ['eos','validai','mve'].forEach(k => {
@@ -3015,13 +3008,7 @@ function readModularConfig() {
   return {
     ops,
     base: {
-      annual: (function() {
-        const el = document.getElementById('mod-base-annual');
-        const raw = el ? (el.value || '').trim() : '';
-        if (raw === '') return getBaseAnnualByOps(ops);
-        const v = parseNum(raw);
-        return isNaN(v) ? getBaseAnnualByOps(ops) : v;
-      })(),
+      annual: 0,   // tarifa base eliminada (jul-2026): cotizaciones nuevas sin base
       includedPerModule: BASE_INCLUDED_UNITS,
     },
     modules: {
@@ -3144,7 +3131,6 @@ function updateModularSummary() {
 // Restores every input to its default from MOD_DEFAULTS / ADDON_DEFAULTS.
 function resetModularToDefaults() {
   if (!confirm('¿Restaurar todas las tarifas y multiplicadores al valor de lista?')) return;
-  document.getElementById('mod-base-annual').value = '';   // vacío = auto (tier según ops)
   document.getElementById('mod-impl').value = IMPL_FEE_DEFAULT;
   const bp = document.getElementById('mod-bundle-pct'); if (bp) bp.value = '';
 
