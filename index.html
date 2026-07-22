@@ -2250,32 +2250,29 @@ function calcModularPricing(config) {
     const rawVol = Math.max(0, Math.round(ops * unitsPerOp));
     const tiers = Array.isArray(m.tiers) && m.tiers.length ? m.tiers : mDef.tiers;
 
-    // Blended pricing: cada tramo cobra solo las unidades dentro del rango.
+    // Tarifa plana por tramo: el tramo que contiene el volumen TOTAL define el
+    // $/unidad que se aplica a TODAS las unidades cobrables (rawVol − included).
     // Las primeras `included` unidades vienen incluidas en la base (gratis).
-    // Ceiling superior del cargo = max(tier.max, ...) hasta llegar a rawVol.
-    const chargeFrom = included + 1;  // primera unidad cobrable
-    const chargeTo   = rawVol;
     let breakdown = [];
     let modRevenue = 0;
+    const billable = Math.max(0, rawVol - included);
 
-    if (chargeTo >= chargeFrom) {
-      for (const t of tiers) {
-        const tMin = Math.max(t.min, chargeFrom);
-        const tMax = Math.min(t.max, chargeTo);
-        if (tMin > tMax) continue;
-        const units = tMax - tMin + 1;
-        const subtotal = units * Number(t.price || 0);
-        modRevenue += subtotal;
-        breakdown.push({
-          min: t.min,
-          max: t.max,
-          effMin: tMin,
-          effMax: tMax,
-          units,
-          price: Number(t.price || 0),
-          subtotal,
-        });
-      }
+    if (billable > 0) {
+      // Tramo aplicable = el que contiene rawVol (mismo criterio que la UI en
+      // updateTierVisibility). Fuera de rango: primer/último tramo.
+      const appTier = tiers.find(t => rawVol >= t.min && rawVol <= t.max)
+                   || (rawVol < tiers[0].min ? tiers[0] : tiers[tiers.length - 1]);
+      const price = Number(appTier.price || 0);
+      modRevenue = billable * price;
+      breakdown.push({
+        min: appTier.min,
+        max: appTier.max,
+        effMin: included + 1,
+        effMax: rawVol,
+        units: billable,
+        price,
+        subtotal: modRevenue,
+      });
     }
 
     // Márgen bruto vs costo variable
@@ -3779,7 +3776,9 @@ function renderProposal(d) {
   document.getElementById('c-company').textContent = d.co;
   document.getElementById('c-contact').textContent = d.ct;
   document.getElementById('c-date').textContent = fmtDate(d.date, ACTIVE_LANG);
-  document.getElementById('c-tier').textContent = `Tier ${d.tier} · ${d.ops.toLocaleString()} ${en ? 'ops/year' : 'ops/año'}`;
+  document.getElementById('c-tier').textContent =
+    (d.tier != null ? `Tier ${d.tier} · ` : '') +
+    `${d.ops.toLocaleString()} ${en ? 'ops/year' : 'ops/año'}`;
   document.getElementById('c-tag').textContent = en ? 'COMMERCIAL PROPOSAL' : 'PROPUESTA COMERCIAL';
   document.getElementById('c-subtitle').textContent = 'IA para tu comercio exterior';
   document.getElementById('c-for-label').textContent = en ? 'For:' : 'Para:';
@@ -4005,7 +4004,13 @@ function applyPricingToProposal(d, billing, en) {
   const ppoEff = isAnnual ? Math.round(d.ppo * 0.90 * 100) / 100 : d.ppo;
   document.getElementById('pc-ppo-amount').textContent = fc(ppoEff);
   document.getElementById('pc-ppo-period').textContent = en ? 'USD / operation' : 'USD / operación';
-  document.getElementById('pc-tier-num').textContent = d.tier;
+  // En payloads modulares (v5+) no hay "tier"; ocultar la línea. Legacy v<5 la muestra.
+  (function() {
+    const tnum = document.getElementById('pc-tier-num');
+    if (!tnum) return;
+    if (d.tier != null) { tnum.textContent = d.tier; tnum.parentElement.style.display = ''; }
+    else { tnum.parentElement.style.display = 'none'; }
+  })();
 
   // Proposal text
   document.getElementById('pr-company').textContent  = d.co;
@@ -4687,7 +4692,13 @@ function renderEntCommercial(d) {
   // (Matches PYME format behavior so the per-op label is consistent with the subscription card.)
   const ecPpoEff = isAnnual ? Math.round((d.ppo || 0) * 0.90 * 100) / 100 : (d.ppo || 0);
   document.getElementById('ec-pc-op-amount').textContent = fc(ecPpoEff);
-  document.getElementById('ec-pc-op-tier').textContent = (en ? 'Tier ' : 'Tier ') + (d.tier || 1);
+  // Enterprise: mismo criterio — sin tier en modular, ocultar la línea.
+  (function() {
+    const el = document.getElementById('ec-pc-op-tier');
+    if (!el) return;
+    if (d.tier != null) { el.textContent = 'Tier ' + d.tier; el.style.display = ''; }
+    else { el.style.display = 'none'; }
+  })();
 
   // Detail rows (v5+ or legacy — handled by renderBreakdownRows)
   try { renderBreakdownRows(d, document.getElementById('ec-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
