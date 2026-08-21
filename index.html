@@ -1125,6 +1125,108 @@
     .doc-sign-line { height: 26px; border-bottom: 1px solid rgba(10,22,40,0.35); }
     .doc-sign-label { font-size: 11px; color: rgba(10,22,40,0.6); margin-top: 6px; line-height: 1.4; }
 
+
+    /* ── Portada (hoja 1) ───────────────────────────────────────────────────────
+       Full-bleed navy: padding 0 en la hoja, todo el padding en los bloques. El
+       print-color-adjust NO es opcional — sin él el motor de PDF descarta el fondo
+       y la portada sale en blanco. Ninguna capa usa filter:blur(): algunos motores
+       lo rasterizan mal y los gradientes ya van suaves.
+       ────────────────────────────────────────────────────────────────────────── */
+    .doc-cover {
+      background: #0A1628; color: #fff;
+      border-top: none;            /* su acento es la barra inferior, no el filo azul */
+      position: relative; overflow: hidden;
+      print-color-adjust: exact; -webkit-print-color-adjust: exact;
+    }
+    .doc-cover .doc-inner { height: 1056px; padding: 0; }
+
+    /* Capas de fondo, en orden de apilado */
+    .cov-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .cov-glow-a {
+      position: absolute; top: -260px; right: -220px; width: 760px; height: 760px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,211,240,0.28) 0%, rgba(44,90,168,0.16) 38%, rgba(10,22,40,0) 68%);
+    }
+    .cov-glow-b {
+      position: absolute; bottom: -320px; left: -240px; width: 720px; height: 720px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(44,90,168,0.30) 0%, rgba(27,63,133,0.12) 42%, rgba(10,22,40,0) 70%);
+    }
+    .cov-mark {
+      position: absolute; right: -120px; bottom: 120px; width: 520px; height: 520px;
+      object-fit: contain; opacity: 0.06; filter: brightness(0) invert(1);
+    }
+
+    /* Encabezado */
+    .cov-head { position: relative; padding: 46px 60px 0;
+                display: flex; align-items: center; justify-content: space-between; }
+    .cov-brand { display: flex; align-items: center; gap: 13px; }
+    .cov-brand img { filter: brightness(0) invert(1); object-fit: contain; display: block; }
+    .cov-brand-txt { display: flex; flex-direction: column; gap: 3px; }
+    .cov-word { font-size: 27px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+    .cov-tag { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8.6px;
+               letter-spacing: 0.16em; text-transform: uppercase; color: #7CD3F0; }
+    .cov-conf { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px;
+                letter-spacing: 0.18em; text-transform: uppercase; color: #8A9AB5; }
+
+    /* Bloque central */
+    .cov-mid { position: relative; flex: 1; display: flex; flex-direction: column;
+               justify-content: center; padding: 0 60px; }
+    .cov-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+    .cov-dot { width: 7px; height: 7px; border-radius: 50%; background: #7CD3F0; flex-shrink: 0; }
+    .cov-eyebrow-txt { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px;
+                       letter-spacing: 0.2em; text-transform: uppercase; color: #7CD3F0; white-space: nowrap; }
+    .cov-rule { flex: 1; height: 1px;
+                background: linear-gradient(90deg, rgba(124,211,240,0.55), rgba(124,211,240,0)); }
+    .cov-h1 { margin: 0; font-size: 76px; font-weight: 600; letter-spacing: -0.045em;
+              line-height: 0.98; text-wrap: balance; }
+    .cov-lede { margin: 26px 0 0; font-size: 15.5px; line-height: 1.6; color: #B4BFD0; max-width: 46ch; }
+
+    /* Tira de datos */
+    .cov-strip { margin-top: 44px; display: flex; gap: 0;
+                 border-top: 1px solid rgba(255,255,255,0.14);
+                 border-bottom: 1px solid rgba(255,255,255,0.14); }
+    .cov-cell { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .cov-cell:first-child { padding: 20px 22px 20px 0; }
+    .cov-cell:last-child  { padding: 20px 0 20px 22px; }
+    .cov-cell.mid         { padding: 20px 22px; }
+    .cov-div { width: 1px; background: rgba(255,255,255,0.14); flex-shrink: 0; }
+    .cov-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8.6px;
+                 letter-spacing: 0.18em; text-transform: uppercase; color: #8A9AB5; }
+    .cov-value { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+    .cov-value.num { font-variant-numeric: tabular-nums; }
+    .cov-detail { font-size: 12px; color: #8A9AB5; }
+
+    /* Chips */
+    .cov-chips { display: flex; gap: 10px; margin-top: 34px; flex-wrap: wrap; }
+    .cov-chip { display: inline-flex; align-items: center; gap: 8px;
+                padding: 9px 15px; border-radius: 999px;
+                border: 1px solid rgba(255,255,255,0.18);
+                font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10.5px;
+                letter-spacing: 0.06em; color: #B4BFD0; white-space: nowrap; }
+    .cov-chip.hi { border: 1px solid rgba(124,211,240,0.45); color: #7CD3F0; }
+
+    /* Pie */
+    .cov-foot { position: relative; padding: 0 60px 40px;
+                display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
+    .cov-metrics { display: flex; gap: 44px; }
+    .cov-metric { display: flex; flex-direction: column; gap: 3px; }
+    .cov-metric-n { font-size: 29px; font-weight: 600; letter-spacing: -0.04em; color: #7CD3F0; }
+    .cov-metric-l { font-size: 10.5px; color: #8A9AB5; letter-spacing: 0.02em; }
+    .cov-issuer { text-align: right; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .cov-issuer-name { font-size: 12.5px; font-weight: 600; }
+    .cov-issuer-line { font-size: 11.5px; color: #8A9AB5; }
+
+    /* Barra de cierre: último hijo, sangra de borde a borde */
+    .cov-bar { position: relative; height: 8px; flex-shrink: 0;
+               background: linear-gradient(90deg, #7CD3F0 0%, #2C5AA8 55%, #1B3F85 100%); }
+
     /* ── Barra de control (solo pantalla, nunca se imprime) ─────────────────── */
     #doc-bar { position: sticky; top: 0; z-index: 30; display: flex; gap: 10px;
       align-items: center; justify-content: center; padding: 10px;
@@ -5272,10 +5374,11 @@ const DOC_ISSUER = {
 // respuesta, así que la tabla no lleva esa columna; (2) no existe un nivel P4 —
 // los T&C definen tres severidades. Si algún día se comprometen, aquí se agregan.
 const DOC_SLA = {
+  // `d` va en la hoja de SLA, `short` en el pie de la portada. Mismo dato, un lugar.
   cards: [
-    { n: '99.5%', d: 'Uptime mensual garantizado de la plataforma.' },
-    { n: '2 h',   d: 'Respuesta a incidentes críticos en horario de soporte.' },
-    { n: '9×5',   d: 'Soporte lunes a viernes, 9:00–18:00 (CDMX).' },
+    { n: '99.5%', short: 'uptime mensual',       d: 'Uptime mensual garantizado de la plataforma.' },
+    { n: '2 h',   short: 'respuesta a críticos', d: 'Respuesta a incidentes críticos en horario de soporte.' },
+    { n: '9×5',   short: 'soporte CDMX',         d: 'Soporte lunes a viernes, 9:00–18:00 (CDMX).' },
   ],
   levels: [
     { p: 'P1', name: 'Crítica', color: '#B3241E',
@@ -5345,10 +5448,90 @@ function docHead(d, runhead, compact) {
 
 function docFoot(note, pageNo) {
   return '<div class="doc-foot"><div class="doc-note">' + note + '</div>'
-    + '<div class="doc-pageno">' + pageNo + ' / 3</div></div>';
+    + '<div class="doc-pageno">' + pageNo + ' / 4</div></div>';
 }
 
-// ── HOJA 1 · Propuesta económica ─────────────────────────────────────────────
+
+// ── HOJA 1 · Portada ─────────────────────────────────────────────────────────
+// Full-bleed navy. El contenido sale del payload; los textos de la especificación
+// de diseño se cambiaron por los nuestros (tagline real, SLA real, módulos de la
+// cotización) — el diseño es el de la spec, el contenido es el que sostenemos.
+function docPage0(d, r) {
+  const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue);
+  const modShort = activeMods.map(k => _BREAK_MODULE_LABEL[k].split(' · ')[0]);
+  const modNames = activeMods.map(k => docEsc(_BREAK_MODULE_LABEL[k]));
+
+  const chips = modShort.map(m => '<span class="cov-chip">' + docEsc(m) + '</span>')
+    .concat('<span class="cov-chip hi">SLA ' + docEsc(DOC_SLA.cards[0].n) + '</span>')
+    .join('');
+
+  // Las tres cifras del pie son nuestros compromisos de SLA, los mismos que publica
+  // la hoja 4 — se leen de DOC_SLA para no tener el dato en dos lugares.
+  const metrics = DOC_SLA.cards.map(c =>
+    '<div class="cov-metric"><div class="cov-metric-n">' + docEsc(c.n) + '</div>'
+    + '<div class="cov-metric-l">' + docEsc(c.short) + '</div></div>'
+  ).join('');
+
+  const lede = 'Implementación de la plataforma sobre un volumen estimado de '
+    + docInt(d.ops) + ' operaciones anuales'
+    + (modNames.length ? ', con ' + joinNames(modNames, false) : '') + '.';
+
+  const cell = (label, value, detail, cls) =>
+    '<div class="cov-cell' + (cls ? ' ' + cls : '') + '">'
+      + '<div class="cov-label">' + label + '</div>'
+      + '<div class="cov-value' + (label === 'Folio' ? ' num' : '') + '">' + value + '</div>'
+      + '<div class="cov-detail">' + detail + '</div>'
+    + '</div>';
+
+  return '<div class="doc-page doc-cover">'
+    + '<div class="cov-grid"></div>'
+    + '<div class="cov-glow-a"></div>'
+    + '<div class="cov-glow-b"></div>'
+    + '<img class="cov-mark" src="' + BIRDIE_MARK + '" alt="">'
+    + '<div class="doc-inner">'
+      + '<div class="cov-head">'
+        + '<div class="cov-brand">'
+          + '<img src="' + BIRDIE_MARK + '" alt="" width="40" height="40">'
+          + '<div class="cov-brand-txt">'
+            + '<span class="cov-word">birdie</span>'
+            + '<span class="cov-tag">IA para tu comercio exterior</span>'
+          + '</div>'
+        + '</div>'
+        + '<div class="cov-conf">Confidencial</div>'
+      + '</div>'
+
+      + '<div class="cov-mid">'
+        + '<div class="cov-eyebrow">'
+          + '<span class="cov-dot"></span>'
+          + '<span class="cov-eyebrow-txt">Propuesta económica</span>'
+          + '<span class="cov-rule"></span>'
+        + '</div>'
+        + '<h1 class="cov-h1">Trazabilidad total<br>de cada <span style="color:#7CD3F0">importación</span></h1>'
+        + '<p class="cov-lede">' + lede + '</p>'
+        + '<div class="cov-strip">'
+          + cell('Preparado para', docEsc(d.co), d.ct ? docEsc(d.ct) : 'Dirección de operaciones')
+          + '<div class="cov-div"></div>'
+          + cell('Folio', d.folio ? docEsc(d.folio) : '—', docDate(d.date), 'mid')
+          + '<div class="cov-div"></div>'
+          + cell('Vigencia', '30 días naturales', 'Hasta el ' + docDate(d.valid))
+        + '</div>'
+        + '<div class="cov-chips">' + chips + '</div>'
+      + '</div>'
+
+      + '<div class="cov-foot">'
+        + '<div class="cov-metrics">' + metrics + '</div>'
+        + '<div class="cov-issuer">'
+          + '<div class="cov-issuer-name">' + docEsc(DOC_ISSUER.legal) + '</div>'
+          + DOC_ISSUER.lines.map(l => '<div class="cov-issuer-line">' + docEsc(l) + '</div>').join('')
+        + '</div>'
+      + '</div>'
+
+      + '<div class="cov-bar"></div>'
+    + '</div>'
+  + '</div>';
+}
+
+// ── HOJA 2 · Propuesta económica ─────────────────────────────────────────────
 function docPage1(d, r, cfg, level) {
   const pct = adpOf(d);
   const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue);
@@ -5458,7 +5641,7 @@ function docPage1(d, r, cfg, level) {
       + '<div class="doc-total-box"><span class="doc-eyebrow">Total primer año</span>'
       + '<strong>' + docMoney(totalY1) + '</strong></div>'
     + '</div></div>'
-    + docFoot(note, 1)
+    + docFoot(note, 2)
     + '</div></div>';
 }
 
@@ -5509,7 +5692,7 @@ function docPage2(d, r) {
       + '</div>'
     + '</div>'
     + docFoot('Los módulos y add-ons marcados como disponibles pueden contratarse en cualquier momento del contrato; '
-      + 'su alta se factura de forma proporcional al periodo restante.', 2)
+      + 'su alta se factura de forma proporcional al periodo restante.', 3)
     + '</div></div>';
 }
 
@@ -5552,23 +5735,25 @@ function docPage3(d) {
         + '<div class="doc-sign"><div class="doc-sign-line"></div>'
           + '<div class="doc-sign-label">' + docEsc(d.co || 'El cliente') + '</div></div>'
       + '</div>'
-      + '<div class="doc-pageno">3 / 3</div>'
+      + '<div class="doc-pageno">4 / 4</div>'
     + '</div>'
     + '</div></div>';
 }
 
 // ── Orquestador ───────────────────────────────────────────────────────────────
-const DOC_FIT_LIMIT = 1048;   // 1056 de hoja − los 8px del filo superior
-
-/** Control de ajuste de la especificación (§7). Mide el contenido real de cada
- *  hoja y lo deja en `data-fit` de #doc-view, para que se pueda verificar sin
- *  abrir el PDF a mano (scripts/render-check y check:doc lo leen de ahí). */
+/** Control de ajuste (§7 de la especificación). Mide el contenido real de cada hoja
+ *  y lo deja en `data-fit` de #doc-view, para poder verificarlo sin abrir el PDF a
+ *  mano (scripts/check-doc.ts lo lee de ahí).
+ *
+ *  Cada hoja se compara contra SU PROPIA caja, no contra una constante: las
+ *  interiores tienen 1048px (1056 menos el filo azul de 8px) pero la portada no
+ *  lleva ese filo, así que su caja es de 1056. Antes esto era un 1048 hardcodeado. */
 function docCheckFit() {
   const report = Array.from(document.querySelectorAll('#doc-view .doc-inner')).map((el, i) => ({
     page: i + 1,
     height: el.scrollHeight,
-    limit: DOC_FIT_LIMIT,
-    ok: el.scrollHeight <= DOC_FIT_LIMIT,
+    limit: el.clientHeight,
+    ok: el.scrollHeight <= el.clientHeight,
   }));
   const view = document.getElementById('doc-view');
   if (view) view.setAttribute('data-fit', JSON.stringify(report));
@@ -5598,24 +5783,51 @@ function renderDocument(d) {
   const bar = '<div id="doc-bar">'
     + '<button class="primary" onclick="printDocument()">Imprimir / Guardar PDF</button>'
     + '<button onclick="closeDocument()">Volver a la propuesta</button>'
-    + '<span class="hint">3 hojas · tamaño carta</span>'
+    + '<span class="hint">4 hojas · tamaño carta</span>'
     + '</div>';
 
   // Escalera de ajuste (§7): se renderiza, se MIDE, y si la hoja 1 desborda se
   // vuelve a armar más compacta. Primero se aprieta el espaciado y luego se acorta
   // la intro — nunca se bajan las fuentes ni se recorta lo que escribió el vendedor.
   // Solo la hoja 1 es variable; las otras dos son plantilla y siempre caben.
+  // ⚠️ La hoja variable es la de PRECIOS, que con la portada delante pasó a ser el
+  // índice 1 del reporte. Mirar fit[0] aquí revisaría la portada y la escalera nunca
+  // se activaría.
+  const PRICING = 1;
   let fit = null;
   for (let level = 0; level <= 2; level++) {
-    view.innerHTML = bar + docPage1(d, r, cfg, level) + docPage2(d, r) + docPage3(d);
+    view.innerHTML = bar + docPage0(d, r) + docPage1(d, r, cfg, level) + docPage2(d, r) + docPage3(d);
     fit = docCheckFit();
-    if (fit[0] && fit[0].ok) break;
+    if (fit[PRICING] && fit[PRICING].ok) break;
   }
   return fit;
 }
 
+// @page no se puede condicionar por clase de body, así que el modo documento inyecta
+// su propia regla al abrir y la quita al cerrar. Así la regla A4 del print heredado
+// del portal (~línea 565) queda intacta en vez de sobreescribirse en silencio.
+//
+// `margin: 0` arregla tres cosas de un golpe: fija la hoja en Carta —el documento está
+// diseñado a 816×1056px y se estaba imprimiendo en A4, de ahí que Chrome lo encogiera
+// y lo centrara—, quita los bordes blancos, y le deja a Chrome sin espacio para dibujar
+// SU encabezado y pie (fecha, título y la URL completa del payload), que salían
+// impresos en el PDF. También es requisito para que la portada sangre de borde a borde.
+const DOC_PAGE_RULE_ID = 'doc-page-rule';
+function docApplyPageRule() {
+  if (document.getElementById(DOC_PAGE_RULE_ID)) return;
+  const st = document.createElement('style');
+  st.id = DOC_PAGE_RULE_ID;
+  st.textContent = '@page { size: letter; margin: 0; }';
+  document.head.appendChild(st);
+}
+function docRemovePageRule() {
+  const st = document.getElementById(DOC_PAGE_RULE_ID);
+  if (st && st.parentNode) st.parentNode.removeChild(st);
+}
+
 function openDocument() {
   if (!PROP_DATA) return;
+  docApplyPageRule();
   // El orden importa: doc-mode PRIMERO. Mientras #doc-view está display:none no hay
   // layout y scrollHeight devuelve 0, así que el control de ajuste mediría cero.
   document.body.classList.add('doc-mode');
@@ -5626,6 +5838,7 @@ function openDocument() {
 
 function closeDocument() {
   document.body.classList.remove('doc-mode');
+  docRemovePageRule();
   window.scrollTo(0, 0);
 }
 
