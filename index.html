@@ -1765,7 +1765,7 @@
         <p class="ph-sub" id="pr-hero-sub">Elige la modalidad de pago que mejor se adapte a tu empresa</p>
 
         <!-- Billing toggle -->
-        <div class="billing-toggle-wrap">
+        <div class="billing-toggle-wrap" id="bill-wrap">
           <div class="billing-toggle">
             <button class="bill-opt" onclick="setBillingMode('monthly',this)" id="bill-monthly-btn" data-es="Mensual" data-en="Monthly">Mensual</button>
             <button class="bill-opt active" onclick="setBillingMode('annual',this)" id="bill-annual-btn" data-es="Anual · 10% descuento" data-en="Annual · 10% off">Anual · 10% descuento</button>
@@ -2212,7 +2212,7 @@
       <div class="pricing-hero">
         <h2 id="ec-hero-title">Resumen de Inversión</h2>
         <p class="ph-sub" id="ec-hero-sub">Elige la modalidad de pago que mejor se adapte a tu empresa</p>
-        <div class="billing-toggle-wrap">
+        <div class="billing-toggle-wrap" id="ec-bill-wrap">
           <div class="billing-toggle">
             <button id="ec-bill-monthly-btn" class="bill-btn" onclick="ecSwitchBilling('monthly')">Mensual</button>
             <button id="ec-bill-annual-btn" class="bill-btn active" onclick="ecSwitchBilling('annual')">Anual · 10% descuento</button>
@@ -2347,6 +2347,9 @@ function adpOf(d) {
   return (isFinite(n) && n >= 0 && n < 100) ? n : ANNUAL_DISCOUNT_PCT;
 }
 function adpFactor(d) { return (100 - adpOf(d)) / 100; }
+// ¿Esta propuesta lleva descuento por pago anual? 0% significa APAGADO: el vendedor lo
+// quitó en el Cotizador, así que no se pinta en ceros — se suprime todo el aparato.
+function adpOn(d) { return adpOf(d) > 0; }
 
 // ── Modo de licencia ─────────────────────────────────────────────────────────
 // 'gen' = licencia general: los módulos se presentan como UN concepto. Es
@@ -2704,7 +2707,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
     }
 
     // Annual discount (client-side)
-    if (isAnnual) {
+    if (isAnnual && adpOn(d)) {
       const adPct = adpOf(d);
       const annualSaving = r.acv * (adPct / 100);
       pushRow(
@@ -2737,7 +2740,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       _brkEsc((en ? 'Birdie Platform' : 'Plataforma Birdie') + ' · ' + (d.ops || 0).toLocaleString(en ? 'en-US' : 'es-MX') + ' ' + (en ? 'ops/year' : 'ops/año')),
       '$' + _brkFmt(d.acv || 0, en)
     );
-    if (isAnnual && (d.saving || 0) > 0) {
+    if (isAnnual && adpOn(d) && (d.saving || 0) > 0) {
       const adPctL = adpOf(d);
       pushRow(
         en ? ('Annual discount (' + adPctL + '%)') : ('Descuento anual (' + adPctL + '%)'),
@@ -2907,11 +2910,17 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
       const annualBonus = adpOf(d);
       const totalPct = bundlePct + annualBonus;
       const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-      setTxt(prefix + '-bundle-total-pct', totalPct + '%');
-      setTxt(prefix + '-bundle-total-detail', bundlePct + '% bundle + ' + annualBonus + '% anual');
-      setTxt(prefix + '-bundle-desc',
-        'Por combinar ' + r.activeModuleCount + ' módulos activaste un descuento del ' + bundlePct
-        + '% adicional. Si pagas anual, se apila con otro ' + annualBonus + '% para un total del ' + totalPct + '% de descuento.');
+      // Si esta propuesta va sin descuento anual, la copy habla solo del bundle: no se
+      // le puede prometer al cliente un apilado que no existe.
+      setTxt(prefix + '-bundle-total-pct', (annualBonus > 0 ? totalPct : bundlePct) + '%');
+      setTxt(prefix + '-bundle-total-detail', annualBonus > 0
+        ? (bundlePct + '% bundle + ' + annualBonus + '% anual')
+        : (bundlePct + '% por combinar módulos'));
+      setTxt(prefix + '-bundle-desc', annualBonus > 0
+        ? ('Por combinar ' + r.activeModuleCount + ' módulos activaste un descuento del ' + bundlePct
+           + '% adicional. Si pagas anual, se apila con otro ' + annualBonus + '% para un total del ' + totalPct + '% de descuento.')
+        : ('Por combinar ' + r.activeModuleCount + ' módulos activaste un descuento del ' + bundlePct
+           + '% sobre la suscripción.'));
     } else {
       bundleEl.style.display = 'none';
     }
@@ -4224,15 +4233,34 @@ function stampAnnualDiscountCopy(d, en) {
   const annualBtn = en ? ('Annual · ' + pct + '% off') : ('Anual · ' + pct + '% descuento');
   set('bill-annual-btn', annualBtn);
   set('ec-bill-annual-btn', annualBtn);
+  // Sin selector de pago no hay modalidad que elegir: el subtítulo tiene que dejar de
+  // invitar a escoger una.
+  const heroSub = pct > 0
+    ? (en ? 'Choose the payment plan that best fits your company'
+          : 'Elige la modalidad de pago que mejor se adapte a tu empresa')
+    : (en ? 'Annual subscription, invoiced in advance'
+          : 'Suscripción anual, facturada por adelantado');
+  set('pr-hero-sub', heroSub);
+  set('ec-hero-sub', heroSub);
   // En inglés applyEnglish reescribe el <ul> completo y este <li> deja de existir;
   // ahí el porcentaje ya viene interpolado en la cadena de applyEnglish.
-  set('tc-annual-discount-li', en
-    ? ('The ' + pct + '% discount applies exclusively to prepaid annual payment.')
-    : ('El descuento del ' + pct + '% aplica exclusivamente para pago anual por adelantado.'));
+  set('tc-annual-discount-li', pct > 0
+    ? (en
+        ? ('The ' + pct + '% discount applies exclusively to prepaid annual payment.')
+        : ('El descuento del ' + pct + '% aplica exclusivamente para pago anual por adelantado.'))
+    : (en
+        ? 'This proposal has no prepayment discount; the annual subscription is invoiced at list price.'
+        : 'Esta propuesta no incluye descuento por pago anticipado; la suscripción anual se factura a precio de lista.'));
 }
 
 function applyPricingToProposal(d, billing, en) {
-  const isAnnual = billing === 'annual';
+  // Sin descuento por pago anual, mensual y anual cuestan lo mismo: mostrar un selector
+  // con la misma cifra en los dos lados se lee como un error. Se esconde el selector
+  // completo —que además lleva el chip de ahorro— y se presenta la cifra anual.
+  const annualOn = adpOn(d);
+  const isAnnual = annualOn ? billing === 'annual' : true;
+  const billWrap = document.getElementById('bill-wrap');
+  if (billWrap) billWrap.style.display = annualOn ? '' : 'none';
 
   // Billing toggle buttons
   document.getElementById('bill-monthly-btn').classList.toggle('active', !isAnnual);
@@ -4251,14 +4279,16 @@ function applyPricingToProposal(d, billing, en) {
   document.getElementById('pc-main-label').textContent = isAnnual
     ? (en ? 'Annual Subscription' : 'Suscripción Anual')
     : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
-  document.getElementById('pc-main-saving').textContent = isAnnual
-    ? (en ? `Save $${fc(d.saving)} USD` : `Ahorro de $${fc(d.saving)} USD`)
-    : (en ? 'No discount' : 'Sin descuento');
+  document.getElementById('pc-main-saving').textContent = !annualOn
+    ? ''
+    : isAnnual
+      ? (en ? `Save $${fc(d.saving)} USD` : `Ahorro de $${fc(d.saving)} USD`)
+      : (en ? 'No discount' : 'Sin descuento');
 
   document.getElementById('pc-mo-amount').textContent = fc(moEq);
   document.getElementById('pc-mo-label').textContent = en ? 'Monthly equiv.' : 'Equivalente mensual';
   document.getElementById('pc-mo-period').textContent = en ? 'USD / month' : 'USD / mes';
-  document.getElementById('pc-mo-saving').textContent = isAnnual
+  document.getElementById('pc-mo-saving').textContent = (annualOn && isAnnual)
     ? (en ? `vs $${fc(d.mo)}/mo full price` : `vs $${fc(d.mo)}/mes precio lista`)
     : '';
 
@@ -4349,7 +4379,7 @@ function applyEnglish(d) {
   document.getElementById('tc-intro').innerHTML = 'This proposal is subject to the following terms. For any questions, contact us at <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('tc1-h','1. Proposal Validity'); t('tc1-p','This proposal is valid for 30 calendar days from the date of issue. After this period, prices and conditions may be subject to revision.');
   t('tc2-h','2. Billing and Payment');
-  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>The ' + adpOf(d) + '% discount applies exclusively to prepaid annual payment.</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li>Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
+  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>' + (adpOn(d) ? ('The ' + adpOf(d) + '% discount applies exclusively to prepaid annual payment.') : 'This proposal has no prepayment discount; the annual subscription is invoiced at list price.') + '</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li>Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
   t('tc3-h','3. Implementation & Onboarding');
   document.getElementById('tc3-ul').innerHTML = '<li>Estimated duration: 2–4 weeks.</li><li>Includes: platform configuration, initial data load, customs broker integration, and team training.</li><li>Client must assign a point of contact during implementation.</li>';
   t('tc4-h','4. Contract & Renewal');
@@ -4939,7 +4969,11 @@ function ecSwitchBilling(b) {
 }
 function renderEntCommercial(d) {
   const en = ACTIVE_LANG === 'en';
-  const isAnnual = EC_BILLING === 'annual';
+  // Mismo criterio que la vista PYME: sin descuento anual, fuera el selector de pago.
+  const annualOn = adpOn(d);
+  const isAnnual = annualOn ? EC_BILLING === 'annual' : true;
+  const ecBillWrap = document.getElementById('ec-bill-wrap');
+  if (ecBillWrap) ecBillWrap.style.display = annualOn ? '' : 'none';
   document.getElementById('ec-bill-monthly-btn').classList.toggle('active', !isAnnual);
   document.getElementById('ec-bill-annual-btn').classList.toggle('active',  isAnnual);
   document.getElementById('ec-disc-chip').style.display = isAnnual ? '' : 'none';
@@ -5372,9 +5406,15 @@ function docPage1(d, r, cfg, level) {
   const prepay     = r.acv - annualDisc;
   const totalY1    = prepay + r.impl;
 
+  // Sin descuento de bundle, `subtotal` y `acv` son el MISMO número: repetirlo en dos
+  // renglones seguidos solo hace ruido. Se muestra el desglose únicamente cuando hay
+  // un descuento que explique la diferencia.
+  const hasBundle = r.discountAmt > 0;
   const totals = []
-    .concat('<div class="doc-total-row"><span>Subtotal</span><span>' + docMoney(subtotal) + '</span></div>')
-    .concat(r.discountAmt > 0
+    .concat(hasBundle
+      ? '<div class="doc-total-row"><span>Subtotal</span><span>' + docMoney(subtotal) + '</span></div>'
+      : [])
+    .concat(hasBundle
       ? '<div class="doc-total-row disc"><span>Descuento por combinar módulos (' + docInt(r.discountPct) + '%)</span><span>−' + docMoney(r.discountAmt) + '</span></div>'
       : [])
     .concat('<div class="doc-total-row"><span>Suscripción anual</span><span>' + docMoney(r.acv) + '</span></div>')
@@ -5392,8 +5432,10 @@ function docPage1(d, r, cfg, level) {
        + (modNames.length ? ', con ' + joinNames(modNames.map(docEsc), false) : '')
        + '. Los importes están expresados en dólares estadounidenses y corresponden al primer año de contrato.');
 
+  // Con el descuento anual apagado, anual y mensual cuestan lo mismo: mencionar una
+  // "alternativa mensual sin descuento" sobra y confunde.
   const note = 'Precios en USD. Suscripción facturada de forma anual anticipada; pago a 30 días. '
-    + 'Alternativa de pago mensual: ' + docMoney(r.acv / 12) + '/mes sin descuento. '
+    + (pct > 0 ? ('Alternativa de pago mensual: ' + docMoney(r.acv / 12) + '/mes sin descuento. ') : '')
     + 'No incluye viáticos ni desarrollos a la medida.';
 
   const lvlClass = (level >= 1 ? ' doc-dense' : '') + (level >= 2 ? ' doc-dense2' : '');
