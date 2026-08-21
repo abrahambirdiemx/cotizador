@@ -6,6 +6,8 @@
   <title id="page-title">Birdie — Cotizador de Propuestas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Fuentes del documento comercial de 3 hojas (especificación de diseño) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --navy: #0A2647;
@@ -948,6 +950,202 @@
     .mod-tiers-toggle-btn { margin-top: 8px; padding: 5px 10px; background: transparent; border: 1px dashed #D1D5DB; color: #4B5563; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: 'Inter',sans-serif; width: 100%; }
     .mod-tiers-toggle-btn:hover { background: #F8FAFC; color: var(--navy); border-color: var(--navy); }
 
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       DOCUMENTO COMERCIAL — 3 hojas tamaño carta (816 × 1056 px @96dpi)
+       Especificación de Claude Design. Las medidas son exactas: no redondear.
+       Reglas duras de la especificación: sin @page, sin unidades de viewport y
+       sin position:fixed. Cada hoja es una caja de alto fijo, es flex column, y
+       el pie se pega abajo con margin-top:auto.
+       El overflow se deja VISIBLE a propósito: si el contenido desborda queremos
+       verlo (y que el control de ajuste lo detecte), no esconderlo.
+       ══════════════════════════════════════════════════════════════════════════ */
+    #doc-view { display: none; }
+    body.doc-mode #generator-view,
+    body.doc-mode #proposal-view,
+    body.doc-mode #pw-overlay { display: none !important; }
+    body.doc-mode { background: #6B7280; }
+    body.doc-mode #doc-view { display: block; padding: 26px 0 64px; }
+
+    #doc-view {
+      --d-ink:   #0A1628;
+      --d-blue:  #2C5AA8;
+      --d-deep:  #1B3F85;
+      --d-cyan:  #7CD3F0;
+      --d-cream: #F4EFE6;
+      --d-paper: #FAFAF7;
+      --d-muted: #8A9AB5;
+      --d-line:  rgba(10,22,40,0.10);
+    }
+
+    .doc-page {
+      width: 816px; height: 1056px;
+      margin: 0 auto 24px;
+      background: var(--d-paper);
+      border-top: 8px solid var(--d-blue);
+      box-sizing: border-box;
+      font-family: 'Inter Tight', system-ui, sans-serif;
+      letter-spacing: -0.01em;
+      color: var(--d-ink);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    }
+    /* 1048 = 1056 − los 8px del filo superior. Es el número que valida §7. */
+    .doc-inner { height: 1048px; box-sizing: border-box; display: flex; flex-direction: column; }
+    .doc-p1 .doc-inner { padding: 44px 57px 34px; }
+    .doc-p2 .doc-inner,
+    .doc-p3 .doc-inner { padding: 54px 60px 43px; }
+
+    /* ── Cromo compartido ───────────────────────────────────────────────────── */
+    .doc-head { display: flex; align-items: flex-start; justify-content: space-between;
+                padding-bottom: 19px; border-bottom: 2px solid var(--d-ink); }
+    .doc-brand { display: flex; align-items: center; gap: 11px; }
+    .doc-wordmark { font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+    .doc-p1 .doc-wordmark { font-size: 27px; }
+    .doc-p2 .doc-wordmark, .doc-p3 .doc-wordmark { font-size: 20px; }
+    .doc-meta { text-align: right; }
+    .doc-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500;
+                   letter-spacing: 0.16em; text-transform: uppercase; color: var(--d-muted); }
+    .doc-folio { font-size: 21.6px; font-weight: 600; letter-spacing: -0.03em; margin-top: 4px; }
+    .doc-dates { font-size: 12.2px; color: rgba(10,22,40,0.6); margin-top: 3px; }
+    .doc-runhead { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px;
+                   font-weight: 500; color: var(--d-muted); }
+
+    .doc-foot { margin-top: auto; padding-top: 19px; border-top: 1px solid var(--d-line);
+                display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+    .doc-note { font-size: 11px; line-height: 1.6; color: rgba(10,22,40,0.55); }
+    .doc-pageno { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px;
+                  color: var(--d-muted); flex-shrink: 0; }
+
+    .doc-h2 { font-size: 37px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; margin: 28px 0 0; }
+    .doc-lede { font-size: 14px; line-height: 1.6; color: rgba(10,22,40,0.7);
+                max-width: 62ch; margin-top: 13px; text-wrap: pretty; }
+
+    /* ── Hoja 1 ─────────────────────────────────────────────────────────────── */
+    .doc-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+    .doc-party { padding: 12px 16px; border-radius: 0 8px 8px 0; }
+    .doc-party-to { background: rgba(124,211,240,0.14); border-left: 3px solid var(--d-cyan); }
+    .doc-party-from { background: var(--d-cream); border-left: 3px solid var(--d-blue); }
+    .doc-party .doc-eyebrow { font-size: 8.8px; color: var(--d-blue); }
+    .doc-party-name { font-size: 15.5px; font-weight: 600; margin-top: 5px; }
+    .doc-party-info { font-size: 12.2px; line-height: 1.5; color: rgba(10,22,40,0.65); margin-top: 2px; }
+    .doc-intro { margin-top: 19px; font-size: 13.5px; line-height: 1.6;
+                 color: rgba(10,22,40,0.78); text-wrap: pretty; }
+
+    .doc-table { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 12.8px; }
+    .doc-table thead th { background: var(--d-deep); color: #fff; padding: 9.5px 12px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9.5px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; text-align: left; }
+    .doc-table thead th.num { text-align: right; }
+    .doc-table td { padding: 10.8px 12.2px; vertical-align: top;
+                    border-bottom: 1px solid var(--d-line); line-height: 1.5;
+                    color: rgba(10,22,40,0.7); }
+    .doc-table tbody tr:nth-child(even) td { background: rgba(244,239,230,0.6); }
+    .doc-table tbody tr:last-child td { border-bottom: none; }
+    .doc-concept { font-weight: 600; color: var(--d-deep); }
+    .doc-num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500;
+               color: var(--d-ink); white-space: nowrap; }
+    .doc-subnote { margin-top: 4px; font-size: 11px; color: rgba(10,22,40,0.5);
+                   font-variant-numeric: tabular-nums; }
+    .doc-subnote-inline { color: rgba(10,22,40,0.5); font-variant-numeric: tabular-nums;
+                          white-space: nowrap; }
+    /* Modo denso: se aprieta el espaciado, nunca la tipografía. Los pisos de la
+       especificación (párrafo 13px, celda 12px, notas 11px, mono 8.8px) se respetan. */
+    .doc-dense .doc-table { margin-top: 16px; }
+    .doc-dense .doc-table td { padding: 6.4px 12.2px; }
+    .doc-dense .doc-intro { margin-top: 14px; }
+    .doc-dense .doc-parties { margin-top: 13px; }
+    .doc-dense .doc-total-row { padding: 5.6px 12px; }
+    .doc-dense .doc-totals-wrap { margin-top: 14px; }
+    .doc-dense .doc-total-box { padding: 11px; }
+    /* Nivel 2: para propuestas con nota del vendedor, nombres largos o descripciones
+       que se van a dos renglones. Sigue sin tocar tamaños de tipografía. */
+    .doc-dense2 .doc-table td { padding: 5.2px 12.2px; }
+    .doc-dense2 .doc-table { margin-top: 13px; }
+    .doc-dense2 .doc-party { padding: 9px 14px; }
+    .doc-dense2 .doc-parties { margin-top: 11px; }
+    .doc-dense2 .doc-intro { margin-top: 11px; }
+    .doc-dense2 .doc-total-row { padding: 4.6px 12px; }
+    .doc-dense2 .doc-totals-wrap { margin-top: 11px; }
+    .doc-dense2 .doc-head { padding-bottom: 15px; }
+    .doc-dense2 .doc-foot { padding-top: 14px; }
+
+    .doc-totals-wrap { display: flex; justify-content: flex-end; margin-top: 19px; }
+    .doc-totals { width: 340px; }
+    .doc-total-row { display: flex; justify-content: space-between; align-items: baseline;
+                     padding: 8px 12px; border-top: 1px solid var(--d-line); font-size: 12.8px; }
+    .doc-total-row span:first-child { color: rgba(10,22,40,0.65); }
+    .doc-total-row span:last-child { font-weight: 500; font-variant-numeric: tabular-nums; }
+    .doc-total-row.disc span:last-child { color: var(--d-blue); }
+    .doc-total-box { background: var(--d-ink); color: #fff; border-radius: 5px; padding: 13px;
+      margin-top: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .doc-total-box .doc-eyebrow { font-size: 10px; color: var(--d-cyan); }
+    .doc-total-box strong { font-size: 20px; font-weight: 600; letter-spacing: -0.03em;
+                            font-variant-numeric: tabular-nums; }
+
+    /* ── Hoja 2 ─────────────────────────────────────────────────────────────── */
+    .doc-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15.6px; margin-top: 25.6px; }
+    .doc-card { background: #fff; border: 1px solid var(--d-line); border-radius: 13px;
+      padding: 18.5px 21.3px; display: flex; flex-direction: column; gap: 8.5px; }
+    .doc-card:nth-child(odd)  { border-top: 4px solid var(--d-cyan); }
+    .doc-card:nth-child(even) { border-top: 4px solid var(--d-blue); }
+    .doc-card-num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px;
+                    color: var(--d-blue); display: flex; justify-content: space-between; align-items: center; }
+    .doc-card-tag { font-family: 'Inter Tight', sans-serif; font-size: 9px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 6px; border-radius: 999px; }
+    .doc-tag-on  { background: rgba(44,90,168,0.12); color: var(--d-deep); }
+    .doc-tag-off { background: rgba(10,22,40,0.06); color: rgba(10,22,40,0.45); }
+    .doc-card-title { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+    .doc-card-copy { font-size: 12.8px; line-height: 1.55; color: rgba(10,22,40,0.68); }
+
+    .doc-strip { margin-top: 23px; background: var(--d-ink); color: #fff; border-radius: 13px;
+      padding: 23px 26px; display: flex; align-items: center; justify-content: space-between; gap: 26px; }
+    .doc-strip .doc-eyebrow { font-size: 10px; color: var(--d-cyan); }
+    .doc-strip-lede { font-size: 13.5px; color: rgba(255,255,255,0.72); margin-top: 6px; line-height: 1.5; }
+    .doc-metrics { display: flex; gap: 26px; flex-shrink: 0; }
+    .doc-metric-n { font-size: 28px; font-weight: 600; letter-spacing: -0.04em;
+                    font-variant-numeric: tabular-nums; }
+    .doc-metric-l { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+    /* ── Hoja 3 ─────────────────────────────────────────────────────────────── */
+    .doc-sla-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 26px; }
+    .doc-sla-card { background: linear-gradient(180deg, rgba(124,211,240,0.20), rgba(124,211,240,0.05));
+      border: 1px solid rgba(44,90,168,0.25); border-radius: 13px; padding: 19px 22px; }
+    .doc-sla-n { font-size: 30px; font-weight: 600; letter-spacing: -0.04em; color: var(--d-blue);
+                 font-variant-numeric: tabular-nums; }
+    .doc-sla-d { font-size: 13px; line-height: 1.45; color: rgba(10,22,40,0.65); margin-top: 5px; }
+    .doc-sev { font-weight: 600; }
+    .doc-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 23px; }
+    .doc-panel { border-radius: 13px; padding: 20px 23px; }
+    .doc-panel-cream { background: var(--d-cream); }
+    .doc-panel-cyan  { background: rgba(124,211,240,0.16); }
+    .doc-panel .doc-eyebrow { font-size: 10px; color: var(--d-blue); }
+    .doc-panel-body { font-size: 13px; line-height: 1.6; color: rgba(10,22,40,0.75); margin-top: 7px; }
+    .doc-signs { display: flex; flex: 1; gap: 32px; }
+    .doc-sign { flex: 1; }
+    .doc-sign-line { height: 26px; border-bottom: 1px solid rgba(10,22,40,0.35); }
+    .doc-sign-label { font-size: 11px; color: rgba(10,22,40,0.6); margin-top: 6px; line-height: 1.4; }
+
+    /* ── Barra de control (solo pantalla, nunca se imprime) ─────────────────── */
+    #doc-bar { position: sticky; top: 0; z-index: 30; display: flex; gap: 10px;
+      align-items: center; justify-content: center; padding: 10px;
+      background: rgba(10,22,40,0.92); backdrop-filter: blur(6px); margin-bottom: 20px; }
+    #doc-bar button { font-family: 'Inter Tight', sans-serif; font-size: 13px; font-weight: 600;
+      padding: 7px 15px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.25);
+      background: transparent; color: #fff; cursor: pointer; }
+    #doc-bar button.primary { background: var(--d-blue); border-color: var(--d-blue); }
+    #doc-bar .hint { color: rgba(255,255,255,0.55); font-size: 12px; font-family: 'Inter Tight', sans-serif; }
+
+    /* ── Impresión del documento ────────────────────────────────────────────── */
+    @media print {
+      body.doc-mode { background: #fff !important; }
+      body.doc-mode #doc-view { display: block !important; padding: 0 !important; }
+      body.doc-mode #doc-bar { display: none !important; }
+      body.doc-mode .doc-page {
+        margin: 0 auto !important; box-shadow: none !important;
+        break-after: page; page-break-after: always;
+      }
+      body.doc-mode .doc-page:last-child { break-after: auto; page-break-after: auto; }
+    }
   </style>
 </head>
 <body>
@@ -1409,7 +1607,7 @@
         <button onclick="switchProposalLang('es',this)" class="active">ES</button>
         <button onclick="switchProposalLang('en',this)">EN</button>
       </div>
-      <button class="btn-pdf" onclick="downloadPDF()" title="Descargar PDF"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>PDF</button>
+      <button class="btn-pdf" onclick="openDocument()" title="Descargar PDF"><span class="icn icn-sm" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>PDF</button>
     </div>
   </nav>
 
@@ -2093,6 +2291,10 @@
   </footer>
 </div>
 
+<!-- Documento comercial de 3 hojas. Se llena por JS (renderDocument) desde el
+     mismo payload que el portal; vacío hasta que se abre. -->
+<section id="doc-view"></section>
+
 <!-- ════════════════════════════════════════
      JAVASCRIPT
 ════════════════════════════════════════ -->
@@ -2145,6 +2347,19 @@ function adpOf(d) {
   return (isFinite(n) && n >= 0 && n < 100) ? n : ANNUAL_DISCOUNT_PCT;
 }
 function adpFactor(d) { return (100 - adpOf(d)) / 100; }
+
+// ── Modo de licencia ─────────────────────────────────────────────────────────
+// 'gen' = licencia general: los módulos se presentan como UN concepto. Es
+// puramente presentacional — el motor, el ACV y los totales son idénticos en los
+// dos modos. Lo decide el vendedor en el Cotizador del OS; si no viene en el
+// payload es modular, que es como se emitió todo hasta ago-2026.
+function licOf(d) { return (d && d.lic === 'gen') ? 'gen' : 'mod'; }
+
+/** Une nombres en lista legible: "A, B y C" / "A, B and C". */
+function joinNames(names, en) {
+  if (names.length <= 1) return names[0] || '';
+  return names.slice(0, -1).join(', ') + (en ? ' and ' : ' y ') + names[names.length - 1];
+}
 const BUNDLE_TIERS         = { 2: 10, 3: 20 };   // # módulos → % descuento
 
 const MOD_DEFAULTS = {
@@ -2442,16 +2657,33 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
     }
 
-    // Modules
-    ['eos','validai','mve'].forEach(k => {
-      const m = r.perModule[k];
-      if (!m || !m.revenue) return;
-      const label = _BREAK_MODULE_LABEL[k];
-      const desc = en ? _BREAK_MODULE_DESC_EN[k] : _BREAK_MODULE_DESC_ES[k];
-      const volLabel = _brkFmt(m.volume, en) + ' ' + _brkEsc(m.unitPlural) + (en ? '/year' : '/año');
-      const combinedDesc = _brkEsc(desc) + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLabel + '</div>';
-      pushRow(label, combinedDesc, '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
-    });
+    // Modules — una fila por módulo, o una sola "Licencia Birdie" en modo general.
+    const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue);
+    const volOf = k => _brkFmt(r.perModule[k].volume, en) + ' ' + _brkEsc(r.perModule[k].unitPlural);
+
+    if (licOf(d) === 'gen' && activeMods.length > 0) {
+      const names = activeMods.map(k => _brkEsc(_BREAK_MODULE_LABEL[k]));
+      const volLine = activeMods.map(volOf).join(' · ') + (en ? '/year' : '/año');
+      const desc = (en
+        ? 'Annual platform license. Includes ' + joinNames(names, true) + '.'
+        : 'Licencia anual de la plataforma. Incluye ' + joinNames(names, false) + '.')
+        + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLine + '</div>';
+      pushRow(
+        en ? 'Birdie License' : 'Licencia Birdie',
+        desc,
+        '$' + _brkFmt(r.modulesSubtotal, en),
+        { style: 'background:#fafcff' }
+      );
+    } else {
+      activeMods.forEach(k => {
+        const m = r.perModule[k];
+        const label = _BREAK_MODULE_LABEL[k];
+        const desc = en ? _BREAK_MODULE_DESC_EN[k] : _BREAK_MODULE_DESC_ES[k];
+        const volLabel = volOf(k) + (en ? '/year' : '/año');
+        const combinedDesc = _brkEsc(desc) + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLabel + '</div>';
+        pushRow(label, combinedDesc, '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
+      });
+    }
 
     // Add-ons
     ['whatsapp','kpiDash','erp'].forEach(k => {
@@ -4255,6 +4487,10 @@ const API_CONFIG = {
 };
 
 // ── PDF DOWNLOAD ──────────────────────────────────────────────────────────────
+// ⚠️ LEGADO, ya sin call sites: imprimía el portal completo en flujo continuo
+// (About → Funcionalidades → Propuesta → Piloto → T&C) en A4. El botón PDF ahora
+// llama a openDocument(), que genera el documento de 3 hojas tamaño carta. Se
+// conserva por si hay que volver a imprimir el portal entero.
 function downloadPDF() {
   if (!PROP_DATA) return;
   const d = PROP_DATA;
@@ -4901,6 +5137,11 @@ function birdieInit() {
       if (overlay) overlay.classList.add('hidden');
       if (genView) genView.style.display = 'none';
       renderProposal(data);
+      // &doc=1 abre el documento de 3 hojas directo, sin pasar por el portal. Lo
+      // usa el check automatizado de ajuste y sirve para mandar la liga del PDF.
+      if (new URLSearchParams(window.location.search).get('doc') === '1') {
+        try { openDocument(); } catch (e) { console.error(e); }
+      }
       return;
     }
   }
@@ -4971,6 +5212,382 @@ async function birdieCheckPw() {
     btn.disabled = false; btn.textContent = 'Entrar';
   }
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DOCUMENTO COMERCIAL — 3 hojas tamaño carta
+// Hoja 1 propuesta económica · hoja 2 alcance funcional · hoja 3 nivel de servicio.
+// Se arma del MISMO payload que el portal y con el MISMO motor
+// (configFromPayload + calcModularPricing): ningún número se recalcula aparte.
+// Se abre con el botón PDF del portal o con &doc=1 en la liga.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Datos del emisor. No vienen en el payload — son fijos de Birdie.
+const DOC_ISSUER = {
+  legal: 'Birdie Tech S.A.P.I. de C.V.',
+  brand: 'Birdie',
+  lines: ['Ciudad de México, México', 'hola@birdie.mx · birdie.mx'],
+};
+
+// ── SLA ───────────────────────────────────────────────────────────────────────
+// ⚠️ Estos son los compromisos REALES que ya viven en los T&C de este archivo
+// (uptime 99.5%, soporte 9×5 CDMX, respuesta crítica 2h / alta 4h / normal 24h
+// hábiles). NO se usan los números de la plantilla de diseño (99.8%, <30 min,
+// <4 h resolución): publicar un SLA mejor del que se opera es un compromiso
+// comercial, no un detalle visual.
+// Dos huecos conscientes: (1) no hay tiempos de RESOLUCIÓN comprometidos, solo de
+// respuesta, así que la tabla no lleva esa columna; (2) no existe un nivel P4 —
+// los T&C definen tres severidades. Si algún día se comprometen, aquí se agregan.
+const DOC_SLA = {
+  cards: [
+    { n: '99.5%', d: 'Uptime mensual garantizado de la plataforma.' },
+    { n: '2 h',   d: 'Respuesta a incidentes críticos en horario de soporte.' },
+    { n: '9×5',   d: 'Soporte lunes a viernes, 9:00–18:00 (CDMX).' },
+  ],
+  levels: [
+    { p: 'P1', name: 'Crítica', color: '#B3241E',
+      def: 'La plataforma no está disponible o un proceso de despacho queda detenido sin alternativa.',
+      resp: '2 h' },
+    { p: 'P2', name: 'Alta', color: '#8A5A05',
+      def: 'Una funcionalidad principal falla, pero existe una vía alterna para seguir operando.',
+      resp: '4 h' },
+    { p: 'P3', name: 'Media', color: '#2C5AA8',
+      def: 'Falla parcial, error de despliegue o duda de configuración sin impacto en la operación.',
+      resp: '24 h hábiles' },
+  ],
+};
+
+// Marca de Birdie embebida: este archivo tiene que seguir siendo autónomo para
+// GitHub Pages y para imprimirse sin red. Reescalado a 256px (4x del uso mayor).
+const BIRDIE_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAABAKADAAQAAAABAAABAAAAAABn6hpJAAABZGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIEltYWdlUmVhZHk8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CgQ+9BsAACk1SURBVHgB7Z0JnBzFfe+ruufcXWlX1yIMEgIdhg+G2AgQuxxPdhIOHQibIMc2xoBBBh2AE9txgp+zMX7PBtsc1kHQM9dTiINkMCBWOJAHSgAdxop5HBEISRgDAoSuXe01R3fl9+85dna1OztXz3TN/BtWM9NXVX+r///617/+VSUEb0yACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTIAJMAEmwASYABNgAkyACTABJsAEmAATYAJMgAkwASbABJgAE2ACTKAGCMgaeEZ+RBcI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';
+
+// Descripciones cortas para el documento. La copy del portal es de 1–2 renglones
+// largos y con 6 conceptos desborda la hoja (medido: 1298px contra un límite de
+// 1048). La especificación §7 manda recortar copy antes que encoger tipografía, y
+// en una cotización formal lo terso es mejor. No agregan capacidades: son la misma
+// copy condensada.
+const DOC_SHORT_DESC = {
+  eos:      'Rastreo en tiempo real, integración SOIA, alertas y tablero único de control.',
+  validai:  'Validación documental con IA, expediente por operación y retención a 5 años.',
+  mve:      'Formato E2 automático, valor en aduana y transmisión a VUCEM con e.firma.',
+  whatsapp: 'Agente en WhatsApp: estatus, alertas y respuestas sin entrar a la plataforma.',
+  kpiDash:  'Tablero a medida de indicadores logísticos y financieros.',
+  erp:      'Sincronización con tu ERP: datos, catálogos y costos sin recaptura.',
+};
+
+// Montos del documento: 2 decimales, como pide la especificación. Salen del mismo
+// motor que el portal, así que no pueden discrepar — solo se muestran con más
+// precisión que el portal, que redondea.
+function docMoney(n) {
+  return '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function docInt(n) { return (Math.round(Number(n) || 0)).toLocaleString('en-US'); }
+function docEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+function docDate(iso) {
+  if (!iso) return '—';
+  const [y, m, d] = String(iso).split('-').map(Number);
+  const MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return d + ' de ' + (MES[(m || 1) - 1] || '') + ' de ' + y;
+}
+
+/** Encabezado. `compact` = hojas 2 y 3 (logo y wordmark más chicos, una sola línea). */
+function docHead(d, runhead, compact) {
+  const mark = '<img src="' + BIRDIE_MARK + '" alt="" width="' + (compact ? 20 : 40.5) + '" '
+    + 'height="' + (compact ? 20 : 40.5) + '" style="display:block">';
+  const brand = '<div class="doc-brand">' + mark + '<span class="doc-wordmark">birdie</span></div>';
+  if (compact) {
+    return '<div class="doc-head">' + brand
+      + '<div class="doc-runhead">' + docEsc(runhead) + '</div></div>';
+  }
+  return '<div class="doc-head">' + brand + '<div class="doc-meta">'
+    + '<div class="doc-eyebrow" style="font-size:10px">Propuesta económica</div>'
+    + (d.folio ? '<div class="doc-folio">' + docEsc(d.folio) + '</div>' : '')
+    + '<div class="doc-dates">' + docDate(d.date) + ' · Vigencia al ' + docDate(d.valid) + '</div>'
+    + '</div></div>';
+}
+
+function docFoot(note, pageNo) {
+  return '<div class="doc-foot"><div class="doc-note">' + note + '</div>'
+    + '<div class="doc-pageno">' + pageNo + ' / 3</div></div>';
+}
+
+// ── HOJA 1 · Propuesta económica ─────────────────────────────────────────────
+function docPage1(d, r, cfg, level) {
+  const pct = adpOf(d);
+  const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue);
+  const modNames = activeMods.map(k => _BREAK_MODULE_LABEL[k]);
+
+  // Conceptos: una fila por módulo, o una sola "Licencia Birdie" en modo general.
+  const rows = [];
+  const volOf = k => docInt(r.perModule[k].volume) + ' ' + r.perModule[k].unitPlural + '/año';
+
+  if (licOf(d) === 'gen' && activeMods.length) {
+    rows.push({
+      c: 'Licencia Birdie',
+      d: 'Licencia anual de la plataforma. Incluye ' + joinNames(modNames.map(docEsc), false) + '.',
+      sub: activeMods.map(volOf).join(' · '),
+      amt: r.modulesSubtotal,
+    });
+  } else {
+    activeMods.forEach(k => rows.push({
+      c: _BREAK_MODULE_LABEL[k],
+      d: DOC_SHORT_DESC[k],
+      sub: volOf(k),
+      amt: r.perModule[k].revenue,
+    }));
+  }
+  ['whatsapp','kpiDash','erp'].forEach(k => {
+    const a = r.perAddon[k];
+    if (!a || !a.annual) return;
+    rows.push({
+      c: _BREAK_ADDON_LABEL[k],
+      d: DOC_SHORT_DESC[k],
+      sub: a.setup ? ('Setup único de ' + docMoney(a.setup)) : '',
+      amt: a.annual,
+    });
+  });
+
+  // `level` viene de renderDocument, que mide y escala hasta que la hoja cabe.
+  // Contar filas era un mal proxy: la licencia general tiene UNA fila pero con una
+  // descripción larga, y una nota del vendedor puede añadir tres renglones.
+  const dense = level >= 1;
+
+  const tbody = rows.map(row =>
+    '<tr><td class="doc-concept">' + docEsc(row.c) + '</td>'
+    + '<td>' + docEsc(row.d)
+      + (row.sub
+          ? (dense
+              ? ' <span class="doc-subnote-inline">' + docEsc(row.sub) + '</span>'
+              : '<div class="doc-subnote">' + docEsc(row.sub) + '</div>')
+          : '')
+    + '</td>'
+    + '<td class="doc-num">' + docMoney(row.amt) + '</td></tr>'
+  ).join('');
+
+  const subtotal   = r.modulesSubtotal + r.addonsSubtotal;
+  const annualDisc = r.acv * (pct / 100);
+  const prepay     = r.acv - annualDisc;
+  const totalY1    = prepay + r.impl;
+
+  const totals = []
+    .concat('<div class="doc-total-row"><span>Subtotal</span><span>' + docMoney(subtotal) + '</span></div>')
+    .concat(r.discountAmt > 0
+      ? '<div class="doc-total-row disc"><span>Descuento por combinar módulos (' + docInt(r.discountPct) + '%)</span><span>−' + docMoney(r.discountAmt) + '</span></div>'
+      : [])
+    .concat('<div class="doc-total-row"><span>Suscripción anual</span><span>' + docMoney(r.acv) + '</span></div>')
+    .concat(pct > 0
+      ? '<div class="doc-total-row disc"><span>Descuento por pago anual anticipado (' + docInt(pct) + '%)</span><span>−' + docMoney(annualDisc) + '</span></div>'
+      : [])
+    .concat('<div class="doc-total-row"><span>Implementación (pago único)</span><span>' + docMoney(r.impl) + '</span></div>')
+    .join('');
+
+  const intro = level >= 2
+    ? ('Propuesta de Birdie para ' + docEsc(d.co) + ' sobre ' + docInt(d.ops)
+       + ' operaciones anuales. Importes en USD, primer año de contrato.')
+    : ('Propuesta de implementación de Birdie para ' + docEsc(d.co)
+       + ' sobre un volumen estimado de ' + docInt(d.ops) + ' operaciones anuales'
+       + (modNames.length ? ', con ' + joinNames(modNames.map(docEsc), false) : '')
+       + '. Los importes están expresados en dólares estadounidenses y corresponden al primer año de contrato.');
+
+  const note = 'Precios en USD. Suscripción facturada de forma anual anticipada; pago a 30 días. '
+    + 'Alternativa de pago mensual: ' + docMoney(r.acv / 12) + '/mes sin descuento. '
+    + 'No incluye viáticos ni desarrollos a la medida.';
+
+  const lvlClass = (level >= 1 ? ' doc-dense' : '') + (level >= 2 ? ' doc-dense2' : '');
+  return '<div class="doc-page doc-p1' + lvlClass + '"><div class="doc-inner">'
+    + docHead(d, '', false)
+    + '<div class="doc-parties">'
+      + '<div class="doc-party doc-party-to"><div class="doc-eyebrow">Preparado para</div>'
+        + '<div class="doc-party-name">' + docEsc(d.co) + '</div>'
+        + '<div class="doc-party-info">' + (d.ct ? docEsc(d.ct) : 'Atención: dirección de operaciones') + '</div></div>'
+      + '<div class="doc-party doc-party-from"><div class="doc-eyebrow">Emitido por</div>'
+        + '<div class="doc-party-name">' + docEsc(DOC_ISSUER.legal) + '</div>'
+        + '<div class="doc-party-info">' + DOC_ISSUER.lines.map(docEsc).join('<br>') + '</div></div>'
+    + '</div>'
+    + '<p class="doc-intro">' + intro + '</p>'
+    + (d.note ? '<p class="doc-intro" style="margin-top:10px">' + docEsc(d.note) + '</p>' : '')
+    + '<table class="doc-table"><thead><tr>'
+      + '<th style="width:24%">Concepto</th><th>Descripción</th><th class="num" style="width:18%">Costo (USD)</th>'
+    + '</tr></thead><tbody>' + tbody + '</tbody></table>'
+    + '<div class="doc-totals-wrap"><div class="doc-totals">' + totals
+      + '<div class="doc-total-box"><span class="doc-eyebrow">Total primer año</span>'
+      + '<strong>' + docMoney(totalY1) + '</strong></div>'
+    + '</div></div>'
+    + docFoot(note, 1)
+    + '</div></div>';
+}
+
+// ── HOJA 2 · Alcance funcional ───────────────────────────────────────────────
+// Las 6 tarjetas son los 3 módulos + los 3 add-ons, con la copy que ya usa el
+// portal. Se muestran las seis siempre: las no contratadas quedan marcadas como
+// disponibles, para que la hoja sirva de referencia de alcance sin dar a entender
+// que están incluidas.
+function docPage2(d, r) {
+  const items = [
+    { k: 'eos',      label: _BREAK_MODULE_LABEL.eos,      copy: _BREAK_MODULE_DESC_ES.eos,      on: !!(r.perModule.eos && r.perModule.eos.revenue) },
+    { k: 'validai',  label: _BREAK_MODULE_LABEL.validai,  copy: _BREAK_MODULE_DESC_ES.validai,  on: !!(r.perModule.validai && r.perModule.validai.revenue) },
+    { k: 'mve',      label: _BREAK_MODULE_LABEL.mve,      copy: _BREAK_MODULE_DESC_ES.mve,      on: !!(r.perModule.mve && r.perModule.mve.revenue) },
+    { k: 'whatsapp', label: _BREAK_ADDON_LABEL.whatsapp,  copy: _BREAK_ADDON_DESC_ES.whatsapp,  on: !!r.perAddon.whatsapp },
+    { k: 'kpiDash',  label: _BREAK_ADDON_LABEL.kpiDash,   copy: _BREAK_ADDON_DESC_ES.kpiDash,   on: !!r.perAddon.kpiDash },
+    { k: 'erp',      label: _BREAK_ADDON_LABEL.erp,       copy: _BREAK_ADDON_DESC_ES.erp,       on: !!r.perAddon.erp },
+  ];
+
+  const cards = items.map((it, i) =>
+    '<div class="doc-card">'
+      + '<div class="doc-card-num">' + String(i + 1).padStart(2, '0')
+        + '<span class="doc-card-tag ' + (it.on ? 'doc-tag-on' : 'doc-tag-off') + '">'
+        + (it.on ? 'Contratado' : 'Disponible') + '</span></div>'
+      + '<div class="doc-card-title">' + docEsc(it.label) + '</div>'
+      + '<div class="doc-card-copy">' + docEsc(it.copy) + '</div>'
+    + '</div>'
+  ).join('');
+
+  // ⚠️ La franja NO lleva claims de impacto inventados. Las tres cifras salen de
+  // esta misma cotización, así que son verificables contra la hoja 1.
+  const modCount = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue).length;
+  const ppo = r.ops > 0 ? r.acv / r.ops : 0;
+
+  return '<div class="doc-page doc-p2"><div class="doc-inner">'
+    + docHead(d, (d.folio ? d.folio + ' · ' : '') + 'Alcance funcional', true)
+    + '<h2 class="doc-h2">Qué incluye <span style="color:#2C5AA8">la plataforma</span></h2>'
+    + '<p class="doc-lede">Birdie centraliza el control de tus operaciones de comercio exterior: '
+      + 'visibilidad en tiempo real, validación documental con IA y transmisión a la autoridad, '
+      + 'sobre una sola plataforma y un solo expediente por operación.</p>'
+    + '<div class="doc-cards">' + cards + '</div>'
+    + '<div class="doc-strip">'
+      + '<div><div class="doc-eyebrow">Esta propuesta en números</div>'
+        + '<div class="doc-strip-lede">Alcance contratado para ' + docEsc(d.co) + '.</div></div>'
+      + '<div class="doc-metrics">'
+        + '<div><div class="doc-metric-n">' + docInt(r.ops) + '</div><div class="doc-metric-l">operaciones/año</div></div>'
+        + '<div><div class="doc-metric-n">' + modCount + ' / 3</div><div class="doc-metric-l">módulos contratados</div></div>'
+        + '<div><div class="doc-metric-n">$' + ppo.toFixed(2) + '</div><div class="doc-metric-l">USD por operación</div></div>'
+      + '</div>'
+    + '</div>'
+    + docFoot('Los módulos y add-ons marcados como disponibles pueden contratarse en cualquier momento del contrato; '
+      + 'su alta se factura de forma proporcional al periodo restante.', 2)
+    + '</div></div>';
+}
+
+// ── HOJA 3 · Nivel de servicio ───────────────────────────────────────────────
+function docPage3(d) {
+  const cards = DOC_SLA.cards.map(c =>
+    '<div class="doc-sla-card"><div class="doc-sla-n">' + docEsc(c.n) + '</div>'
+    + '<div class="doc-sla-d">' + docEsc(c.d) + '</div></div>'
+  ).join('');
+
+  const rows = DOC_SLA.levels.map(l =>
+    '<tr><td class="doc-sev" style="color:' + l.color + '">' + l.p + ' · ' + docEsc(l.name) + '</td>'
+    + '<td>' + docEsc(l.def) + '</td>'
+    + '<td class="doc-num">' + docEsc(l.resp) + '</td></tr>'
+  ).join('');
+
+  return '<div class="doc-page doc-p3"><div class="doc-inner">'
+    + docHead(d, (d.folio ? d.folio + ' · ' : '') + 'Nivel de servicio', true)
+    + '<h2 class="doc-h2">Nuestro <span style="color:#2C5AA8">SLA</span></h2>'
+    + '<p class="doc-lede">Compromisos de disponibilidad y tiempos de respuesta vigentes para todos '
+      + 'los clientes de Birdie, incluidos en la suscripción sin costo adicional.</p>'
+    + '<div class="doc-sla-cards">' + cards + '</div>'
+    + '<table class="doc-table"><thead><tr>'
+      + '<th style="width:17%">Severidad</th><th>Definición</th><th class="num" style="width:20%">Respuesta</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>'
+    + '<div class="doc-panels">'
+      + '<div class="doc-panel doc-panel-cream"><div class="doc-eyebrow">Soporte incluido</div>'
+        + '<div class="doc-panel-body">Lunes a viernes de 9:00 a 18:00 (CDMX). Canal directo con el equipo '
+        + 'de Customer Success, portal de tickets con folio de seguimiento y acompañamiento durante la '
+        + 'fase de estabilización posterior al Go-Live.</div></div>'
+      + '<div class="doc-panel doc-panel-cyan"><div class="doc-eyebrow">Cómo se reporta</div>'
+        + '<div class="doc-panel-body">Cada incidente se levanta desde el portal de soporte y recibe un '
+        + 'folio. El tiempo de respuesta se cuenta desde que el ticket entra en horario de soporte. '
+        + 'La clasificación de severidad la confirma Birdie al recibirlo.</div></div>'
+    + '</div>'
+    + '<div class="doc-foot">'
+      + '<div class="doc-signs">'
+        + '<div class="doc-sign"><div class="doc-sign-line"></div>'
+          + '<div class="doc-sign-label">' + docEsc(DOC_ISSUER.legal) + '</div></div>'
+        + '<div class="doc-sign"><div class="doc-sign-line"></div>'
+          + '<div class="doc-sign-label">' + docEsc(d.co || 'El cliente') + '</div></div>'
+      + '</div>'
+      + '<div class="doc-pageno">3 / 3</div>'
+    + '</div>'
+    + '</div></div>';
+}
+
+// ── Orquestador ───────────────────────────────────────────────────────────────
+const DOC_FIT_LIMIT = 1048;   // 1056 de hoja − los 8px del filo superior
+
+/** Control de ajuste de la especificación (§7). Mide el contenido real de cada
+ *  hoja y lo deja en `data-fit` de #doc-view, para que se pueda verificar sin
+ *  abrir el PDF a mano (scripts/render-check y check:doc lo leen de ahí). */
+function docCheckFit() {
+  const report = Array.from(document.querySelectorAll('#doc-view .doc-inner')).map((el, i) => ({
+    page: i + 1,
+    height: el.scrollHeight,
+    limit: DOC_FIT_LIMIT,
+    ok: el.scrollHeight <= DOC_FIT_LIMIT,
+  }));
+  const view = document.getElementById('doc-view');
+  if (view) view.setAttribute('data-fit', JSON.stringify(report));
+  const bad = report.filter(p => !p.ok);
+  if (bad.length) {
+    console.warn('[documento] contenido desbordado en '
+      + bad.map(p => 'hoja ' + p.page + ' (' + p.height + '>' + p.limit + ')').join(', '));
+  }
+  return report;
+}
+
+function renderDocument(d) {
+  const view = document.getElementById('doc-view');
+  if (!view) return null;
+  if (!isModularPayload(d)) {
+    view.innerHTML = '<div class="doc-page"><div class="doc-inner">'
+      + '<p class="doc-intro">Esta liga es de una propuesta anterior al formato modular '
+      + '(v5). El documento de 3 hojas solo se genera para cotizaciones nuevas.</p>'
+      + '</div></div>';
+    return null;
+  }
+
+  let cfg, r;
+  try { cfg = configFromPayload(d); r = calcModularPricing(cfg); }
+  catch (e) { console.error(e); return null; }
+
+  const bar = '<div id="doc-bar">'
+    + '<button class="primary" onclick="printDocument()">Imprimir / Guardar PDF</button>'
+    + '<button onclick="closeDocument()">Volver a la propuesta</button>'
+    + '<span class="hint">3 hojas · tamaño carta</span>'
+    + '</div>';
+
+  // Escalera de ajuste (§7): se renderiza, se MIDE, y si la hoja 1 desborda se
+  // vuelve a armar más compacta. Primero se aprieta el espaciado y luego se acorta
+  // la intro — nunca se bajan las fuentes ni se recorta lo que escribió el vendedor.
+  // Solo la hoja 1 es variable; las otras dos son plantilla y siempre caben.
+  let fit = null;
+  for (let level = 0; level <= 2; level++) {
+    view.innerHTML = bar + docPage1(d, r, cfg, level) + docPage2(d, r) + docPage3(d);
+    fit = docCheckFit();
+    if (fit[0] && fit[0].ok) break;
+  }
+  return fit;
+}
+
+function openDocument() {
+  if (!PROP_DATA) return;
+  // El orden importa: doc-mode PRIMERO. Mientras #doc-view está display:none no hay
+  // layout y scrollHeight devuelve 0, así que el control de ajuste mediría cero.
+  document.body.classList.add('doc-mode');
+  const fit = renderDocument(PROP_DATA);
+  window.scrollTo(0, 0);
+  return fit;
+}
+
+function closeDocument() {
+  document.body.classList.remove('doc-mode');
+  window.scrollTo(0, 0);
+}
+
+function printDocument() { window.print(); }
 
 </script>
 
