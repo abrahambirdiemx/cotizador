@@ -1301,7 +1301,7 @@
               <div class="p-sub">USD / mes</div>
             </div>
             <div class="pricing-item discount">
-              <div class="p-label">Anual (10% descuento)</div>
+              <div class="p-label" id="ps-annual-disc-label">Anual (10% descuento)</div>
               <div class="p-value" style="font-size:18px">$<span id="ps-annual-disc">—</span></div>
               <div class="p-sub">USD / año · ahorro $<span id="ps-saving">—</span></div>
             </div>
@@ -1732,7 +1732,7 @@
       <div class="terms-block"><h3 id="tc3-h">3. Facturación y Pago</h3>
         <ul id="tc3-ul">
           <li>La suscripción anual se factura al inicio del contrato por el monto total del año.</li>
-          <li>El descuento del 10% aplica exclusivamente para pago anual por adelantado.</li>
+          <li id="tc-annual-discount-li">El descuento del 10% aplica exclusivamente para pago anual por adelantado.</li>
           <li>El pago mensual no incluye descuento y puede cancelarse con 30 días de aviso.</li>
           <li>La cuota de implementación se factura al momento de la firma del contrato.</li>
           <li>Los pagos deben realizarse dentro de los 15 días naturales siguientes a la fecha de factura.</li>
@@ -2130,6 +2130,21 @@ function getBaseAnnualByOps(ops) { return getBaseTierByOps(ops).monthly * 12; }
 const BASE_INCLUDED_UNITS  = 0;       // Ruta B (jul-2026): sin unidades incluidas — se cobra el volumen completo
 const IMPL_FEE_DEFAULT     = 600;     // USD, pago único (editable)
 const MARGIN_FLOOR         = 0.50;    // 50%; warning si algún tramo cae bajo
+
+// ── Descuento por pago anual ─────────────────────────────────────────────────
+// Este generador cotiza SIEMPRE al 10%: no tiene config central. El Birdie OS sí lo
+// hace configurable y lo manda horneado en la liga como `adp`. El RENDERER nunca
+// asume 10 — lo lee del payload y cae al 10 solo si no viene, que es el caso de
+// todas las ligas emitidas antes de ago-2026. Antes de esto el 0.90 estaba
+// hardcodeado en 6 lugares de cómputo y el "10%" en otros 11 de copy.
+const ANNUAL_DISCOUNT_PCT  = 10;
+function adpOf(d) {
+  var raw = d ? d.adp : undefined;
+  if (raw == null || raw === '') return ANNUAL_DISCOUNT_PCT;
+  var n = (typeof raw === 'number') ? raw : (typeof raw === 'string' ? Number(raw) : NaN);
+  return (isFinite(n) && n >= 0 && n < 100) ? n : ANNUAL_DISCOUNT_PCT;
+}
+function adpFactor(d) { return (100 - adpOf(d)) / 100; }
 const BUNDLE_TIERS         = { 2: 10, 3: 20 };   // # módulos → % descuento
 
 const MOD_DEFAULTS = {
@@ -2458,9 +2473,10 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
 
     // Annual discount (client-side)
     if (isAnnual) {
-      const annualSaving = r.acv * 0.10;
+      const adPct = adpOf(d);
+      const annualSaving = r.acv * (adPct / 100);
       pushRow(
-        en ? 'Annual discount (10%)' : 'Descuento anual (10%)',
+        en ? ('Annual discount (' + adPct + '%)') : ('Descuento anual (' + adPct + '%)'),
         en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
         '−$' + _brkFmt(annualSaving, en),
         { amountStyle: 'color:var(--success);font-weight:700' }
@@ -2478,7 +2494,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
     );
 
     // Total
-    const subAmt = isAnnual ? (r.acv * 0.9) : r.acv;
+    const subAmt = isAnnual ? (r.acv * adpFactor(d)) : r.acv;
     const total  = subAmt + r.impl;
     rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>$' + _brkFmt(total, en) + '</strong></td></tr>');
   } else {
@@ -2490,8 +2506,9 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       '$' + _brkFmt(d.acv || 0, en)
     );
     if (isAnnual && (d.saving || 0) > 0) {
+      const adPctL = adpOf(d);
       pushRow(
-        en ? 'Annual discount (10%)' : 'Descuento anual (10%)',
+        en ? ('Annual discount (' + adPctL + '%)') : ('Descuento anual (' + adPctL + '%)'),
         en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
         '−$' + _brkFmt(d.saving || 0, en),
         { amountStyle: 'color:var(--success);font-weight:700' }
@@ -2654,15 +2671,15 @@ function renderProposalModulesBreakdown(d, containerElId, listElId) {
     const bundlePct = r.discountPct || 0;
     if (r.activeModuleCount >= 2 && bundlePct > 0) {
       bundleEl.style.display = '';
-      // 10% bundle base + 10% annual stacked = 20% shown as headline "total"
-      const annualBonus = 10;
+      // bundle + anual apilados = el "total" del headline. El anual sale del payload.
+      const annualBonus = adpOf(d);
       const totalPct = bundlePct + annualBonus;
       const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
       setTxt(prefix + '-bundle-total-pct', totalPct + '%');
       setTxt(prefix + '-bundle-total-detail', bundlePct + '% bundle + ' + annualBonus + '% anual');
       setTxt(prefix + '-bundle-desc',
         'Por combinar ' + r.activeModuleCount + ' módulos activaste un descuento del ' + bundlePct
-        + '% adicional. Si pagas anual, se apila con otro 10% para un total del ' + totalPct + '% de descuento.');
+        + '% adicional. Si pagas anual, se apila con otro ' + annualBonus + '% para un total del ' + totalPct + '% de descuento.');
     } else {
       bundleEl.style.display = 'none';
     }
@@ -2736,6 +2753,9 @@ let LANG = 'es';
 let generatedUrl = '';
 
 // ── PRICING CALC ───────────────────────────────────────────────────────────────
+// ⚠️ MUERTO: calcPricing y applyOverrides no tienen call sites (verificado ago-2026).
+//    Son del tabulador pre-modular (TAB). Su `* 0.90` NO se cableó al payload a
+//    propósito: nada los ejecuta. Si algún día se revive alguno, usar adpOf/adpFactor.
 function calcPricing(ops) {
   ops = parseInt(ops);
   if (!ops || ops < 1) return null;
@@ -3097,8 +3117,9 @@ function updateModularSummary() {
   setTxt('ps-ppo',         mfmt2(ppoEff));
   setTxt('ps-acv',         mfmt(r.acv));
   setTxt('ps-monthly',     mfmt(r.acv / 12));
-  const annualDisc = r.acv * 0.9;
-  const savingAmt  = r.acv * 0.1;
+  const annualDisc = r.acv * ((100 - ANNUAL_DISCOUNT_PCT) / 100);
+  const savingAmt  = r.acv * (ANNUAL_DISCOUNT_PCT / 100);
+  setTxt('ps-annual-disc-label', 'Anual (' + ANNUAL_DISCOUNT_PCT + '% descuento)');
   setTxt('ps-annual-disc', mfmt(annualDisc));
   setTxt('ps-saving',      mfmt(savingAmt));
   setTxt('ps-impl',        mfmt(r.impl));
@@ -3507,7 +3528,7 @@ function generateProposal() {
   // with the modular breakdown.
   const acv     = r.acv;                       // year 1 subscription value (post-bundle)
   const monthly = acv / 12;
-  const annualDisc = acv * 0.90;
+  const annualDisc = acv * ((100 - ANNUAL_DISCOUNT_PCT) / 100);
   const moDisc  = annualDisc / 12;
   const saving  = acv - annualDisc;
   // ppo = blended cost per operation of the entire proposal (ACV / ops).
@@ -3533,7 +3554,9 @@ function generateProposal() {
 
     // ── Derived / legacy mirror for backward-compatible rendering ──
     ppo, acv, mo: monthly,
-    ann: annualDisc, moDisc,
+    // `adp` = % de descuento anual con el que se emitió ESTA liga. El renderer lo
+    // usa en vez de asumir 10, así el OS puede cambiarlo sin desincronizar la vista.
+    ann: annualDisc, moDisc, adp: ANNUAL_DISCOUNT_PCT,
     saving, impl: r.impl, tier,
     erp: (r.perAddon.erp ? r.perAddon.erp.annual : 0),
 
@@ -3959,6 +3982,23 @@ function renderStagesProposal(items) {
   }).join('');
 }
 
+// Estampa TODA la copy que depende del % de descuento anual. Se llama al final del
+// render (applyPricingToProposal / renderEntCommercial), o sea después de applyEnglish
+// y applySpanish, para que gane sobre el texto que ellas escriben. Sin esto, cambiar
+// el % en el OS producía una propuesta con números al 15% y etiquetas al 10%.
+function stampAnnualDiscountCopy(d, en) {
+  const pct = adpOf(d);
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  const annualBtn = en ? ('Annual · ' + pct + '% off') : ('Anual · ' + pct + '% descuento');
+  set('bill-annual-btn', annualBtn);
+  set('ec-bill-annual-btn', annualBtn);
+  // En inglés applyEnglish reescribe el <ul> completo y este <li> deja de existir;
+  // ahí el porcentaje ya viene interpolado en la cadena de applyEnglish.
+  set('tc-annual-discount-li', en
+    ? ('The ' + pct + '% discount applies exclusively to prepaid annual payment.')
+    : ('El descuento del ' + pct + '% aplica exclusivamente para pago anual por adelantado.'));
+}
+
 function applyPricingToProposal(d, billing, en) {
   const isAnnual = billing === 'annual';
 
@@ -3990,7 +4030,7 @@ function applyPricingToProposal(d, billing, en) {
     ? (en ? `vs $${fc(d.mo)}/mo full price` : `vs $${fc(d.mo)}/mes precio lista`)
     : '';
 
-  const ppoEff = isAnnual ? Math.round(d.ppo * 0.90 * 100) / 100 : d.ppo;
+  const ppoEff = isAnnual ? Math.round(d.ppo * adpFactor(d) * 100) / 100 : d.ppo;
   document.getElementById('pc-ppo-amount').textContent = fc(ppoEff);
   document.getElementById('pc-ppo-period').textContent = en ? 'USD / operation' : 'USD / operación';
   // En payloads modulares (v5+) no hay "tier"; ocultar la línea. Legacy v<5 la muestra.
@@ -4007,6 +4047,8 @@ function applyPricingToProposal(d, billing, en) {
 
   // Breakdown (v5+ or legacy — handled by renderBreakdownRows)
   try { renderBreakdownRows(d, document.getElementById('pr-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
+
+  stampAnnualDiscountCopy(d, en);
 }
 
 function setBillingMode(mode, btn) {
@@ -4045,7 +4087,7 @@ function applyEnglish(d) {
   t('s2','Active customer satisfaction');
   t('s3','Average reduction in clearance times');
   t('ab-why','Why Birdie?');
-  document.getElementById('ab-why-body').textContent = "Mexico's largest importers lose time and money in manual processes: lost emails, disorganized documents, zero visibility on their pedimentos. Birdie solves this with a centralized platform giving full control over every operation.";
+  t('ab-why-body', "Mexico's largest importers lose time and money in manual processes: lost emails, disorganized documents, zero visibility on their pedimentos. Birdie solves this with a centralized platform giving full control over every operation.");
   t('v1h','Full Visibility'); t('v1p','Real-time status of every pedimento');
   t('v2h','Operational Agility'); t('v2p','Reduce coordination time by up to 60%');
   t('v3h','Compliance'); t('v3p','Automatic SAT / ANAM / NOM alerts in real time');
@@ -4062,7 +4104,7 @@ function applyEnglish(d) {
   t('f8h','Regulatory Compliance'); t('f8p','Automatic validation of tariff classifications, NOM and NICO standards, and real-time updates from SAT and ANAM.');
   t('pr-tag','QUOTE');
   t('pr-hero-title','Investment Summary'); t('pr-hero-sub','Choose the payment plan that best fits your company');
-  t('bill-monthly-btn','Monthly'); t('bill-annual-btn','Annual · 10% off');
+  t('bill-monthly-btn','Monthly'); t('bill-annual-btn','Annual · ' + adpOf(d) + '% off');
   t('pr-detail-title','Cost breakdown');
   t('pr-modules-breakdown-title','Modules');
   t('th-concept','Concept'); t('th-desc','Description'); t('th-amount','Amount (USD)');
@@ -4075,7 +4117,7 @@ function applyEnglish(d) {
   document.getElementById('tc-intro').innerHTML = 'This proposal is subject to the following terms. For any questions, contact us at <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('tc1-h','1. Proposal Validity'); t('tc1-p','This proposal is valid for 30 calendar days from the date of issue. After this period, prices and conditions may be subject to revision.');
   t('tc2-h','2. Billing and Payment');
-  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>The 10% discount applies exclusively to prepaid annual payment.</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li>Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
+  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>The ' + adpOf(d) + '% discount applies exclusively to prepaid annual payment.</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li>Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
   t('tc3-h','3. Implementation & Onboarding');
   document.getElementById('tc3-ul').innerHTML = '<li>Estimated duration: 2–4 weeks.</li><li>Includes: platform configuration, initial data load, customs broker integration, and team training.</li><li>Client must assign a point of contact during implementation.</li>';
   t('tc4-h','4. Contract & Renewal');
@@ -4115,7 +4157,7 @@ function applySpanish(d) {
   t('s2','Satisfacción de clientes activos');
   t('s3','Reducción promedio en tiempos de despacho');
   t('ab-why','¿Por qué Birdie?');
-  document.getElementById('ab-why-body').textContent = 'Las empresas más grandes de México pierden tiempo y dinero en procesos de importación manuales: correos perdidos, documentos desorganizados, cero visibilidad del status de sus pedimentos. Birdie resuelve esto con una plataforma centralizada que da control total sobre cada operación.';
+  t('ab-why-body', 'Las empresas más grandes de México pierden tiempo y dinero en procesos de importación manuales: correos perdidos, documentos desorganizados, cero visibilidad del status de sus pedimentos. Birdie resuelve esto con una plataforma centralizada que da control total sobre cada operación.');
   t('v1h','Visibilidad Total'); t('v1p','Status en tiempo real de cada pedimento y operación');
   t('v2h','Agilidad Operativa'); t('v2p','Reduce tiempos de coordinación hasta 60%');
   t('v3h','Cumplimiento'); t('v3p','Alertas automáticas SAT / ANAM / NOM en tiempo real');
@@ -4124,7 +4166,7 @@ function applySpanish(d) {
   t('ft-body','Birdie integra en una sola plataforma todas las herramientas que tu equipo necesita para operar con eficiencia, visibilidad y control total sobre cada operación de comercio exterior.');
   t('pr-tag','COTIZACIÓN');
   t('pr-hero-title','Resumen de Inversión'); t('pr-hero-sub','Elige la modalidad de pago que mejor se adapte a tu empresa');
-  t('bill-monthly-btn','Mensual'); t('bill-annual-btn','Anual · 10% descuento');
+  t('bill-monthly-btn','Mensual'); t('bill-annual-btn','Anual · ' + adpOf(d) + '% descuento');
   t('pr-detail-title','Detalle del costo');
   t('pr-modules-breakdown-title','Módulos');
   t('th-concept','Concepto'); t('th-desc','Descripción'); t('th-amount','Monto (USD)');
@@ -4677,9 +4719,10 @@ function renderEntCommercial(d) {
     : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
   document.getElementById('ec-pc-main-period').textContent = isAnnual ? (en ? 'USD / year' : 'USD / año') : (en ? 'USD / month' : 'USD / mes');
   document.getElementById('ec-pc-eq-amount').textContent = fc(moEq);
-  // Apply 10% annual discount to the per-op price when client is viewing annual billing.
-  // (Matches PYME format behavior so the per-op label is consistent with the subscription card.)
-  const ecPpoEff = isAnnual ? Math.round((d.ppo || 0) * 0.90 * 100) / 100 : (d.ppo || 0);
+  // Aplica el descuento anual al precio por operación cuando el cliente está viendo
+  // facturación anual. El % sale del payload (adp), igual que en el formato PYME, para
+  // que la etiqueta por-op sea consistente con la tarjeta de suscripción.
+  const ecPpoEff = isAnnual ? Math.round((d.ppo || 0) * adpFactor(d) * 100) / 100 : (d.ppo || 0);
   document.getElementById('ec-pc-op-amount').textContent = fc(ecPpoEff);
   // Enterprise: mismo criterio — sin tier en modular, ocultar la línea.
   (function() {
@@ -4694,6 +4737,8 @@ function renderEntCommercial(d) {
 
   // Modular breakdown (composición) — solo v5+
   try { renderProposalModulesBreakdown(d, 'ec-modules-breakdown', 'ec-modules-breakdown-list'); } catch(e) { console.error(e); }
+
+  stampAnnualDiscountCopy(d, en);
 }
 
 // ── ES/EN for enterprise labels ───────────────────────────────────────────────
