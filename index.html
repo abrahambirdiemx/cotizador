@@ -2517,6 +2517,11 @@ const ADDON_DEFAULTS = {
     id: 'whatsapp',
     label: 'WhatsApp AI',
     plans: {
+      // 'Básico' NO declara volumen a propósito: los otros dos sí, pero el tope de
+      // mensajes de este plan no está definido en operaciones, y esta etiqueta se
+      // IMPRIME en la propuesta del cliente. Prometer un volumen que no sabemos
+      // sostener es un compromiso comercial, no un detalle de interfaz.
+      basic: { key: 'basic', label: 'Básico', monthly: 50 },
       std:  { key: 'std',  label: 'Estándar (~1,500 msg/mes)', monthly: 99  },
       high: { key: 'high', label: 'Alto volumen (~5,000 msg/mes)', monthly: 199 },
     },
@@ -3291,6 +3296,7 @@ function renderAddonsPanel() {
         <div class="mod-inline">
           <label>Plan:</label>
           <select id="mod-wa-plan" onchange="updateModularSummary()">
+            <option value="basic">Básico — $50/mes</option>
             <option value="std">Estándar (~1,500 msg/mes) — $99/mes</option>
             <option value="high">Alto volumen (~5,000 msg/mes) — $199/mes</option>
           </select>
