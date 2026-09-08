@@ -309,6 +309,7 @@
     .breakdown-table .total-row td { background: var(--cyan-pale); font-weight: 800; border-bottom: none; font-size: 15px; }
 
     .impl-note { background: #FFFBEB; border: 1px solid #F59E0B; border-radius: var(--r-sm); padding: 14px 18px; font-size: 13px; color: #78350F; display: flex; gap: 10px; align-items: flex-start; margin: 16px 0; line-height: 1.6; }
+    .vat-note { margin: 14px 0 0; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
 
     .includes-box { margin-top: 32px; padding: 28px; background: white; border-radius: var(--r); border: 1px solid var(--border); box-shadow: var(--shadow); }
     .includes-box h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
@@ -1916,6 +1917,8 @@
         <tbody id="pr-breakdown-tbody"><!-- rows rendered dynamically per payload --></tbody>
       </table>
 
+      <div id="vat-note" class="vat-note">Precios en USD. No incluyen IVA.</div>
+
       <div class="impl-note">
         ℹ️ <span id="impl-note-text">El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.</span>
       </div>
@@ -2355,6 +2358,7 @@
         </thead>
         <tbody id="ec-breakdown-tbody"><!-- rows rendered dynamically per payload --></tbody>
       </table>
+      <div id="ec-vat-note" class="vat-note">Precios en USD. No incluyen IVA.</div>
       <div class="impl-note" id="ec-impl-note">El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.</div>
 
       <!-- Siguientes pasos -->
@@ -4361,6 +4365,16 @@ function stampAnnualDiscountCopy(d, en) {
         : 'Esta propuesta no incluye descuento por pago anticipado; la suscripción anual se factura a precio de lista.'));
 }
 
+// Misma mecánica que stampAnnualDiscountCopy y por la misma razón: applyEnglish
+// reescribe los <ul> de T&C por innerHTML y applySpanish NO los revierte, así que un
+// <li> de IVA se pierde para siempre tras un ciclo ES→EN→ES. La leyenda vive en su
+// propio elemento, fuera de todo lo que se reescribe, y se estampa al final del render.
+function stampVatNote(en) {
+  const txt = en ? 'Prices in USD. VAT not included.' : 'Precios en USD. No incluyen IVA.';
+  const set = (id) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  set('vat-note'); set('ec-vat-note');
+}
+
 function applyPricingToProposal(d, billing, en) {
   // Sin descuento por pago anual, mensual y anual cuestan lo mismo: mostrar un selector
   // con la misma cifra en los dos lados se lee como un error. Se esconde el selector
@@ -4419,6 +4433,7 @@ function applyPricingToProposal(d, billing, en) {
   try { renderBreakdownRows(d, document.getElementById('pr-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
 
   stampAnnualDiscountCopy(d, en);
+  stampVatNote(en);
 }
 
 function setBillingMode(mode, btn) {
@@ -5117,6 +5132,7 @@ function renderEntCommercial(d) {
   try { renderProposalModulesBreakdown(d, 'ec-modules-breakdown', 'ec-modules-breakdown-list'); } catch(e) { console.error(e); }
 
   stampAnnualDiscountCopy(d, en);
+  stampVatNote(en);
 }
 
 // ── ES/EN for enterprise labels ───────────────────────────────────────────────
@@ -5380,11 +5396,13 @@ const DOC_ISSUER = {
 // respuesta, así que la tabla no lleva esa columna; (2) no existe un nivel P4 —
 // los T&C definen tres severidades. Si algún día se comprometen, aquí se agregan.
 const DOC_SLA = {
-  // `d` va en la hoja de SLA, `short` en el pie de la portada. Mismo dato, un lugar.
+  // `n` + `d` arman las tarjetas de la hoja de SLA. `cards[0].n` alimenta además el chip
+  // "SLA 99.5%" de la portada, o sea que el ORDEN importa: no reordenar el arreglo.
+  // El pie de la portada ya NO sale de aquí — ver DOC_COVER_METRICS.
   cards: [
-    { n: '99.5%', short: 'uptime mensual',       d: 'Uptime mensual garantizado de la plataforma.' },
-    { n: '2 h',   short: 'respuesta a críticos', d: 'Respuesta a incidentes críticos en horario de soporte.' },
-    { n: '9×5',   short: 'soporte CDMX',         d: 'Soporte lunes a viernes, 9:00–18:00 (CDMX).' },
+    { n: '99.5%', d: 'Uptime mensual garantizado de la plataforma.' },
+    { n: '2 h',   d: 'Respuesta a incidentes críticos en horario de soporte.' },
+    { n: '9×5',   d: 'Soporte lunes a viernes, 9:00–18:00 (CDMX).' },
   ],
   levels: [
     { p: 'P1', name: 'Crítica', color: '#B3241E',
@@ -5398,6 +5416,26 @@ const DOC_SLA = {
       resp: '24 h hábiles' },
   ],
 };
+
+// ── Cifras del pie de la portada ─────────────────────────────────────
+// Hasta el 8-sep-2026 estas tres cifras eran DOC_SLA.cards, o sea compromisos de SLA.
+// Abraham las cambió por claims de impacto comercial. Queda dicho que es un OVERRIDE
+// CONSCIENTE del checklist de birdie-brand-voice v1.0: fallan el punto 4 (cero promesas
+// absolutas — "100%") y el 3 (todo número con cuenta, universo, periodo y permiso).
+// Se le presentó el conflicto con una alternativa que sí pasa el gate y decidió esto.
+//
+// El SLA NO se tocó: sigue completo en la hoja 4 y asomado en el chip "SLA 99.5%" de
+// arriba. Separar las dos fuentes es lo que permite cambiar una sin mover la otra.
+//
+// ⚠️ Las etiquetas van en un flex de tres columnas contra el bloque del emisor. NO
+// desbordan al alargarse: los items se encogen y el texto cae a dos renglones, que es
+// un defecto que ni el alto ni el ancho detectan. docCheckFit mide justo eso
+// (`metricsOneLine`), así que al cambiar una etiqueta hay que correr `npm run check:doc`.
+const DOC_COVER_METRICS = [
+  { n: '100%', l: 'de visibilidad' },
+  { n: '40%',  l: 'aumento en eficiencia' },
+  { n: '10%',  l: 'disminución de gastos por demoras' },
+];
 
 // Marca de Birdie embebida: este archivo tiene que seguir siendo autónomo para
 // GitHub Pages y para imprimirse sin red. Reescalado a 256px (4x del uso mayor).
@@ -5471,11 +5509,11 @@ function docPage0(d, r) {
     .concat('<span class="cov-chip hi">SLA ' + docEsc(DOC_SLA.cards[0].n) + '</span>')
     .join('');
 
-  // Las tres cifras del pie son nuestros compromisos de SLA, los mismos que publica
-  // la hoja 4 — se leen de DOC_SLA para no tener el dato en dos lugares.
-  const metrics = DOC_SLA.cards.map(c =>
+  // Las tres cifras del pie son claims de impacto comercial, no el SLA — ver el
+  // comentario de DOC_COVER_METRICS. El SLA vive en el chip de arriba y en la hoja 4.
+  const metrics = DOC_COVER_METRICS.map(c =>
     '<div class="cov-metric"><div class="cov-metric-n">' + docEsc(c.n) + '</div>'
-    + '<div class="cov-metric-l">' + docEsc(c.short) + '</div></div>'
+    + '<div class="cov-metric-l">' + docEsc(c.l) + '</div></div>'
   ).join('');
 
   const lede = 'Implementación de la plataforma sobre un volumen estimado de '
@@ -5623,7 +5661,7 @@ function docPage1(d, r, cfg, level) {
 
   // Con el descuento anual apagado, anual y mensual cuestan lo mismo: mencionar una
   // "alternativa mensual sin descuento" sobra y confunde.
-  const note = 'Precios en USD. Suscripción facturada de forma anual anticipada; pago a 30 días. '
+  const note = 'Precios en USD. No incluyen IVA. Suscripción facturada de forma anual anticipada; pago a 30 días. '
     + (pct > 0 ? ('Alternativa de pago mensual: ' + docMoney(r.acv / 12) + '/mes sin descuento. ') : '')
     + 'No incluye viáticos ni desarrollos a la medida.';
 
@@ -5755,18 +5793,42 @@ function docPage3(d) {
  *  interiores tienen 1048px (1056 menos el filo azul de 8px) pero la portada no
  *  lleva ese filo, así que su caja es de 1056. Antes esto era un 1048 hardcodeado. */
 function docCheckFit() {
+  // El alto lo corrige la escalera de ajuste; el ancho no lo corrige nada.
+  //
+  // ⚠️ Pero el ancho TAMPOCO basta para el pie de la portada, y esto se midió: son tres
+  // columnas en un flex, así que al alargar una etiqueta los items se encogen y el
+  // texto CAE A DOS RENGLONES en vez de desbordar. Nada se sale de la hoja — la portada
+  // sólo queda torcida. Se comprobó con una cuarta métrica absurda: alto y ancho
+  // pasaban en verde. Por eso se mide además que cada etiqueta ocupe un solo renglón.
+  //
+  // El techo es fontSize×2 y no la line-height: `font-size` siempre resuelve a px,
+  // mientras que `line-height` puede venir 'normal' y dejar la comparación en NaN — o
+  // sea un fallo que se ve igual que un resultado bueno. Un renglón mide 1.6em; dos
+  // miden 3.2em. El 2 cae limpio en medio.
+  const unaLinea = (root) => {
+    const ls = Array.from(root.querySelectorAll('.cov-metric-l'));
+    if (!ls.length) return null;
+    return ls.every(el => el.scrollHeight <= parseFloat(getComputedStyle(el).fontSize) * 2);
+  };
   const report = Array.from(document.querySelectorAll('#doc-view .doc-inner')).map((el, i) => ({
     page: i + 1,
     height: el.scrollHeight,
     limit: el.clientHeight,
     ok: el.scrollHeight <= el.clientHeight,
+    width: el.scrollWidth,
+    widthLimit: el.clientWidth,
+    okW: el.scrollWidth <= el.clientWidth,
+    metricsOneLine: unaLinea(el),
   }));
   const view = document.getElementById('doc-view');
   if (view) view.setAttribute('data-fit', JSON.stringify(report));
-  const bad = report.filter(p => !p.ok);
+  const bad = report.filter(p => !p.ok || !p.okW || p.metricsOneLine === false);
   if (bad.length) {
-    console.warn('[documento] contenido desbordado en '
-      + bad.map(p => 'hoja ' + p.page + ' (' + p.height + '>' + p.limit + ')').join(', '));
+    console.warn('[documento] problema de ajuste en '
+      + bad.map(p => 'hoja ' + p.page
+          + (p.ok  ? '' : ' alto ' + p.height + '>' + p.limit)
+          + (p.okW ? '' : ' ancho ' + p.width + '>' + p.widthLimit)
+          + (p.metricsOneLine === false ? ' etiqueta del pie a dos renglones' : '')).join(', '));
   }
   return report;
 }
