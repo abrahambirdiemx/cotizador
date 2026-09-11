@@ -896,7 +896,8 @@
 
     /* Tier table */
     .mod-tiers { margin-top: 10px; }
-    .mod-tiers-head, .mod-tier-row { display: grid; grid-template-columns: 1.2fr 100px 90px; align-items: center; gap: 8px; padding: 5px 0; }
+    .mod-tiers-head, .mod-tier-row { display: grid; grid-template-columns: 1.2fr 100px 64px 90px; align-items: center; gap: 8px; padding: 5px 0; }
+    .mod-tier-op { font-size: 11px; color: #6B7280; text-align: right; font-variant-numeric: tabular-nums; }
     .mod-tiers-head { font-size: 9px; font-weight: 800; color: #6B7280; text-transform: uppercase; letter-spacing: 0.6px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
     .mod-tier-row { font-size: 12px; color: #374151; font-variant-numeric: tabular-nums; }
     .mod-tier-row + .mod-tier-row { border-top: 1px solid #F3F4F6; }
@@ -1330,7 +1331,7 @@
         </div>
         <div class="card-body modular-body">
           <div class="mod-section">
-            <div class="mod-section-head">Módulos <span class="mod-hint-inline">— cada tramo cobra solo las unidades dentro del rango (blended)</span></div>
+            <div class="mod-section-head">Módulos <span class="mod-hint-inline">— tarifa plana: el tramo del volumen total fija el precio de TODAS las unidades</span></div>
             <div id="mod-modules-container"></div>
           </div>
 
@@ -2491,7 +2492,7 @@ const MOD_DEFAULTS = {
     label: 'ValidAI · Documentos',
     unit: 'documento',
     unitPlural: 'documentos',
-    unitsPerOp: 2,                   // default: 1 op = 12 documentos
+    unitsPerOp: 2,                   // 1 operación = 2 documentos (factura y BL)
     costPerUnit: 0.42,
     tiers: [
       { min: 101,    max: 5000,    price: 1.20 },
@@ -2552,7 +2553,7 @@ const ADDON_DEFAULTS = {
 //   base: { annual: 2400, includedPerModule: 100 },
 //   modules: {
 //     eos:     { on: 1, unitsPerOp: 1,  tiers: [...] },
-//     validai: { on: 1, unitsPerOp: 12, tiers: [...] },
+//     validai: { on: 1, unitsPerOp: 2,  tiers: [...] },
 //     mve:     { on: 0, unitsPerOp: 1,  tiers: [...] },
 //   },
 //   addons: {
@@ -2723,6 +2724,23 @@ const _BREAK_MODULE_LABEL = {
   validai: 'ValidAI · Documentos',
   mve:     'MVE · Manifestación de Valor Electrónica',
 };
+
+// ValidAI se cobra por documento (2 por operación) pero el cliente opera en
+// OPERACIONES. Antes se le imprimía "24,000 documentos/año" — el único número de la
+// propuesta que tenía que convertir de cabeza para compararlo con los otros módulos.
+//
+// ⚠️ La redacción es NEUTRAL a propósito: dice a qué volumen corresponde el precio sin
+// prometer una cantidad. "Los documentos necesarios" se leería como ilimitados, y el
+// precio sale de un supuesto de 2 por operación — un importador con 4 o 5 quedaría
+// fuera de lo cotizado sin que la propuesta lo dijera en ningún lado.
+//
+// Recibe el número YA formateado porque sus dos llamadores usan formateadores distintos
+// (_brkFmt en el portal, docInt en el documento).
+// Su gemela vive en el OS: `leyendaDocumentos` de src/lib/pricingEngine.ts. Si una
+// cambia, la otra también — check:render y check:doc asiertan ésta.
+const leyendaDocumentos = (opsTexto, en) => en
+  ? 'Based on the documents for the ' + opsTexto + ' quoted operations.'
+  : 'Considera los documentos de las ' + opsTexto + ' operaciones cotizadas.';
 const _BREAK_ADDON_DESC_ES = {
   whatsapp: 'Agente conversacional en WhatsApp: estatus, alertas y respuestas al equipo sin entrar a la plataforma.',
   kpiDash:  'Dashboard a medida de indicadores logísticos y financieros. Setup único más hosting y ajustes mensuales.',
@@ -2774,14 +2792,27 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
     // Modules — una fila por módulo, o una sola "Licencia Birdie" en modo general.
     const activeMods = ['eos','validai','mve'].filter(k => r.perModule[k] && r.perModule[k].revenue);
     const volOf = k => _brkFmt(r.perModule[k].volume, en) + ' ' + _brkEsc(r.perModule[k].unitPlural);
+    // Un módulo que consume 1 unidad por operación YA está expresado en la unidad del
+    // cliente (EOS "operaciones", MVE "MVEs") y conserva su conteo. ValidAI consume 2,
+    // así que en vez del conteo lleva la leyenda.
+    const upoOf = k => Number(r.perModule[k].unitsPerOp) || 1;
+    const enOperaciones = k => upoOf(k) === 1;
+    const notaSub = txt => '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + _brkEsc(txt) + '</div>';
 
     if (licOf(d) === 'gen' && activeMods.length > 0) {
       const names = activeMods.map(k => _brkEsc(_BREAK_MODULE_LABEL[k]));
-      const volLine = activeMods.map(volOf).join(' · ') + (en ? '/year' : '/año');
-      const desc = (en
+      // La licencia general es UN concepto, así que la leyenda va como segunda frase de
+      // la descripción y no dentro del join de volúmenes: ahí produciría
+      // "12,000 operaciones · Considera los documentos de las 12,000 operaciones…".
+      const conConteo = activeMods.filter(enOperaciones);
+      const volLine = conConteo.length ? conConteo.map(volOf).join(' · ') + (en ? '/year' : '/año') : '';
+      const leyenda = activeMods.some(k => !enOperaciones(k))
+        ? ' ' + leyendaDocumentos(_brkFmt(r.ops, en), en) : '';
+      const desc = _brkEsc((en
         ? 'Annual platform license. Includes ' + joinNames(names, true) + '.'
         : 'Licencia anual de la plataforma. Incluye ' + joinNames(names, false) + '.')
-        + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLine + '</div>';
+        + leyenda)
+        + (volLine ? notaSub(volLine) : '');
       pushRow(
         en ? 'Birdie License' : 'Licencia Birdie',
         desc,
@@ -2793,9 +2824,10 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
         const m = r.perModule[k];
         const label = _BREAK_MODULE_LABEL[k];
         const desc = en ? _BREAK_MODULE_DESC_EN[k] : _BREAK_MODULE_DESC_ES[k];
-        const volLabel = volOf(k) + (en ? '/year' : '/año');
-        const combinedDesc = _brkEsc(desc) + '<div style="margin-top:4px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums">' + volLabel + '</div>';
-        pushRow(label, combinedDesc, '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
+        const sub = enOperaciones(k)
+          ? volOf(k) + (en ? '/year' : '/año')
+          : leyendaDocumentos(_brkFmt(r.ops, en), en);
+        pushRow(label, _brkEsc(desc) + notaSub(sub), '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
       });
     }
 
@@ -3174,6 +3206,33 @@ function updatePricing() {
 
 // Formatters shared across modular UI
 function mfmt(n)  { return Math.round(n).toLocaleString('en-US'); }
+
+// ── Cómo se LEE un tramo (espejo de src/lib/pricingEngine.ts del OS) ──────────
+// El motor cobra en UNIDADES y elige el tramo con `rawVol = ops × unitsPerOp`; estos
+// helpers sólo traducen eso a la unidad del cliente para mostrarlo. No tocan el cálculo.
+function precioPorOperacion(price, unitsPerOp) {
+  if (!isFinite(price) || !isFinite(unitsPerOp)) return 0;
+  return Math.round(price * unitsPerOp * 100) / 100;
+}
+// `desde: null` significa "hasta N" y sólo pasa en el primer tramo: por debajo de su
+// `min` el motor NO deja de cobrar, cae a ese mismo precio, así que "51 – 2,500" mentiría
+// sobre las 40 operaciones. Las fronteras salen del Math.round() del motor y no de una
+// división ingenua, para que sigan siendo exactas con un unitsPerOp fraccionario.
+function rangoEnOperaciones(tiers, index, unitsPerOp) {
+  const t = tiers[index];
+  if (!t || !isFinite(unitsPerOp) || unitsPerOp <= 0) return null;
+  return {
+    desde: index === 0 ? null : Math.ceil((t.min - 0.5) / unitsPerOp),
+    hasta: t.max >= 9999999 ? null : Math.ceil((t.max + 0.5) / unitsPerOp) - 1,
+  };
+}
+function rangoTexto(tiers, index, unitsPerOp) {
+  const t = tiers[index];
+  const r = rangoEnOperaciones(tiers, index, unitsPerOp);
+  if (!r) return (t.max >= 9999999) ? (mfmt(t.min) + '+') : (mfmt(t.min) + ' – ' + mfmt(t.max));
+  if (r.desde == null) return r.hasta == null ? 'todas' : 'hasta ' + mfmt(r.hasta);
+  return r.hasta == null ? (mfmt(r.desde) + '+') : (mfmt(r.desde) + ' – ' + mfmt(r.hasta));
+}
 function mfmt2(n) { return (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
 
 // Escape helper (short — reuse the entEscapeAttr pattern if available)
@@ -3196,17 +3255,14 @@ function renderModulesPanel() {
     const badge = (isMve && showMveBadge)
       ? '<span class="mod-badge">Disponible desde 20-jul-2026</span>'
       : '';
-    const hint = (k === 'validai')
-      ? '<span class="mod-hint" style="margin-left:8px">Subir a 8-12 si es cliente doc-heavy</span>'
-      : '';
+    // El rango y el $/op dependen del `unitsPerOp` que se edita ahí mismo, así que se
+    // pintan con el default y updateModularSummary() los recalcula en cada cambio.
     const tiersHtml = m.tiers.map((t, ti) => {
-      const range = (t.max >= 9999999)
-        ? (mfmt(t.min) + '+')
-        : (mfmt(t.min) + ' – ' + mfmt(t.max));
       return `
         <div class="mod-tier-row" data-tier-idx="${ti}" data-module="${k}">
-          <span class="mod-tier-range">${range}</span>
+          <span class="mod-tier-range" id="mod-${k}-t${ti}-r">${rangoTexto(m.tiers, ti, m.unitsPerOp)}</span>
           <input type="number" class="mod-tier-price" id="mod-${k}-t${ti}" value="${t.price}" min="0" step="0.05" oninput="updateModularSummary()" />
+          <span class="mod-tier-op" id="mod-${k}-t${ti}-op">—</span>
           <span class="mod-margin-badge" id="mod-${k}-t${ti}-m">—</span>
         </div>`;
     }).join('');
@@ -3224,13 +3280,13 @@ function renderModulesPanel() {
           <div class="mod-inline" style="margin-bottom:10px">
             <label>Unidades por operación:</label>
             <input type="number" id="mod-${k}-upo" value="${m.unitsPerOp}" min="0" step="0.1" oninput="updateModularSummary()" />
-            <span class="mod-vol-info">Volumen: <strong id="mod-${k}-vol">0</strong> ${_esc(m.unitPlural)}</span>
-            ${hint}
+            <span class="mod-vol-info">Volumen: <strong id="mod-${k}-vol">0</strong> operaciones</span>
           </div>
           <div class="mod-tiers" id="mod-${k}-tiers" data-show-all="0">
             <div class="mod-tiers-head">
-              <span>Rango (${_esc(m.unitPlural)})</span>
-              <span>$/unidad</span>
+              <span>Rango (operaciones)</span>
+              <span>$/${_esc(m.unit)}</span>
+              <span>$/op</span>
               <span>Margen</span>
             </div>
             <div class="mod-tiers-body">
@@ -3410,14 +3466,24 @@ function updateModularSummary() {
     const info = r.perModule[k];
     const volEl = document.getElementById('mod-' + k + '-vol');
     const subEl = document.getElementById('mod-' + k + '-subtotal');
-    if (volEl) volEl.textContent = mfmt(info ? info.volume : 0);
+    // El volumen se muestra en OPERACIONES —la unidad del cliente— para los tres
+    // módulos. El conteo en unidades sigue existiendo dentro del motor (info.volume) y
+    // es lo que elige el tramo; simplemente ya no se imprime.
+    const upo = (cfg.modules[k] && Number(cfg.modules[k].unitsPerOp)) || MOD_DEFAULTS[k].unitsPerOp;
+    if (volEl) volEl.textContent = mfmt(cfg.ops || 0);
     if (subEl) subEl.textContent = mfmt(info ? info.revenue : 0);
     // per-tier margin badges
     MOD_DEFAULTS[k].tiers.forEach((t, ti) => {
       const badge = document.getElementById('mod-' + k + '-t' + ti + '-m');
       const priceEl = document.getElementById('mod-' + k + '-t' + ti);
+      const rangeEl = document.getElementById('mod-' + k + '-t' + ti + '-r');
+      const opEl = document.getElementById('mod-' + k + '-t' + ti + '-op');
       if (!badge || !priceEl) return;
       const p = parseNum(priceEl.value) || 0;
+      // Derivados de sólo lectura: lo que se guarda y lo que viaja al payload sigue
+      // siendo el precio por UNIDAD. Un input en $/operación se almacenaría dividido.
+      if (rangeEl) rangeEl.textContent = rangoTexto(MOD_DEFAULTS[k].tiers, ti, upo);
+      if (opEl) opEl.textContent = upo === 1 ? '' : '$' + precioPorOperacion(p, upo).toFixed(2);
       const cost = MOD_DEFAULTS[k].costPerUnit;
       const margin = p > 0 ? (p - cost) / p : 0;
       badge.textContent = (margin * 100).toFixed(0) + '%';
@@ -5584,19 +5650,25 @@ function docPage1(d, r, cfg, level) {
   // Conceptos: una fila por módulo, o una sola "Licencia Birdie" en modo general.
   const rows = [];
   const volOf = k => docInt(r.perModule[k].volume) + ' ' + r.perModule[k].unitPlural + '/año';
+  // Misma regla que el portal: conteo para quien ya se mide en operaciones, leyenda
+  // para ValidAI. El documento es monolingüe, así que sólo entra la variante ES.
+  const enOperaciones = k => (Number(r.perModule[k].unitsPerOp) || 1) === 1;
+  const leyenda = leyendaDocumentos(docInt(r.ops), false);
 
   if (licOf(d) === 'gen' && activeMods.length) {
+    const conConteo = activeMods.filter(enOperaciones);
     rows.push({
       c: 'Licencia Birdie',
-      d: 'Licencia anual de la plataforma. Incluye ' + joinNames(modNames.map(docEsc), false) + '.',
-      sub: activeMods.map(volOf).join(' · '),
+      d: 'Licencia anual de la plataforma. Incluye ' + joinNames(modNames.map(docEsc), false) + '.'
+        + (activeMods.some(k => !enOperaciones(k)) ? ' ' + leyenda : ''),
+      sub: conConteo.map(volOf).join(' · '),
       amt: r.modulesSubtotal,
     });
   } else {
     activeMods.forEach(k => rows.push({
       c: _BREAK_MODULE_LABEL[k],
       d: DOC_SHORT_DESC[k],
-      sub: volOf(k),
+      sub: enOperaciones(k) ? volOf(k) : leyenda,
       amt: r.perModule[k].revenue,
     }));
   }
