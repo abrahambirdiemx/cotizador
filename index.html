@@ -769,6 +769,31 @@
     .roi-preview-row { display:flex;justify-content:space-between;padding:3px 0; }
     .roi-preview-row strong { color:#92400E;font-weight:800;font-variant-numeric:tabular-nums; }
 
+    /* ── ROI por escenarios (vista cliente, modelo m:2) ── */
+    .rs-kpis { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px; }
+    .rs-kpi { background:white;border:1px solid var(--border);border-top:4px solid #2C5AA8;border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow); }
+    .rs-kpi-n { font-size:34px;font-weight:900;color:#1B3F85;letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums; }
+    .rs-kpi-l { font-size:14px;font-weight:700;color:var(--navy);margin-top:8px; }
+    .rs-kpi-s { font-size:12px;color:#6B7280;margin-top:2px; }
+    .rs-wrap { overflow-x:auto;margin-top:22px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow); }
+    .rs-table { width:100%;border-collapse:collapse;background:white;font-size:13.5px;min-width:560px; }
+    .rs-table th { background:#0A1628;color:white;text-align:left;padding:12px 16px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700; }
+    .rs-table th.rs-base { color:#7CD3F0; }
+    .rs-table td { padding:12px 16px;border-top:1px solid var(--border);vertical-align:top;color:#1F2937; }
+    .rs-table .rs-num { text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap; }
+    .rs-table td.rs-base { font-weight:800; }
+    .rs-t { font-weight:700;color:var(--navy); }
+    .rs-d { font-size:12px;color:#6B7280;margin-top:2px;line-height:1.45; }
+    .rs-benefit td { background:#EEF3FA;font-weight:800;font-size:15px; }
+    .rs-benefit td.rs-base { color:#1B3F85; }
+    .rs-invest td { color:#4B5563; }
+    .rs-net td { background:#0A1628;color:white;font-weight:800; }
+    .rs-net td.rs-base strong { color:#7CD3F0; }
+    .rs-net td strong { display:block;font-size:17px; }
+    .rs-net td span { display:block;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.8);margin-top:2px; }
+    .rs-foot { font-size:12px;color:#6B7280;margin-top:10px; }
+    @media (max-width:640px) { .rs-kpis { grid-template-columns:1fr; } }
+
     /* ── ROI (vista cliente) ── */
     .roi-drivers { display:flex;flex-direction:column;gap:14px;margin-top:24px; }
     .roi-driver-card { padding:20px 24px;background:white;border:1px solid var(--border);border-left:5px solid #F59E0B;border-radius:var(--r);box-shadow:var(--shadow); }
@@ -995,7 +1020,9 @@
     .doc-inner { height: 1048px; box-sizing: border-box; display: flex; flex-direction: column; }
     .doc-p1 .doc-inner { padding: 44px 57px 34px; }
     .doc-p2 .doc-inner,
-    .doc-p3 .doc-inner { padding: 54px 60px 43px; }
+    .doc-p3 .doc-inner,
+    .doc-pr .doc-inner,
+    .doc-ps .doc-inner { padding: 54px 60px 43px; }
 
     /* ── Cromo compartido ───────────────────────────────────────────────────── */
     .doc-head { display: flex; align-items: flex-start; justify-content: space-between;
@@ -1003,7 +1030,8 @@
     .doc-brand { display: flex; align-items: center; gap: 11px; }
     .doc-wordmark { font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
     .doc-p1 .doc-wordmark { font-size: 27px; }
-    .doc-p2 .doc-wordmark, .doc-p3 .doc-wordmark { font-size: 20px; }
+    .doc-p2 .doc-wordmark, .doc-p3 .doc-wordmark,
+    .doc-pr .doc-wordmark, .doc-ps .doc-wordmark { font-size: 20px; }
     .doc-meta { text-align: right; }
     .doc-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500;
                    letter-spacing: 0.16em; text-transform: uppercase; color: var(--d-muted); }
@@ -1122,6 +1150,93 @@
     .doc-panel-cyan  { background: rgba(124,211,240,0.16); }
     .doc-panel .doc-eyebrow { font-size: 10px; color: var(--d-blue); }
     .doc-panel-body { font-size: 13px; line-height: 1.6; color: rgba(10,22,40,0.75); margin-top: 7px; }
+    /* ── Hoja opcional · Retorno de inversión (referencia Grupo Alta v2) ──── */
+    .dr-h2 { font-weight: 700; margin-top: 24px; }
+    .dr-dense .dr-kpis { margin-top: 16px; }
+    .dr-dense .dr-kpi { padding: 12px 21px 9px; }
+    .dr-dense .dr-sec { margin-top: 15px; }
+    .dr-dense .dr-table td { padding: 5px 16px; }
+    .dr-dense .dr-volnote { margin-top: 11px; padding: 7px 18px; }
+    .dr-dense .dr-lede { margin-top: 9px; }
+    .dr-dense2 .dr-h2 { font-size: 30px; margin-top: 18px; }
+    .dr-lede { max-width: none; }
+    .dr-sec { font-size: 9.5px; margin-top: 22px; }
+    .dr-kpis { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 24px; }
+    .dr-kpi { position: relative; background: #fff; border: 1px solid var(--d-line); border-radius: 11px;
+              padding: 15px 21px 11px; }
+    .dr-kpi::before { content: ''; position: absolute; top: -1px; left: 15px; width: 77px; height: 3px;
+                      background: var(--d-blue); }
+    .dr-kpi-n { font-size: 32px; font-weight: 700; letter-spacing: -0.04em; line-height: 1;
+                color: var(--d-deep); font-variant-numeric: tabular-nums; }
+    .dr-kpi-l { font-size: 12.5px; font-weight: 600; margin-top: 7px; }
+    .dr-kpi-s { font-size: 11px; color: var(--d-muted); margin-top: 2px; }
+    .dr-table { margin-top: 6px; }
+    .dr-table thead th { background: var(--d-ink); }
+    .dr-table thead th.dr-base { color: var(--d-cyan); }
+    .dr-table tbody tr:nth-child(even) td { background: transparent; }
+    .dr-table td { padding: 7px 16px; line-height: 1.3; }
+    .dr-table td.doc-num { font-size: 13.5px; font-weight: 400; color: rgba(10,22,40,0.75); }
+    .dr-table td.doc-num.dr-base { font-weight: 600; color: var(--d-ink); }
+    .dr-t { font-size: 12.8px; font-weight: 600; color: var(--d-ink); line-height: 1.3; }
+    .dr-d { font-size: 11px; line-height: 1.3; color: var(--d-muted); margin-top: 2px; max-width: 290px; }
+    .dr-benefit td { background: #EEF3FA !important; font-size: 14px; font-weight: 600; color: var(--d-ink); }
+    .dr-benefit td.doc-num { font-size: 14px !important; font-weight: 600 !important; color: var(--d-ink) !important; }
+    .dr-benefit td.doc-num.dr-base { color: var(--d-deep) !important; }
+    .dr-invest td { font-size: 13px; color: rgba(10,22,40,0.75); }
+    .dr-net td { background: var(--d-ink) !important; color: #fff; font-size: 14px; font-weight: 600;
+                 vertical-align: middle; border-bottom: none; }
+    .dr-net td.doc-num strong { display: block; font-size: 15px; font-weight: 600; color: #fff; }
+    .dr-net td.doc-num.dr-base strong { color: var(--d-cyan); }
+    .dr-net td.doc-num span { display: block; font-size: 10.5px; font-weight: 400;
+                              color: rgba(255,255,255,0.75); margin-top: 1px; }
+    .dr-assume { font-size: 11px; line-height: 1.6; color: var(--d-muted); margin-top: 8px; }
+    .dr-volnote { margin-top: 18px; background: #FDF6E7; border: 1px solid #EBD9A8; border-radius: 9px;
+                  padding: 10px 18px; font-size: 11.5px; line-height: 1.5; color: #7A5A12; }
+    .dr-volnote-t { font-weight: 600; }
+
+    /* ── Hoja opcional · Etapas de implementación ───────────────────────── */
+    .ds-gantt { background: #fff; border: 1px solid var(--d-line); border-radius: 11px;
+                padding: 10px 16px 10px; margin-top: 10px; }
+    .ds-row { display: flex; align-items: center; height: 36px; }
+    .ds-label { width: 200px; flex-shrink: 0; display: flex; gap: 7px; align-items: baseline;
+                white-space: nowrap; overflow: hidden; padding-right: 10px; }
+    .ds-fase { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8.8px;
+               letter-spacing: 0.08em; text-transform: uppercase; color: var(--d-muted); flex-shrink: 0; }
+    .ds-name { font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+    .ds-track { position: relative; flex: 1; height: 100%; }
+    .ds-weeks { height: 24px; border-bottom: 1px solid var(--d-line); }
+    .ds-wk { display: grid; grid-template-columns: repeat(var(--w), 1fr); align-items: center;
+             font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8px;
+             color: var(--d-muted); text-align: center; }
+    .ds-body { position: relative; padding: 4px 0; }
+    .ds-grid { position: absolute; top: 0; bottom: 0; left: 200px; right: 0; display: grid;
+               grid-template-columns: repeat(var(--w), 1fr); }
+    .ds-grid > div { border-left: 1px solid rgba(10,22,40,0.05); }
+    .ds-grid > div:first-child { border-left: none; }
+    .ds-bar { position: absolute; top: 9px; height: 17px; border-radius: 4px; color: #fff;
+              font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8px; font-weight: 600;
+              display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+              margin-left: 2px; margin-right: 2px; }
+    .ds-bar1 { background: #1F3B73; }
+    .ds-bar2 { background: #2C5AA8; }
+    .ds-bar3 { background: #3D67B3; }
+    .ds-bar4 { background: #6FA3D8; }
+    .ds-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; margin-top: 10px; }
+    .ds-card { background: #fff; border: 1px solid var(--d-line); border-radius: 11px;
+               padding: 12px 20px 16px; min-height: 145px; box-sizing: border-box; }
+    .ds-card-head { display: flex; gap: 11px; align-items: flex-start; }
+    .ds-num { width: 34px; height: 34px; border-radius: 7px; background: var(--d-ink); color: #fff;
+              font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+              flex-shrink: 0; letter-spacing: -0.02em; }
+    .ds-card-t { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
+    .ds-card-w { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 8.8px;
+                 letter-spacing: 0.06em; text-transform: uppercase; color: var(--d-deep); margin-top: 5px; }
+    .ds-card-x { font-size: 11.5px; line-height: 1.55; color: rgba(10,22,40,0.72); margin-top: 8px; }
+    .ds-goal { background: var(--d-ink); color: #fff; border-radius: 11px; padding: 15px 32px;
+               margin-top: 29px; }
+    .ds-goal .doc-eyebrow { font-size: 9.5px; color: var(--d-cyan); }
+    .ds-goal-t { font-size: 14.5px; font-weight: 600; letter-spacing: -0.02em; margin-top: 4px; }
+
     .doc-signs { display: flex; flex: 1; gap: 32px; }
     .doc-sign { flex: 1; }
     .doc-sign-line { height: 26px; border-bottom: 1px solid rgba(10,22,40,0.35); }
@@ -1404,120 +1519,145 @@
           Incluir Retorno de Inversión (ROI)
         </label>
         <div id="roi-fields" style="display:none;margin-top:12px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed #FCD34D">
-            <span style="font-size:11px;color:#78350F;font-weight:800;text-transform:uppercase;letter-spacing:0.5px">Tipo de cambio USD→MXN:</span>
-            <input type="number" id="roi-fx" value="18" min="1" step="0.1" oninput="updateROIPreview()"
-              style="width:80px;padding:5px 8px;font-size:13px;background:#FFFFFF;border:1px solid #FCD34D;border-radius:5px;color:#1F2937;font-family:Inter,sans-serif;font-weight:700;text-align:right" />
+          <!-- Modelo de la hoja "Retorno de inversión" del PDF: 4 palancas × 3 escenarios, en USD. -->
+          <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed #FCD34D">
+            <div>
+              <label>Embarques / año</label>
+              <input type="number" id="roi-ships" value="" min="0" step="100" oninput="this.dataset.touched='1';updateROIPreview()" />
+            </div>
+            <div>
+              <label>Costo hora del equipo (USD)</label>
+              <input type="number" id="roi-hour" value="10" min="0" step="1" oninput="updateROIPreview()" />
+            </div>
           </div>
+          <div style="font-size:10px;color:#92400E;margin:-6px 0 10px">💡 Embarques arranca igual a las operaciones de la cotización. Si lo cambias, el PDF agrega una nota de volumen.</div>
 
-          <!-- Driver 1: Tiempo manual -->
           <div class="roi-driver">
             <label class="roi-driver-head">
-              <input type="checkbox" id="roi-d1" checked onchange="updateROIPreview()" />
-              <strong>1. Tiempo manual</strong> <span class="roi-mini">— horas-hombre liberadas al automatizar</span>
+              <input type="checkbox" id="roi-prod" checked onchange="updateROIPreview()" />
+              <strong>1. Productividad del equipo</strong> <span class="roi-mini">— minutos ahorrados por embarque</span>
             </label>
-            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
+            <div class="roi-inputs">
               <div>
-                <label># Colaboradores</label>
-                <input type="number" id="roi-d1-collab" value="3" min="0" step="1" oninput="updateROIPreview()" />
+                <label>Conservador</label>
+                <input type="number" id="roi-prod-c" value="20" min="0" step="5" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>Salario mensual cargado (MXN)</label>
-                <input type="number" id="roi-d1-salary" value="25000" min="0" step="1000" oninput="updateROIPreview()" />
+                <label>Base</label>
+                <input type="number" id="roi-prod-b" value="30" min="0" step="5" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>% tiempo en tareas manuales</label>
-                <input type="number" id="roi-d1-pctmanual" value="40" min="0" max="100" step="5" oninput="updateROIPreview()" />
-              </div>
-              <div>
-                <label>% recuperado con Birdie</label>
-                <input type="number" id="roi-d1-pctrecovered" value="50" min="0" max="100" step="5" oninput="updateROIPreview()" />
+                <label>Optimista</label>
+                <input type="number" id="roi-prod-o" value="45" min="0" step="5" oninput="updateROIPreview()" />
               </div>
             </div>
           </div>
 
-          <!-- Driver 2: Demurrage / Detention evitable -->
           <div class="roi-driver">
             <label class="roi-driver-head">
-              <input type="checkbox" id="roi-d2" onchange="updateROIPreview()" />
-              <strong>2. Demurrage</strong> <span class="roi-mini">— costo evitable de días extra en puerto</span>
+              <input type="checkbox" id="roi-dem" checked onchange="updateROIPreview()" />
+              <strong>2. Demoras y almacenajes</strong> <span class="roi-mini">— % evitable del costo por demoras</span>
             </label>
-            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
+            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr);margin-bottom:8px">
               <div>
-                <label>Costo promedio mensual pagado (MXN)</label>
-                <input type="number" id="roi-d2-monthly" value="0" min="0" step="1000" oninput="updateROIPreview()" />
+                <label>% embarques con demora</label>
+                <input type="number" id="roi-dem-pct" value="5" min="0" max="100" step="0.5" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>% posible de recuperación</label>
-                <input type="number" id="roi-d2-pctrecovery" value="60" min="0" max="100" step="5" oninput="updateROIPreview()" />
+                <label>Cargo promedio (USD)</label>
+                <input type="number" id="roi-dem-cost" value="400" min="0" step="50" oninput="updateROIPreview()" />
+              </div>
+            </div>
+            <div class="roi-inputs">
+              <div>
+                <label>Conservador</label>
+                <input type="number" id="roi-dem-c" value="8" min="0" step="1" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Base</label>
+                <input type="number" id="roi-dem-b" value="10" min="0" step="1" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Optimista</label>
+                <input type="number" id="roi-dem-o" value="15" min="0" step="1" oninput="updateROIPreview()" />
               </div>
             </div>
           </div>
 
-          <!-- Driver 3: Cumplimiento -->
           <div class="roi-driver">
             <label class="roi-driver-head">
-              <input type="checkbox" id="roi-d3" onchange="updateROIPreview()" />
-              <strong>3. Cumplimiento</strong> <span class="roi-mini">— multas y sanciones evitables</span>
+              <input type="checkbox" id="roi-err" checked onchange="updateROIPreview()" />
+              <strong>3. Errores y rectificaciones</strong> <span class="roi-mini">— % de errores que previene ValidAI</span>
             </label>
-            <div class="roi-inputs cols-1">
+            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr);margin-bottom:8px">
               <div>
-                <label>Multas evitadas / año (MXN)</label>
-                <input type="number" id="roi-d3-fines" value="0" min="0" step="1000" oninput="updateROIPreview()" />
+                <label>% operaciones con rectificación</label>
+                <input type="number" id="roi-err-pct" value="5" min="0" max="100" step="0.5" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Costo por evento (USD)</label>
+                <input type="number" id="roi-err-cost" value="300" min="0" step="50" oninput="updateROIPreview()" />
+              </div>
+            </div>
+            <div class="roi-inputs">
+              <div>
+                <label>Conservador</label>
+                <input type="number" id="roi-err-c" value="50" min="0" step="5" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Base</label>
+                <input type="number" id="roi-err-b" value="70" min="0" step="5" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Optimista</label>
+                <input type="number" id="roi-err-o" value="85" min="0" step="5" oninput="updateROIPreview()" />
               </div>
             </div>
           </div>
 
-          <!-- Ramp-up (periodo de adopción) -->
-          <div class="roi-driver" style="background:#FFFBEB">
-            <div class="roi-driver-head" style="cursor:default">
-              <strong>Ramp-up de adopción</strong> <span class="roi-mini">— modela cuándo se materializan los ahorros (Plan 90 días)</span>
-            </div>
-            <div class="roi-inputs" style="grid-template-columns:repeat(2,1fr)">
+          <div class="roi-driver">
+            <label class="roi-driver-head">
+              <input type="checkbox" id="roi-tools" checked onchange="updateROIPreview()" />
+              <strong>4. Herramientas y reportes</strong> <span class="roi-mini">— USD / año en tableros y reportes que sustituye</span>
+            </label>
+            <div class="roi-inputs">
               <div>
-                <label>Meses de implementación (0% del ahorro)</label>
-                <input type="number" id="roi-impl-months" value="3" min="0" max="12" step="1" oninput="updateROIPreview()" />
+                <label>Conservador</label>
+                <input type="number" id="roi-tools-c" value="3000" min="0" step="500" oninput="updateROIPreview()" />
               </div>
               <div>
-                <label>Meses de estabilización (50% del ahorro)</label>
-                <input type="number" id="roi-stab-months" value="3" min="0" max="12" step="1" oninput="updateROIPreview()" />
+                <label>Base</label>
+                <input type="number" id="roi-tools-b" value="6000" min="0" step="500" oninput="updateROIPreview()" />
+              </div>
+              <div>
+                <label>Optimista</label>
+                <input type="number" id="roi-tools-o" value="9000" min="0" step="500" oninput="updateROIPreview()" />
               </div>
             </div>
-            <div style="font-size:10px;color:#92400E;margin-top:4px">💡 El resto del año corre al 100%. Año 2+ siempre asume estado estable.</div>
           </div>
 
           <div class="roi-preview" id="roi-preview">
-            <div class="roi-preview-row"><span>Costo oculto anual (full):</span><strong id="roi-prev-hidden">$0 MXN</strong></div>
-            <div class="roi-preview-row"><span>Inversión Birdie (año 1):</span><strong id="roi-prev-invest">$0 MXN</strong></div>
-            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:6px;padding-top:6px;font-weight:700;color:#78350F"><span>AÑO 1 (con ramp-up)</span><span></span></div>
-            <div class="roi-preview-row"><span>Ahorro neto año 1:</span><strong id="roi-prev-saving-y1">$0 MXN</strong></div>
-            <div class="roi-preview-row"><span>ROI año 1:</span><strong id="roi-prev-roi-y1">0%</strong></div>
-            <div class="roi-preview-row"><span>Payback real:</span><strong id="roi-prev-payback">— meses</strong></div>
-            <div class="roi-preview-row" style="border-top:1px dashed #FCD34D;margin-top:6px;padding-top:6px;font-weight:700;color:#78350F"><span>AÑO 2 EN ADELANTE</span><span></span></div>
-            <div class="roi-preview-row"><span>Ahorro neto año 2+:</span><strong id="roi-prev-saving-y2">$0 MXN</strong></div>
-            <div class="roi-preview-row"><span>ROI año 2+:</span><strong id="roi-prev-roi-y2">0%</strong></div>
+            <div class="roi-preview-row"><span>Inversión primer año (lista):</span><strong id="roi-prev-invest">$0</strong></div>
+            <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:11.5px;font-variant-numeric:tabular-nums">
+              <thead><tr style="color:#78350F;font-size:10px;text-transform:uppercase;letter-spacing:0.5px">
+                <th style="text-align:left;padding:3px 0"></th><th style="text-align:right">Cons.</th><th style="text-align:right">Base</th><th style="text-align:right">Opt.</th>
+              </tr></thead>
+              <tbody id="roi-prev-body"></tbody>
+            </table>
           </div>
           <!-- Avisa, no bloquea: mismo criterio que las alertas de margen del Cotizador. -->
           <div id="roi-warn" style="display:none;background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:11.5px;color:#7F1D1D;line-height:1.5"></div>
-          <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Ajusta los drivers que apliquen al cliente. Solo los activados se mostrarán en la propuesta.</div>
+          <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Solo las palancas activadas salen en la propuesta y en la hoja de ROI del PDF.</div>
         </div>
       </div>
 
-      <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE -->
-      <div class="tx-only" style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
+      <!-- ETAPAS DE IMPLEMENTACIÓN TOGGLE — contenido fijo (IMPL_PHASES), sin configuración -->
+      <div style="margin-top:12px;padding:14px;background:#E0E7FF;border:1px solid #6366F1;border-radius:8px;color:#1F2937;">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#3730A3;font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;margin-bottom:0">
-          <input type="checkbox" id="stages-toggle" onchange="toggleStages()" style="width:16px;height:16px;accent-color:#6366F1;cursor:pointer" />
+          <input type="checkbox" id="stages-toggle" style="width:16px;height:16px;accent-color:#6366F1;cursor:pointer" />
           Incluir Etapas de Implementación
         </label>
-        <div id="stages-fields" style="display:none;margin-top:12px">
-          <div id="stages-list"></div>
-          <button type="button" id="stages-add-btn" onclick="addStage()"
-            style="width:100%;padding:8px;background:#C7D2FE;color:#3730A3;border:1px dashed #6366F1;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;margin-top:6px">
-            + Agregar etapa
-          </button>
-          <div id="stages-limit-msg" style="display:none;font-size:10px;color:#4B5563;margin-top:4px;text-align:center">Máximo 5 etapas.</div>
-          <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Cada línea no vacía del texto se renderizará como un bullet en la propuesta.</div>
-        </div>
+        <div style="font-size:10px;color:#4B5563;margin-top:6px">💡 Agrega la hoja estándar: 4 fases · 16 semanas (onboarding, adopción, estabilización y operación nacional).</div>
       </div>
 
       <!-- ENTERPRISE FORMAT CARD (solo visible en formato Enterprise) -->
@@ -3746,16 +3886,19 @@ function collectROIFromForm() {
     return isNaN(v) ? def : v;
   };
   const ck = id => { const el = document.getElementById(id); return el && el.checked ? 1 : 0; };
+  const trio = (prefix, def) => ['c','b','o'].map((k, i) => Math.max(0, num(prefix + '-' + k, def[i])));
+  const opsEl = document.getElementById('inp-ops');
+  const ops = opsEl ? (parseInt(opsEl.value) || 0) : 0;
+  const d = ROI_SCEN_DEFAULTS;
   return {
     on: ck('roi-toggle'),
-    fx: num('roi-fx', 18),
-    d1: { on: ck('roi-d1'), collab: num('roi-d1-collab', 0), salary: num('roi-d1-salary', 0), pctManual: num('roi-d1-pctmanual', 0), pctRecovered: num('roi-d1-pctrecovered', 0) },
-    d2: { on: ck('roi-d2'), monthly: num('roi-d2-monthly', 0), pctRecovery: num('roi-d2-pctrecovery', 0) },
-    d3: { on: ck('roi-d3'), fines: num('roi-d3-fines', 0) },
-    ramp: {
-      implMonths: Math.max(0, Math.min(12, num('roi-impl-months', 3) || 0)),
-      stabMonths: Math.max(0, Math.min(12, num('roi-stab-months', 3) || 0)),
-    },
+    m: 2,
+    ships: Math.max(0, num('roi-ships', ops)),
+    hour:  Math.max(0, num('roi-hour', d.hour)),
+    prod:  { on: ck('roi-prod'),  min: trio('roi-prod', d.prod.min) },
+    dem:   { on: ck('roi-dem'),   pct: num('roi-dem-pct', d.dem.pct), cost: num('roi-dem-cost', d.dem.cost), cap: trio('roi-dem', d.dem.cap) },
+    err:   { on: ck('roi-err'),   pct: num('roi-err-pct', d.err.pct), cost: num('roi-err-cost', d.err.cost), cap: trio('roi-err', d.err.cap) },
+    tools: { on: ck('roi-tools'), usd: trio('roi-tools', d.tools.usd) },
   };
 }
 
@@ -3896,6 +4039,95 @@ function fmtROIFormula(roi, driver, lang) {
   return '';
 }
 
+// ── ROI por escenarios (modelo m:2) ───────────────────────────────────────────
+// Es el modelo de la hoja "Retorno de inversión" del PDF (referencia: propuesta
+// Grupo Alta v2). Cuatro palancas, tres escenarios, todo en USD contra la inversión
+// del primer año a precio de lista. Sin ramp-up: el payback es simple, inversión
+// entre beneficio mensual, igual que en la referencia.
+// Con los defaults, 7,000 embarques e inversión de 23,638.32 reproduce la hoja:
+// beneficio 90,033 / 128,500 / 171,750 · ROI 281 / 444 / 627% · payback 3.2 / 2.2 / 1.7.
+const ROI_SCEN_DEFAULTS = {
+  hour: 10,
+  prod:  { min: [20, 30, 45] },
+  dem:   { pct: 5, cost: 400, cap: [8, 10, 15] },
+  err:   { pct: 5, cost: 300, cap: [50, 70, 85] },
+  tools: { usd: [3000, 6000, 9000] },
+};
+const ROI_SCEN_KEYS = ['prod', 'dem', 'err', 'tools'];
+
+function isROIScenarios(roi) { return !!(roi && roi.on && roi.m === 2); }
+
+function calcROIScenarios(roi, investmentUSD) {
+  const E = Math.max(0, Number(roi.ships) || 0);
+  const h = Math.max(0, Number(roi.hour) || 0);
+  const I = Math.max(0, Number(investmentUSD) || 0);
+  const at = (a, i) => Number(a && a[i]) || 0;
+  const pct = n => (Number(n) || 0) / 100;
+  const formulas = {
+    prod:  i => E * at(roi.prod.min, i) / 60 * h,
+    dem:   i => E * pct(roi.dem.pct) * (Number(roi.dem.cost) || 0) * pct(at(roi.dem.cap, i)),
+    err:   i => E * pct(roi.err.pct) * (Number(roi.err.cost) || 0) * pct(at(roi.err.cap, i)),
+    tools: i => at(roi.tools.usd, i),
+  };
+  const levers = ROI_SCEN_KEYS
+    .filter(k => roi[k] && roi[k].on)
+    .map(k => ({ k, v: [0, 1, 2].map(formulas[k]) }));
+  const scen = [0, 1, 2].map(i => {
+    const benefit = levers.reduce((sum, l) => sum + l.v[i], 0);
+    return {
+      benefit,
+      net: benefit - I,
+      roiPct: I > 0 ? (benefit - I) / I * 100 : null,
+      payback: (I > 0 && benefit > 0) ? I / (benefit / 12) : null,
+    };
+  });
+  return {
+    ships: E, hour: h, investment: I, levers, scen,
+    multiple: I > 0 ? scen[1].benefit / I : null,
+    perShip: E > 0 ? I / E : null,
+  };
+}
+
+// Copy de cada palanca. La descripción se arma con los parámetros de la liga, así
+// el texto nunca contradice la cifra de al lado.
+function roiLeverCopy(roi, k, en) {
+  const n = v => (Number(v) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  if (k === 'prod') return {
+    t: en ? 'Team productivity' : 'Productividad del equipo',
+    d: en
+      ? 'Less manual data entry, follow-up and file building (' + roi.prod.min.map(n).join(' / ') + ' min per shipment)'
+      : 'Menos captura manual, seguimiento y armado de expediente (' + roi.prod.min.map(n).join(' / ') + ' min por embarque)',
+  };
+  if (k === 'dem') return {
+    t: en ? 'Delays and storage' : 'Demoras y almacenajes',
+    d: en
+      ? 'Early visibility and alerts on the ' + n(roi.dem.pct) + '% of shipments with an average charge of USD ' + n(roi.dem.cost)
+      : 'Visibilidad anticipada y alertas sobre el ' + n(roi.dem.pct) + '% de embarques con cargo promedio de USD ' + n(roi.dem.cost),
+  };
+  if (k === 'err') return {
+    t: en ? 'Errors and rectifications' : 'Errores y rectificaciones',
+    d: en
+      ? 'ValidAI prevents document errors in ' + n(roi.err.pct) + '% of operations (USD ' + n(roi.err.cost) + ' per event)'
+      : 'ValidAI previene errores documentales en el ' + n(roi.err.pct) + '% de las operaciones (USD ' + n(roi.err.cost) + ' por evento)',
+  };
+  return {
+    t: en ? 'Tools and reporting' : 'Herramientas y reportes',
+    d: en
+      ? 'Replaces manual dashboards, parallel spreadsheets and hand-built reports'
+      : 'Sustituye tableros manuales, archivos paralelos y reportes armados a mano',
+  };
+}
+
+function roiFmtPayback(p) { return (p != null && isFinite(p)) ? p.toFixed(1) : '—'; }
+function roiFmtPct(p) { return (p != null && isFinite(p)) ? Math.round(p) + '%' : '—'; }
+
+// Inversión del primer año a precio de lista (suscripción + implementación), del
+// mismo motor que la hoja de precios. Fallback a los campos espejo del payload.
+function roiInvestmentUSD(d) {
+  try { return calcModularPricing(configFromPayload(d)).totalYear1 || 0; }
+  catch (e) { return (d.acv || 0) + (d.impl || 0); }
+}
+
 function getInvestmentUSDFromForm() {
   // Investment (year 1) is now driven by the modular pricing panel.
   // ROI compares this against the hidden cost the drivers estimate.
@@ -3911,101 +4143,83 @@ function fmtUSD(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
 
 function updateROIPreview() {
   if (!document.getElementById('roi-toggle').checked) return;
+  // Embarques sigue a las operaciones de la cotización hasta que el vendedor lo edita.
+  const shipsEl = document.getElementById('roi-ships');
+  const opsEl = document.getElementById('inp-ops');
+  if (shipsEl && !shipsEl.dataset.touched && opsEl) shipsEl.value = opsEl.value;
+
   const roi = collectROIFromForm();
   const investmentUSD = getInvestmentUSDFromForm();
-  const investmentMXN = investmentUSD * roi.fx;
-  const r = calcROI(roi, investmentMXN);
-  document.getElementById('roi-prev-hidden').textContent     = fmtMXN(r.hidden);
-  document.getElementById('roi-prev-invest').textContent     = fmtMXN(r.investmentMXN);
-  document.getElementById('roi-prev-saving-y1').textContent  = fmtMXN(r.netY1);
-  document.getElementById('roi-prev-roi-y1').textContent     = Math.round(r.roiPctY1) + '%';
-  document.getElementById('roi-prev-saving-y2').textContent  = fmtMXN(r.netY2);
-  document.getElementById('roi-prev-roi-y2').textContent     = Math.round(r.roiPctY2) + '%';
-  document.getElementById('roi-prev-payback').textContent    = (r.payback != null && isFinite(r.payback))
-    ? r.payback.toFixed(1) + ' meses' : '> 48 meses';
+  const r = calcROIScenarios(roi, investmentUSD);
+  document.getElementById('roi-prev-invest').textContent = fmtUSD(r.investment) + ' USD';
+
+  const row = (label, cells, strong) => '<tr' + (strong ? ' style="font-weight:800;color:#78350F"' : '') + '>'
+    + '<td style="padding:3px 0">' + label + '</td>'
+    + cells.map(c => '<td style="text-align:right;padding:3px 0 3px 8px">' + c + '</td>').join('') + '</tr>';
+  const body = document.getElementById('roi-prev-body');
+  if (body) body.innerHTML =
+      r.levers.map(l => row(roiLeverCopy(roi, l.k, false).t, l.v.map(fmtUSD))).join('')
+    + row('Beneficio anual', r.scen.map(x => fmtUSD(x.benefit)), true)
+    + row('Beneficio neto', r.scen.map(x => fmtUSD(x.net)), true)
+    + row('ROI', r.scen.map(x => roiFmtPct(x.roiPct)))
+    + row('Payback (meses)', r.scen.map(x => roiFmtPayback(x.payback)));
 
   // Con el ROI prendido, la propuesta ARGUMENTA con estas cifras. Si salen negativas
   // argumenta en contra de sí misma, y el vendedor no lo ve hasta que el cliente abre
   // la liga. Avisa y dice qué revisar; no bloquea nada.
   const warn = document.getElementById('roi-warn');
   if (!warn) return;
-  const sinPayback = !(r.payback != null && isFinite(r.payback));
+  const base = r.scen[1];
   const motivos = [];
-  if (!(roi.d1 && roi.d1.on)) motivos.push('«Tiempo manual recuperado» está apagado');
-  if (roi.d3 && roi.d3.on && !(roi.d3.fines > 0)) motivos.push('«Multas evitadas» está prendido con $0');
-  if (roi.d2 && roi.d2.on && !(roi.d2.monthly > 0)) motivos.push('«Demoras evitadas» está prendido con $0');
-
-  if (r.roiPctY1 < 0 || sinPayback) {
+  if (!r.levers.length) motivos.push('no hay ninguna palanca activada');
+  if (!(r.ships > 0)) motivos.push('embarques / año está en 0');
+  if (roi.prod.on && !(r.hour > 0)) motivos.push('el costo hora está en 0');
+  if (!(base.roiPct > 0)) {
     warn.style.display = 'block';
     warn.innerHTML = '<strong>⚠️ Este ROI sale en contra de la propuesta.</strong><br>'
-      + 'Año 1: <strong>' + Math.round(r.roiPctY1) + '%</strong>'
-      + ' · Año 2+: <strong>' + Math.round(r.roiPctY2) + '%</strong>'
-      + ' · Payback: <strong>' + (sinPayback ? 'más de 48 meses' : r.payback.toFixed(1) + ' meses') + '</strong>.<br>'
+      + 'Escenario base: ROI <strong>' + roiFmtPct(base.roiPct) + '</strong>'
+      + ' · Payback: <strong>' + roiFmtPayback(base.payback) + ' meses</strong>.<br>'
       + 'El cliente va a leer estas cifras tal cual. '
-      + (motivos.length
-          ? 'Revisa: ' + motivos.join('; ') + '.'
-          : 'Revisa los supuestos de los drivers antes de mandarla.')
+      + (motivos.length ? 'Revisa: ' + motivos.join('; ') + '.' : 'Revisa los supuestos antes de mandarla.')
       + ' Si no hay caso de negocio que sostener, apaga el ROI y manda la propuesta sin esta sección.';
   } else {
     warn.style.display = 'none';
   }
 }
 
-// ── ETAPAS DE IMPLEMENTACIÓN (form) ────────────────────────────────────────────
-const STAGES_MAX = 5;
-let STAGES = []; // [{title, subtitle, text}]
+// ── ETAPAS DE IMPLEMENTACIÓN ────────────────────────────────────────────────────
+// Contenido fijo desde sep-2026: el vendedor solo decide si la hoja va o no. De aquí
+// leen la hoja del PDF (docPageStages) y la pestaña del portal (renderStagesProposal).
+// Las ligas anteriores traen `stages.items` escritos a mano; el portal los sigue
+// mostrando, el PDF usa siempre esta versión.
+const IMPL_PHASES = {
+  weeks: 16,
+  phases: [
+    { s: 1, e: 3,
+      t: 'Onboarding y mapeo de procesos',
+      tEn: 'Onboarding and process mapping',
+      x: 'Configuración de la plataforma, carga de catálogos (proveedores, productos, operaciones) y accesos del equipo. Entendimiento profundo del proceso de cada área: importación, exportación y nacional.',
+      xEn: 'Platform setup, catalog loading (suppliers, products, operations) and team access. In-depth understanding of each area\'s process: import, export and domestic.' },
+    { s: 4, e: 8,
+      t: 'Adopción y kick off de comercio exterior y logística',
+      tEn: 'Adoption and kick-off of foreign trade and logistics',
+      x: 'Capacitación y entrenamiento a detalle de los módulos de Birdie, primeras operaciones en vivo y ajuste de flujos, con enfoque principal en las áreas de impo / expo.',
+      xEn: 'Detailed training on Birdie\'s modules, first live operations and workflow tuning, focused mainly on the import / export teams.' },
+    { s: 8, e: 12,
+      t: 'Estabilización',
+      tEn: 'Stabilization',
+      x: 'Operación en régimen, seguimientos semanales o quincenales, primeros tableros de KPIs sobre información generada en Birdie y acompañamiento de Go-Live. Meta: 100% de la operación de comercio exterior.',
+      xEn: 'Steady-state operation, weekly or bi-weekly follow-ups, first KPI dashboards on data generated in Birdie and Go-Live support. Goal: 100% of foreign trade operations.' },
+    { s: 13, e: 16,
+      t: 'Comienzo con operación nacional',
+      tEn: 'Domestic operations kick-off',
+      x: 'Mapeo, diseño y configuración de los procesos necesarios para consolidar la operación nacional, con todo el aprendizaje previo en Birdie.',
+      xEn: 'Mapping, design and configuration of the processes needed to consolidate domestic operations, building on everything learned in Birdie.' },
+  ],
+  goal:   'Comercio exterior al 100% en la semana 12 · operación nacional en marcha en la semana 16.',
+  goalEn: 'Foreign trade at 100% by week 12 · domestic operations running by week 16.',
+};
 
-function toggleStages() {
-  const on = document.getElementById('stages-toggle').checked;
-  document.getElementById('stages-fields').style.display = on ? 'block' : 'none';
-  if (on && STAGES.length === 0) {
-    addStage(); // arranca con una etapa
-  }
-}
-function addStage() {
-  if (STAGES.length >= STAGES_MAX) return;
-  // Snapshot current edits before re-render
-  collectStagesFromForm();
-  STAGES.push({ title:'', subtitle:'', text:'' });
-  renderStagesList();
-}
-function removeStage(idx) {
-  collectStagesFromForm();
-  STAGES.splice(idx, 1);
-  renderStagesList();
-}
-function collectStagesFromForm() {
-  STAGES.forEach((s, i) => {
-    const t  = document.getElementById('stage-title-' + i);
-    const su = document.getElementById('stage-subtitle-' + i);
-    const tx = document.getElementById('stage-text-' + i);
-    if (t)  s.title    = t.value;
-    if (su) s.subtitle = su.value;
-    if (tx) s.text     = tx.value;
-  });
-}
-function renderStagesList() {
-  const list = document.getElementById('stages-list');
-  if (!list) return;
-  list.innerHTML = STAGES.map((s, i) => {
-    return '<div class="stage-row" data-idx="' + i + '">' +
-      '<div class="stage-row-head">' +
-        '<span>Etapa ' + (i+1) + '</span>' +
-        '<button type="button" class="stage-row-del" onclick="removeStage(' + i + ')" title="Quitar etapa">✕</button>' +
-      '</div>' +
-      '<input type="text" id="stage-title-' + i + '" placeholder="Título (ej. Kick-off)" value="' + escapeAttr(s.title) + '" />' +
-      '<input type="text" id="stage-subtitle-' + i + '" placeholder="Subtítulo (ej. Semana 1 — Alineación)" value="' + escapeAttr(s.subtitle) + '" />' +
-      '<textarea id="stage-text-' + i + '" rows="3" placeholder="Puntos relevantes (una línea por bullet)...">' + escapeText(s.text) + '</textarea>' +
-    '</div>';
-  }).join('');
-  // Toggle visibility of add button vs limit message
-  const btn = document.getElementById('stages-add-btn');
-  const msg = document.getElementById('stages-limit-msg');
-  if (btn && msg) {
-    if (STAGES.length >= STAGES_MAX) { btn.style.display = 'none'; msg.style.display = 'block'; }
-    else                             { btn.style.display = 'block'; msg.style.display = 'none'; }
-  }
-}
 function escapeAttr(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -4030,13 +4244,6 @@ function generateProposal() {
   const pilotScope = pilotOn ? document.getElementById('pilot-scope').value.trim() : '';
 
   const stagesOn = document.getElementById('stages-toggle').checked;
-  let stagesItems = [];
-  if (stagesOn) {
-    collectStagesFromForm();
-    stagesItems = STAGES
-      .map(s => ({ title: (s.title||'').trim(), subtitle: (s.subtitle||'').trim(), text: (s.text||'').trim() }))
-      .filter(s => s.title || s.subtitle || s.text);
-  }
 
   const roiOn   = document.getElementById('roi-toggle').checked;
   const roiData = roiOn ? collectROIFromForm() : { on: 0 };
@@ -4090,7 +4297,7 @@ function generateProposal() {
 
     // Legacy add-ons unchanged
     pilot:  pilotOn ? { on:1, cost:pilotCost, months:pilotMonths, scope:pilotScope } : { on:0 },
-    stages: (stagesOn && stagesItems.length > 0) ? { on:1, items: stagesItems } : { on:0 },
+    stages: stagesOn ? { on:1, fixed:1 } : { on:0 },
     roi:    roiOn ? roiData : { on: 0 },
 
     // Enterprise block (unchanged)
@@ -4120,7 +4327,7 @@ function generateProposal() {
     lang: LANG,
     erp: (r.perAddon.erp ? r.perAddon.erp.annual : 0),
     pilot:  pilotOn ? { cost: pilotCost, months: pilotMonths } : null,
-    stages: (stagesOn && stagesItems.length > 0) ? stagesItems.length : 0,
+    stages: stagesOn ? IMPL_PHASES.phases.length : 0,
     roi:    roiOn ? 1 : 0,
     fmt:    ACTIVE_FMT,
     model:  'modular',
@@ -4380,10 +4587,10 @@ function renderProposal(d) {
   const stagesTab = document.getElementById('tab-stages');
   const stagesSection = document.getElementById('t-stages');
   const stagesItems = Array.isArray(stages.items) ? stages.items : [];
-  if (stages.on && stagesItems.length > 0) {
+  if (stages.on) {
     if (stagesTab) stagesTab.style.display = '';
     if (stagesSection) stagesSection.classList.remove('no-stages');
-    renderStagesProposal(stagesItems);
+    renderStagesProposal(stages.fixed || !stagesItems.length ? null : stagesItems, en);
   } else {
     if (stagesTab) stagesTab.style.display = 'none';
     if (stagesSection) stagesSection.classList.add('no-stages');
@@ -4408,8 +4615,55 @@ function renderProposal(d) {
   if (en) applyEnglish(d);
 }
 
+// Portal: misma tabla de escenarios que la hoja del PDF. Esconde el bloque del
+// modelo viejo (ramp-up + resumen) y lo vuelve a mostrar para ligas viejas.
+function renderROIScenariosWeb(d, roi, en, sectionId, containerId, introId) {
+  const section = document.getElementById(sectionId);
+  const legacy = section ? section.querySelectorAll('.roi-ramp-title, .roi-ramp-timeline, .roi-summary') : [];
+  if (!isROIScenarios(roi)) { legacy.forEach(el => { el.style.display = ''; }); return false; }
+  legacy.forEach(el => { el.style.display = 'none'; });
+
+  const r = calcROIScenarios(roi, roiInvestmentUSD(d));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const $ = n => (n < 0 ? '−$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const intro = document.getElementById(introId);
+  if (intro) intro.textContent = en
+    ? 'Estimated economic impact of Birdie on an operation of ' + Math.round(r.ships).toLocaleString('en-US') + ' shipments per year. Open-parameter model with three scenarios, to be tuned with ' + (d.co || 'your') + '\'s real data.'
+    : 'Estimación del impacto económico de Birdie sobre una operación de ' + Math.round(r.ships).toLocaleString('en-US') + ' embarques anuales. Modelo construido con parámetros abiertos y tres escenarios, para ajustarse con los datos reales de ' + (d.co || 'tu empresa') + '.';
+
+  const kpi = (n, l, s) => '<div class="rs-kpi"><div class="rs-kpi-n">' + n + '</div><div class="rs-kpi-l">' + l + '</div><div class="rs-kpi-s">' + s + '</div></div>';
+  const cols = en ? ['Conservative', 'Base', 'Optimistic'] : ['Conservador', 'Base', 'Optimista'];
+  const rows = r.levers.map(l => {
+    const c = roiLeverCopy(roi, l.k, en);
+    return '<tr><td><div class="rs-t">' + esc(c.t) + '</div><div class="rs-d">' + esc(c.d) + '</div></td>'
+      + l.v.map((v, i) => '<td class="rs-num' + (i === 1 ? ' rs-base' : '') + '">' + $(v) + '</td>').join('') + '</tr>';
+  }).join('');
+  const mo = en ? ' mo' : ' meses';
+  const cont = document.getElementById(containerId);
+  if (cont) cont.innerHTML =
+    '<div class="rs-kpis">'
+      + kpi(r.multiple != null ? r.multiple.toFixed(1) + 'x' : '—', en ? 'estimated return' : 'retorno estimado', en ? 'Base scenario, first year' : 'Escenario base, primer año')
+      + kpi('~' + roiFmtPayback(r.scen[1].payback), en ? 'months to payback' : 'meses de payback', en ? 'Investment recovery' : 'Recuperación de la inversión')
+      + kpi(r.perShip != null ? '$' + r.perShip.toFixed(2) : '—', en ? 'USD per shipment' : 'USD por embarque', (en ? 'Annual investment / ' : 'Inversión anual / ') + Math.round(r.ships).toLocaleString('en-US') + (en ? ' shipments' : ' embarques'))
+    + '</div>'
+    + '<div class="rs-wrap"><table class="rs-table"><thead><tr><th>' + (en ? 'Value lever' : 'Concepto') + '</th>'
+      + cols.map((c, i) => '<th class="rs-num' + (i === 1 ? ' rs-base' : '') + '">' + c + '</th>').join('') + '</tr></thead><tbody>'
+      + rows
+      + '<tr class="rs-benefit"><td>' + (en ? 'Estimated annual benefit' : 'Beneficio anual estimado') + '</td>'
+        + r.scen.map((x, i) => '<td class="rs-num' + (i === 1 ? ' rs-base' : '') + '">' + $(x.benefit) + '</td>').join('') + '</tr>'
+      + '<tr class="rs-invest"><td>' + (en ? 'First-year investment (list price)' : 'Inversión primer año (precio de lista)') + '</td>'
+        + r.scen.map(() => '<td class="rs-num">' + $(-r.investment) + '</td>').join('') + '</tr>'
+      + '<tr class="rs-net"><td>' + (en ? 'Net benefit · ROI · Payback' : 'Beneficio neto · ROI · Payback') + '</td>'
+        + r.scen.map((x, i) => '<td class="rs-num' + (i === 1 ? ' rs-base' : '') + '"><strong>' + $(x.net) + '</strong><span>'
+          + roiFmtPct(x.roiPct) + ' ROI · ' + roiFmtPayback(x.payback) + mo + '</span></td>').join('') + '</tr>'
+    + '</tbody></table></div>'
+    + '<div class="rs-foot">' + (en ? 'Estimate built on open assumptions · not a guarantee of results.' : 'Estimación con supuestos abiertos · no constituye garantía de resultados.') + '</div>';
+  return true;
+}
+
 function renderROIProposal(d, roi) {
   const en = ACTIVE_LANG === 'en';
+  if (renderROIScenariosWeb(d, roi, en, 't-roi', 'roi-drivers-container', 'roi-intro')) return;
   const fx = roi.fx > 0 ? roi.fx : 18;
   const investmentUSD = (d.acv || 0) + (d.impl || 0) + (d.erp || 0);
   const investmentMXN = investmentUSD * fx;
@@ -4496,9 +4750,15 @@ function renderROIProposal(d, roi) {
   setTxt('roi-ramp-full-m', r.fullMonths);
 }
 
-function renderStagesProposal(items) {
+function renderStagesProposal(items, en) {
   const cont = document.getElementById('stages-container');
   if (!cont) return;
+  // Sin items (ligas nuevas): las 4 fases fijas de IMPL_PHASES.
+  if (!items) items = IMPL_PHASES.phases.map(ph => ({
+    title: en ? ph.tEn : ph.t,
+    subtitle: (en ? 'Weeks ' : 'Semanas ') + ph.s + '–' + ph.e,
+    text: en ? ph.xEn : ph.x,
+  }));
   const escAttr = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   cont.innerHTML = items.map((it, i) => {
     const lines = String(it.text || '')
@@ -5255,6 +5515,7 @@ function renderEntFeaturesProposal(blocks) {
 
 function renderEntROIProposal(d, roi) {
   const en = ACTIVE_LANG === 'en';
+  if (renderROIScenariosWeb(d, roi, en, 't-ent-roi', 'ent-roi-drivers-container', 'er-intro')) return;
   const fx = roi.fx > 0 ? roi.fx : 18;
   const investmentUSD = (d.acv || 0) + (d.impl || 0) + (d.erp || 0);
   const investmentMXN = investmentUSD * fx;
@@ -5715,9 +5976,12 @@ function docHead(d, runhead, compact) {
     + '</div></div>';
 }
 
+// Total de hojas del documento en curso. Lo fija renderDocument antes de armar las
+// hojas, porque ROI y Etapas son opcionales y mueven la numeración de las demás.
+let DOC_TOTAL = 4;
 function docFoot(note, pageNo) {
   return '<div class="doc-foot"><div class="doc-note">' + note + '</div>'
-    + '<div class="doc-pageno">' + pageNo + ' / 4</div></div>';
+    + '<div class="doc-pageno">' + pageNo + ' / ' + DOC_TOTAL + '</div></div>';
 }
 
 
@@ -5971,6 +6235,120 @@ function docPage2(d, r) {
     + '</div></div>';
 }
 
+// ── HOJA opcional · Retorno de inversión ─────────────────────────────────────
+// Diseño de la referencia Grupo Alta v2 (hoja 4/7). Cifras de calcROIScenarios contra
+// la misma inversión de la hoja de precios (r.totalYear1: lista, sin descuento anual).
+function docROIOn(d) { return isROIScenarios(d && d.roi); }
+
+function docPageROI(d, r, pageNo, level) {
+  const roi = d.roi;
+  const R = calcROIScenarios(roi, r.totalYear1);
+  const $ = n => (n < 0 ? '−$' : '$') + docInt(Math.abs(n));
+  const n2 = v => (Number(v) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  const co = docEsc(d.co || '');
+
+  const kpi = (n, l, sub) => '<div class="dr-kpi"><div class="dr-kpi-n">' + n + '</div>'
+    + '<div class="dr-kpi-l">' + l + '</div><div class="dr-kpi-s">' + sub + '</div></div>';
+  const kpis = kpi(R.multiple != null ? R.multiple.toFixed(1) + 'x' : '—', 'retorno estimado', 'Escenario base, primer año')
+    + kpi('~' + roiFmtPayback(R.scen[1].payback), 'meses de payback', 'Recuperación de la inversión')
+    + kpi(R.perShip != null ? '$' + R.perShip.toFixed(2) : '—', 'USD por embarque',
+          'Inversión anual / ' + docInt(R.ships) + ' embarques');
+
+  const cells = (vals, fmt) => vals.map((v, i) =>
+    '<td class="doc-num' + (i === 1 ? ' dr-base' : '') + '">' + fmt(v) + '</td>').join('');
+  const levers = R.levers.map(l => {
+    const c = roiLeverCopy(roi, l.k, false);
+    return '<tr><td><div class="dr-t">' + docEsc(c.t) + '</div><div class="dr-d">' + docEsc(c.d) + '</div></td>'
+      + cells(l.v, $) + '</tr>';
+  }).join('');
+
+  const assumptions = [docInt(R.ships) + ' embarques al año']
+    .concat(roi.prod.on ? 'costo hora del equipo USD ' + n2(R.hour) + ' (carga completa)' : [])
+    .concat(roi.dem.on ? n2(roi.dem.pct) + '% de embarques con demora o almacenaje a USD ' + n2(roi.dem.cost) : [])
+    .concat(roi.err.on ? n2(roi.err.pct) + '% de operaciones con rectificación documental a USD ' + n2(roi.err.cost) : [])
+    .concat('inversión de referencia USD ' + docMoney(R.investment).slice(1) + ' del primer año')
+    .join(' · ') + '. No incluye ahorros por integración ERP, telemetría ni MVE, que se evaluarían por separado.';
+
+  // La hoja de precios está dimensionada a d.ops; si el ROI modela otro volumen se dice.
+  const ops = Number(d.ops) || 0;
+  const volNote = (ops > 0 && Math.round(R.ships) !== Math.round(ops))
+    ? '<div class="dr-volnote"><div class="dr-volnote-t">Nota de volumen</div>'
+      + 'La propuesta vigente está dimensionada a ' + docInt(ops) + ' operaciones/año. Si el volumen real es de '
+      + docInt(R.ships) + ', conviene revisar el tier antes de firmar.</div>'
+    : '';
+
+  // Misma escalera que la hoja de precios: primero se aprieta el espaciado (1) y
+  // luego se compacta el título (2). Un nombre de empresa largo arranca en 2.
+  const lvl = Math.max(level || 0, (d.co || '').length > 18 ? 2 : 0);
+  const lvlClass = (lvl >= 1 ? ' dr-dense' : '') + (lvl >= 2 ? ' dr-dense2' : '');
+  return '<div class="doc-page doc-pr' + lvlClass + '"><div class="doc-inner">'
+    + docHead(d, (d.folio ? d.folio + ' · ' : '') + 'Retorno de inversión', true)
+    + '<h2 class="doc-h2 dr-h2">Retorno de inversión <span style="color:var(--d-deep)">' + co + '</span></h2>'
+    + '<p class="doc-lede dr-lede">Estimación del impacto económico de Birdie sobre una operación de '
+      + docInt(R.ships) + ' embarques anuales. Modelo construido con parámetros abiertos y tres escenarios, '
+      + 'para ajustarse con los datos reales de ' + co + '.</p>'
+    + '<div class="dr-kpis">' + kpis + '</div>'
+    + '<div class="doc-eyebrow dr-sec">Palancas de valor</div>'
+    + '<table class="doc-table dr-table"><thead><tr>'
+      + '<th>Concepto</th><th class="num" style="width:17%">Conservador</th>'
+      + '<th class="num dr-base" style="width:17%">Base</th><th class="num" style="width:17%">Optimista</th>'
+    + '</tr></thead><tbody>' + levers
+      + '<tr class="dr-benefit"><td>Beneficio anual estimado</td>' + cells(R.scen.map(x => x.benefit), $) + '</tr>'
+      + '<tr class="dr-invest"><td>Inversión primer año (precio de lista, sin promoción)</td>'
+        + [0, 1, 2].map(() => '<td class="doc-num">' + $(-R.investment) + '</td>').join('') + '</tr>'
+      + '<tr class="dr-net"><td>Beneficio neto · ROI · Payback</td>'
+        + R.scen.map((x, i) => '<td class="doc-num' + (i === 1 ? ' dr-base' : '') + '"><strong>' + $(x.net) + '</strong>'
+          + '<span>' + roiFmtPct(x.roiPct) + ' ROI · ' + roiFmtPayback(x.payback) + ' meses</span></td>').join('')
+      + '</tr>'
+    + '</tbody></table>'
+    + '<div class="doc-eyebrow dr-sec">Supuestos del modelo</div>'
+    + '<p class="dr-assume">' + docEsc(assumptions) + '</p>'
+    + volNote
+    + docFoot('Estimación con supuestos abiertos · no constituye garantía de resultados', pageNo)
+    + '</div></div>';
+}
+
+// ── HOJA opcional · Etapas de implementación ──────────────────────────────────
+// Contenido fijo (IMPL_PHASES). Diseño de la referencia Grupo Alta v2 (hoja 5/7).
+function docPageStages(d, pageNo) {
+  const W = IMPL_PHASES.weeks;
+  const P = IMPL_PHASES.phases;
+  const nn = i => String(i + 1).padStart(2, '0');
+  const weeks = Array.from({ length: W }, (_, i) => '<div>' + (i + 1) + '</div>').join('');
+  const grid = Array.from({ length: W }, () => '<div></div>').join('');
+  const rows = P.map((ph, i) =>
+    '<div class="ds-row">'
+      + '<div class="ds-label"><span class="ds-fase">Fase ' + nn(i) + '</span>'
+        + '<span class="ds-name">' + docEsc(ph.t) + '</span></div>'
+      + '<div class="ds-track"><div class="ds-bar ds-bar' + (i + 1) + '" style="left:' + ((ph.s - 1) / W * 100) + '%;'
+        + 'width:' + ((ph.e - ph.s + 1) / W * 100) + '%">S' + ph.s + '–S' + ph.e + '</div></div>'
+    + '</div>'
+  ).join('');
+  const cards = P.map((ph, i) =>
+    '<div class="ds-card"><div class="ds-card-head">'
+      + '<div class="ds-num">' + nn(i) + '</div>'
+      + '<div><div class="ds-card-t">' + docEsc(ph.t) + '</div>'
+        + '<div class="ds-card-w">Semanas ' + ph.s + '–' + ph.e + '</div></div>'
+    + '</div><div class="ds-card-x">' + docEsc(ph.x) + '</div></div>'
+  ).join('');
+
+  return '<div class="doc-page doc-ps"><div class="doc-inner">'
+    + docHead(d, (d.folio ? d.folio + ' · ' : '') + 'Etapas de implementación', true)
+    + '<h2 class="doc-h2 dr-h2">Etapas de <span style="color:var(--d-deep)">implementación</span></h2>'
+    + '<p class="doc-lede dr-lede">Así trabajaremos contigo durante el proceso de adopción de la plataforma.</p>'
+    + '<div class="doc-eyebrow dr-sec">Cronograma · ' + W + ' semanas</div>'
+    + '<div class="ds-gantt" style="--w:' + W + '">'
+      + '<div class="ds-row ds-weeks"><div class="ds-label"></div><div class="ds-track ds-wk">' + weeks + '</div></div>'
+      + '<div class="ds-body"><div class="ds-grid">' + grid + '</div>' + rows + '</div>'
+    + '</div>'
+    + '<div class="doc-eyebrow dr-sec">Detalle por fase</div>'
+    + '<div class="ds-cards">' + cards + '</div>'
+    + '<div class="ds-goal"><div class="doc-eyebrow">Meta de adopción</div>'
+      + '<div class="ds-goal-t">' + docEsc(IMPL_PHASES.goal) + '</div></div>'
+    + docFoot('Cronograma estimado · las fechas se confirman en el kick off con el equipo de ' + docEsc(d.co || 'tu empresa'), pageNo)
+    + '</div></div>';
+}
+
 // ── HOJA 3 · Nivel de servicio ───────────────────────────────────────────────
 function docPage3(d) {
   const cards = DOC_SLA.cards.map(c =>
@@ -6010,7 +6388,7 @@ function docPage3(d) {
         + '<div class="doc-sign"><div class="doc-sign-line"></div>'
           + '<div class="doc-sign-label">' + docEsc(d.co || 'El cliente') + '</div></div>'
       + '</div>'
-      + '<div class="doc-pageno">4 / 4</div>'
+      + '<div class="doc-pageno">' + DOC_TOTAL + ' / ' + DOC_TOTAL + '</div>'
     + '</div>'
     + '</div></div>';
 }
@@ -6079,10 +6457,19 @@ function renderDocument(d) {
   try { cfg = configFromPayload(d); r = calcModularPricing(cfg); }
   catch (e) { console.error(e); return null; }
 
+  // Hojas opcionales: van entre Alcance y SLA, en este orden.
+  const roiOn    = docROIOn(d);
+  const stagesOn = !!(d.stages && d.stages.on);
+  const total = 4 + (roiOn ? 1 : 0) + (stagesOn ? 1 : 0);
+  DOC_TOTAL = total;
+  let nextNo = 4;
+  const roiNo    = roiOn ? nextNo++ : 0;
+  const stagesNo = stagesOn ? nextNo++ : 0;
+
   const bar = '<div id="doc-bar">'
     + '<button class="primary" onclick="printDocument()">Imprimir / Guardar PDF</button>'
     + '<button onclick="closeDocument()">Volver a la propuesta</button>'
-    + '<span class="hint">4 hojas · tamaño carta</span>'
+    + '<span class="hint">' + total + ' hojas · tamaño carta</span>'
     + '</div>';
 
   // Escalera de ajuste (§7): se renderiza, se MIDE, y si la hoja 1 desborda se
@@ -6092,12 +6479,21 @@ function renderDocument(d) {
   // ⚠️ La hoja variable es la de PRECIOS, que con la portada delante pasó a ser el
   // índice 1 del reporte. Mirar fit[0] aquí revisaría la portada y la escalera nunca
   // se activaría.
-  const PRICING = 1;
-  let fit = null;
-  for (let level = 0; level <= 2; level++) {
-    view.innerHTML = bar + docPage0(d, r) + docPage1(d, r, cfg, level) + docPage2(d, r) + docPage3(d);
+  // La hoja de ROI también es variable (palancas, nota de volumen, nombre de la
+  // empresa en el título) y tiene su propia escalera; va en el índice 3.
+  const PRICING = 1, ROI = 3;
+  let fit = null, lp = 0, lr = 0;
+  for (;;) {
+    view.innerHTML = bar + docPage0(d, r) + docPage1(d, r, cfg, lp) + docPage2(d, r)
+      + (roiOn ? docPageROI(d, r, roiNo, lr) : '')
+      + (stagesOn ? docPageStages(d, stagesNo) : '')
+      + docPage3(d);
     fit = docCheckFit();
-    if (fit[PRICING] && fit[PRICING].ok) break;
+    const pOk = !!(fit[PRICING] && fit[PRICING].ok);
+    const rOk = !roiOn || !!(fit[ROI] && fit[ROI].ok);
+    if ((pOk || lp >= 2) && (rOk || lr >= 2)) break;
+    if (!pOk && lp < 2) lp++;
+    if (!rOk && lr < 2) lr++;
   }
   return fit;
 }
