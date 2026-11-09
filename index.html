@@ -2097,7 +2097,7 @@
             <button class="bill-opt" onclick="setBillingMode('monthly',this)" id="bill-monthly-btn" data-es="Mensual" data-en="Monthly">Mensual</button>
             <button class="bill-opt active" onclick="setBillingMode('annual',this)" id="bill-annual-btn" data-es="Anual · 10% descuento" data-en="Annual · 10% off">Anual · 10% descuento</button>
           </div>
-          <div class="discount-chip" id="disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/><path d="M18 14l.9 2.6L21 17l-2.1.6L18 20l-.9-2.4L15 17l2.1-.4L18 14z"/><path d="M5 4l.7 2.1L8 7l-2.3.6L5 10l-.7-2.4L2 7l2.3-.4L5 4z"/></svg></span>Ahorra $<span id="chip-saving">0</span> USD</div>
+          <div class="discount-chip" id="disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/><path d="M18 14l.9 2.6L21 17l-2.1.6L18 20l-.9-2.4L15 17l2.1-.4L18 14z"/><path d="M5 4l.7 2.1L8 7l-2.3.6L5 10l-.7-2.4L2 7l2.3-.4L5 4z"/></svg></span>Ahorra $<span id="chip-saving">0</span><span id="chip-cur"> USD</span></div>
         </div>
 
         <div class="price-cards-row">
@@ -2263,7 +2263,7 @@
           <li>El pago mensual no incluye descuento y puede cancelarse con 30 días de aviso.</li>
           <li>La cuota de implementación se factura al momento de la firma del contrato.</li>
           <li>Los pagos deben realizarse dentro de los 15 días naturales siguientes a la fecha de factura.</li>
-          <li>En caso de realizar su pago en M.N., se calculará con base al <strong>tipo de cambio del DOF los días 5 de cada mes</strong> en facturación.</li>
+          <li id="tc-currency-li">En caso de realizar su pago en M.N., se calculará con base al <strong>tipo de cambio del DOF los días 5 de cada mes</strong> en facturación.</li>
           <li>En caso de no requerir factura mexicana, se puede emitir <strong>Invoice con pago en Estados Unidos</strong>.</li>
         </ul>
       </div>
@@ -2546,7 +2546,7 @@
             <button id="ec-bill-monthly-btn" class="bill-btn" onclick="ecSwitchBilling('monthly')">Mensual</button>
             <button id="ec-bill-annual-btn" class="bill-btn active" onclick="ecSwitchBilling('annual')">Anual · 10% descuento</button>
           </div>
-          <span class="discount-chip" id="ec-disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/></svg></span>Ahorra $<span id="ec-chip-saving">0</span> USD</span>
+          <span class="discount-chip" id="ec-disc-chip"><span class="icn icn-xs" style="margin-right:6px"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2z"/></svg></span>Ahorra $<span id="ec-chip-saving">0</span><span id="ec-chip-cur"> USD</span></span>
         </div>
         <div class="price-cards-row">
           <div class="price-card pc-main">
@@ -2687,6 +2687,26 @@ function adpOn(d) { return adpOf(d) > 0; }
 // dos modos. Lo decide el vendedor en el Cotizador del OS; si no viene en el
 // payload es modular, que es como se emitió todo hasta ago-2026.
 function licOf(d) { return (d && d.lic === 'gen') ? 'gen' : 'mod'; }
+
+// ── Moneda de la propuesta (0148 del OS, nov-2026) ───────────────────────────
+// El motor y el payload están SIEMPRE en USD. Si la liga trae `cur:'MXN'` y `tc`
+// (TC de la semana = DOF del lunes + protección cambiaria), los montos se
+// convierten AL PINTAR: totales y renglones redondeados a la decena, precios
+// unitarios ($/operación, $/hora) a centavos. El TC nunca se imprime. Sin `cur`
+// (todas las ligas anteriores), nada cambia: cvMonto/cvUnit devuelven el USD tal cual.
+// Gemelos de mxnMonto/mxnUnitario en src/lib/pricingEngine.ts del OS.
+function curOf(d) {
+  var tc = Number(d && d.tc);
+  return (d && d.cur === 'MXN' && isFinite(tc) && tc > 0) ? 'MXN' : 'USD';
+}
+function cvMonto(d, usd) {
+  var n = Number(usd) || 0;
+  return curOf(d) === 'MXN' ? Math.round(n * Number(d.tc) / 10) * 10 : n;
+}
+function cvUnit(d, usd) {
+  var n = Number(usd) || 0;
+  return curOf(d) === 'MXN' ? Math.round(n * Number(d.tc) * 100) / 100 : n;
+}
 
 /** Une nombres en lista legible: "A, B y C" / "A, B and C". */
 function joinNames(names, en) {
@@ -2981,6 +3001,7 @@ const _BREAK_ADDON_LABEL = {
 };
 
 function _brkFmt(n, en) { return Math.round(Number(n) || 0).toLocaleString(en ? 'en-US' : 'es-MX'); }
+function _brkMoney(d, n, en) { return '$' + _brkFmt(cvMonto(d, n), en); }
 function _brkEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 // Builds and injects the breakdown rows into the given tbody element.
@@ -3009,7 +3030,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       const baseDesc = en
         ? 'Cloud infrastructure, unlimited users, secure document storage, 9×5 technical support and continuous platform updates.'
         : 'Infraestructura cloud, usuarios ilimitados, almacenamiento seguro de documentos, soporte técnico 9×5 y actualizaciones continuas de la plataforma.';
-      pushRow(baseLabel, _brkEsc(baseDesc), '$' + _brkFmt(r.baseAnnual, en));
+      pushRow(baseLabel, _brkEsc(baseDesc), _brkMoney(d, r.baseAnnual, en));
     }
 
     // Modules — una fila por módulo, o una sola "Licencia Birdie" en modo general.
@@ -3039,7 +3060,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       pushRow(
         en ? 'Birdie License' : 'Licencia Birdie',
         desc,
-        '$' + _brkFmt(r.modulesSubtotal, en),
+        _brkMoney(d, r.modulesSubtotal, en),
         { style: 'background:#fafcff' }
       );
     } else {
@@ -3050,7 +3071,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
         const sub = enOperaciones(k)
           ? volOf(k) + (en ? '/year' : '/año')
           : leyendaDocumentos(_brkFmt(r.ops, en), en);
-        pushRow(label, _brkEsc(desc) + notaSub(sub), '$' + _brkFmt(m.revenue, en), { style: 'background:#fafcff' });
+        pushRow(label, _brkEsc(desc) + notaSub(sub), _brkMoney(d, m.revenue, en), { style: 'background:#fafcff' });
       });
     }
 
@@ -3059,7 +3080,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       const a = r.perAddon[k];
       if (!a) return;
       const desc = en ? _BREAK_ADDON_DESC_EN[k] : _BREAK_ADDON_DESC_ES[k];
-      pushRow(_BREAK_ADDON_LABEL[k], _brkEsc(desc), '$' + _brkFmt(a.annual, en), { style: 'background:#f0fdf4' });
+      pushRow(_BREAK_ADDON_LABEL[k], _brkEsc(desc), _brkMoney(d, a.annual, en), { style: 'background:#f0fdf4' });
     });
 
     // Bundle discount
@@ -3067,7 +3088,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       pushRow(
         (en ? 'Bundle discount' : 'Descuento bundle') + ' (' + r.discountPct + '%)',
         en ? 'By combining ' + r.activeModuleCount + ' modules' : 'Por combinar ' + r.activeModuleCount + ' módulos',
-        '−$' + _brkFmt(r.discountAmt, en),
+        '−' + _brkMoney(d, r.discountAmt, en),
         { amountStyle: 'color:var(--success);font-weight:700' }
       );
     }
@@ -3079,7 +3100,7 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       pushRow(
         en ? ('Annual discount (' + adPct + '%)') : ('Descuento anual (' + adPct + '%)'),
         en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
-        '−$' + _brkFmt(annualSaving, en),
+        '−' + _brkMoney(d, annualSaving, en),
         { amountStyle: 'color:var(--success);font-weight:700' }
       );
     }
@@ -3090,48 +3111,48 @@ function renderBreakdownRows(d, tbodyEl, isAnnual, en) {
       _brkEsc(en
         ? 'Personalized platform configuration, team training and Go-Live support during the stabilization phase.'
         : 'Configuración personalizada de la plataforma, capacitación al equipo y acompañamiento durante la fase de estabilización (Go-Live).'),
-      '$' + _brkFmt(r.impl, en),
+      _brkMoney(d, r.impl, en),
       { style: 'background:#fafcff' }
     );
 
     // Total
     const subAmt = isAnnual ? (r.acv * adpFactor(d)) : r.acv;
     const total  = subAmt + r.impl;
-    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>$' + _brkFmt(total, en) + '</strong></td></tr>');
+    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>' + _brkMoney(d, total, en) + '</strong></td></tr>');
   } else {
     // ── Legacy (v<5) breakdown ──
     const subLabel = isAnnual ? (en ? 'Annual Subscription' : 'Suscripción Anual') : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
     pushRow(
       subLabel,
       _brkEsc((en ? 'Birdie Platform' : 'Plataforma Birdie') + ' · ' + (d.ops || 0).toLocaleString(en ? 'en-US' : 'es-MX') + ' ' + (en ? 'ops/year' : 'ops/año')),
-      '$' + _brkFmt(d.acv || 0, en)
+      _brkMoney(d, d.acv || 0, en)
     );
     if (isAnnual && adpOn(d) && (d.saving || 0) > 0) {
       const adPctL = adpOf(d);
       pushRow(
         en ? ('Annual discount (' + adPctL + '%)') : ('Descuento anual (' + adPctL + '%)'),
         en ? 'Prepaid 12-month contract' : 'Pago adelantado por 12 meses',
-        '−$' + _brkFmt(d.saving || 0, en),
+        '−' + _brkMoney(d, d.saving || 0, en),
         { amountStyle: 'color:var(--success);font-weight:700' }
       );
     }
     pushRow(
       en ? 'Implementation' : 'Implementación',
       _brkEsc(en ? 'Configuration, training, Go-Live support.' : 'Configuración, capacitación y acompañamiento de Go-Live.'),
-      '$' + _brkFmt(d.impl || 0, en),
+      _brkMoney(d, d.impl || 0, en),
       { style: 'background:#fafcff' }
     );
     if ((d.erp || 0) > 0) {
       pushRow(
         en ? 'ERP Integration (optional)' : 'Integración ERP (opcional)',
         en ? 'Parametrization and go-live.' : 'Parametrización y puesta en marcha.',
-        '$' + _brkFmt(d.erp || 0, en),
+        _brkMoney(d, d.erp || 0, en),
         { style: 'background:#f0fdf4' }
       );
     }
     const subAmt = isAnnual ? (d.ann || 0) : (d.acv || 0);
     const total  = subAmt + (d.impl || 0) + (d.erp || 0);
-    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>$' + _brkFmt(total, en) + '</strong></td></tr>');
+    rows.push('<tr class="total-row"><td colspan="2"><strong>' + (en ? 'Total first year' : 'Total primer año') + '</strong></td><td><strong>' + _brkMoney(d, total, en) + '</strong></td></tr>');
   }
 
   tbodyEl.innerHTML = rows.join('');
@@ -4090,8 +4111,11 @@ function calcROIScenarios(roi, investmentUSD) {
 
 // Copy de cada palanca. La descripción se arma con los parámetros de la liga, así
 // el texto nunca contradice la cifra de al lado.
-function roiLeverCopy(roi, k, en) {
+function roiLeverCopy(roi, k, en, d) {
   const n = v => (Number(v) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  // Montos por evento en la moneda de la propuesta (0148). Sin `d` (generador) → USD.
+  const cur = curOf(d);
+  const m = v => n(cvUnit(d, v));
   if (k === 'prod') return {
     t: en ? 'Team productivity' : 'Productividad del equipo',
     d: en
@@ -4101,14 +4125,14 @@ function roiLeverCopy(roi, k, en) {
   if (k === 'dem') return {
     t: en ? 'Delays and storage' : 'Demoras y almacenajes',
     d: en
-      ? 'Early visibility and alerts on the ' + n(roi.dem.pct) + '% of shipments with an average charge of USD ' + n(roi.dem.cost)
-      : 'Visibilidad anticipada y alertas sobre el ' + n(roi.dem.pct) + '% de embarques con cargo promedio de USD ' + n(roi.dem.cost),
+      ? 'Early visibility and alerts on the ' + n(roi.dem.pct) + '% of shipments with an average charge of ' + cur + ' ' + m(roi.dem.cost)
+      : 'Visibilidad anticipada y alertas sobre el ' + n(roi.dem.pct) + '% de embarques con cargo promedio de ' + cur + ' ' + m(roi.dem.cost),
   };
   if (k === 'err') return {
     t: en ? 'Errors and rectifications' : 'Errores y rectificaciones',
     d: en
-      ? 'ValidAI prevents document errors in ' + n(roi.err.pct) + '% of operations (USD ' + n(roi.err.cost) + ' per event)'
-      : 'ValidAI previene errores documentales en el ' + n(roi.err.pct) + '% de las operaciones (USD ' + n(roi.err.cost) + ' por evento)',
+      ? 'ValidAI prevents document errors in ' + n(roi.err.pct) + '% of operations (' + cur + ' ' + m(roi.err.cost) + ' per event)'
+      : 'ValidAI previene errores documentales en el ' + n(roi.err.pct) + '% de las operaciones (' + cur + ' ' + m(roi.err.cost) + ' por evento)',
   };
   return {
     t: en ? 'Tools and reporting' : 'Herramientas y reportes',
@@ -4572,9 +4596,9 @@ function renderProposal(d) {
   if (pilot.on && pilot.cost && pilot.months) {
     pilotTab.style.display = '';
     if (pilotSection) pilotSection.classList.remove('no-pilot');
-    document.getElementById('pp-cost-val').textContent   = fc(pilot.cost);
+    document.getElementById('pp-cost-val').textContent   = fc(cvMonto(d, pilot.cost));
     document.getElementById('pp-months-val').textContent = pilot.months;
-    document.getElementById('pp-total-val').textContent  = fc(pilot.cost * pilot.months);
+    document.getElementById('pp-total-val').textContent  = fc(cvMonto(d, pilot.cost * pilot.months));
     document.getElementById('pp-company-name').textContent = d.co;
     document.getElementById('pp-scope-text').textContent = pilot.scope || '';
   } else {
@@ -4625,7 +4649,7 @@ function renderROIScenariosWeb(d, roi, en, sectionId, containerId, introId) {
 
   const r = calcROIScenarios(roi, roiInvestmentUSD(d));
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const $ = n => (n < 0 ? '−$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const $ = n => { const v = cvMonto(d, n); return (v < 0 ? '−$' : '$') + Math.round(Math.abs(v)).toLocaleString('en-US'); };
   const intro = document.getElementById(introId);
   if (intro) intro.textContent = en
     ? 'Estimated economic impact of Birdie on an operation of ' + Math.round(r.ships).toLocaleString('en-US') + ' shipments per year. Open-parameter model with three scenarios, to be tuned with ' + (d.co || 'your') + '\'s real data.'
@@ -4634,7 +4658,7 @@ function renderROIScenariosWeb(d, roi, en, sectionId, containerId, introId) {
   const kpi = (n, l, s) => '<div class="rs-kpi"><div class="rs-kpi-n">' + n + '</div><div class="rs-kpi-l">' + l + '</div><div class="rs-kpi-s">' + s + '</div></div>';
   const cols = en ? ['Conservative', 'Base', 'Optimistic'] : ['Conservador', 'Base', 'Optimista'];
   const rows = r.levers.map(l => {
-    const c = roiLeverCopy(roi, l.k, en);
+    const c = roiLeverCopy(roi, l.k, en, d);
     return '<tr><td><div class="rs-t">' + esc(c.t) + '</div><div class="rs-d">' + esc(c.d) + '</div></td>'
       + l.v.map((v, i) => '<td class="rs-num' + (i === 1 ? ' rs-base' : '') + '">' + $(v) + '</td>').join('') + '</tr>';
   }).join('');
@@ -4644,7 +4668,7 @@ function renderROIScenariosWeb(d, roi, en, sectionId, containerId, introId) {
     '<div class="rs-kpis">'
       + kpi(r.multiple != null ? r.multiple.toFixed(1) + 'x' : '—', en ? 'estimated return' : 'retorno estimado', en ? 'Base scenario, first year' : 'Escenario base, primer año')
       + kpi('~' + roiFmtPayback(r.scen[1].payback), en ? 'months to payback' : 'meses de payback', en ? 'Investment recovery' : 'Recuperación de la inversión')
-      + kpi(r.perShip != null ? '$' + r.perShip.toFixed(2) : '—', en ? 'USD per shipment' : 'USD por embarque', (en ? 'Annual investment / ' : 'Inversión anual / ') + Math.round(r.ships).toLocaleString('en-US') + (en ? ' shipments' : ' embarques'))
+      + kpi(r.perShip != null ? '$' + cvUnit(d, r.perShip).toFixed(2) : '—', en ? (curOf(d) + ' per shipment') : (curOf(d) + ' por embarque'), (en ? 'Annual investment / ' : 'Inversión anual / ') + Math.round(r.ships).toLocaleString('en-US') + (en ? ' shipments' : ' embarques'))
     + '</div>'
     + '<div class="rs-wrap"><table class="rs-table"><thead><tr><th>' + (en ? 'Value lever' : 'Concepto') + '</th>'
       + cols.map((c, i) => '<th class="rs-num' + (i === 1 ? ' rs-base' : '') + '">' + c + '</th>').join('') + '</tr></thead><tbody>'
@@ -4813,10 +4837,36 @@ function stampAnnualDiscountCopy(d, en) {
 // reescribe los <ul> de T&C por innerHTML y applySpanish NO los revierte, así que un
 // <li> de IVA se pierde para siempre tras un ciclo ES→EN→ES. La leyenda vive en su
 // propio elemento, fuera de todo lo que se reescribe, y se estampa al final del render.
-function stampVatNote(en) {
-  const txt = en ? 'Prices in USD. VAT not included.' : 'Precios en USD. No incluyen IVA.';
+function stampVatNote(en, d) {
+  const cur = curOf(d);
+  const txt = en ? ('Prices in ' + cur + '. VAT not included.') : ('Precios en ' + cur + '. No incluyen IVA.');
   const set = (id) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
   set('vat-note'); set('ec-vat-note');
+}
+
+// La moneda en los textos FIJOS del HTML que ningún render reescribe (chips, unidades
+// del piloto y de Enterprise, encabezado de la tabla) y en la cláusula de moneda de los
+// T&C. Corre al final del render, igual que stampVatNote, para ganarle a
+// applyEnglish/applySpanish. En USD escribe exactamente el texto original, así que una
+// liga sin `cur` se ve idéntica a antes.
+function stampCurrencyCopy(d, en) {
+  const cur = curOf(d);
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  // Sólo se cambia la PALABRA de la moneda, no el resto del texto: así el idioma de cada
+  // elemento queda como lo dejaron applyEnglish/applySpanish y una liga en USD sale
+  // idéntica a antes (reemplazar USD por USD no cambia nada).
+  const swap = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(el.textContent).replace(/\b(USD|MXN)\b/g, cur);
+  };
+  ['chip-cur', 'ec-chip-cur', 'pp-cost-unit', 'pp-total-unit', 'ec-pc-eq-period',
+   'ec-pc-op-period', 'th-amount', 'ec-th-amount'].forEach(swap);
+  // La cláusula de USD/DOF sólo se toca en pesos: en USD se deja la redacción de siempre.
+  if (cur === 'MXN') {
+    set('tc-currency-li', en
+      ? 'Prices in Mexican pesos (MXN), fixed for the validity of this proposal.'
+      : 'Precios en pesos mexicanos (MXN), fijos durante la vigencia de esta propuesta.');
+  }
 }
 
 function applyPricingToProposal(d, billing, en) {
@@ -4824,6 +4874,7 @@ function applyPricingToProposal(d, billing, en) {
   // con la misma cifra en los dos lados se lee como un error. Se esconde el selector
   // completo —que además lleva el chip de ahorro— y se presenta la cifra anual.
   const annualOn = adpOn(d);
+  const cur = curOf(d);
   const isAnnual = annualOn ? billing === 'annual' : true;
   const billWrap = document.getElementById('bill-wrap');
   if (billWrap) billWrap.style.display = annualOn ? '' : 'none';
@@ -4837,30 +4888,30 @@ function applyPricingToProposal(d, billing, en) {
   const moEq    = isAnnual ? d.moDisc : d.mo;  // monthly equivalent
 
   // Chip
-  document.getElementById('chip-saving').textContent = fc(d.saving);
+  document.getElementById('chip-saving').textContent = fc(cvMonto(d, d.saving));
 
   // Cards row
-  document.getElementById('pc-main-amount').textContent = fc(subAmt);
-  document.getElementById('pc-main-period').textContent = en ? 'USD / year' : 'USD / año';
+  document.getElementById('pc-main-amount').textContent = fc(cvMonto(d, subAmt));
+  document.getElementById('pc-main-period').textContent = en ? (cur + ' / year') : (cur + ' / año');
   document.getElementById('pc-main-label').textContent = isAnnual
     ? (en ? 'Annual Subscription' : 'Suscripción Anual')
     : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
   document.getElementById('pc-main-saving').textContent = !annualOn
     ? ''
     : isAnnual
-      ? (en ? `Save $${fc(d.saving)} USD` : `Ahorro de $${fc(d.saving)} USD`)
+      ? (en ? `Save $${fc(cvMonto(d, d.saving))} ${cur}` : `Ahorro de $${fc(cvMonto(d, d.saving))} ${cur}`)
       : (en ? 'No discount' : 'Sin descuento');
 
-  document.getElementById('pc-mo-amount').textContent = fc(moEq);
+  document.getElementById('pc-mo-amount').textContent = fc(cvMonto(d, moEq));
   document.getElementById('pc-mo-label').textContent = en ? 'Monthly equiv.' : 'Equivalente mensual';
-  document.getElementById('pc-mo-period').textContent = en ? 'USD / month' : 'USD / mes';
+  document.getElementById('pc-mo-period').textContent = en ? (cur + ' / month') : (cur + ' / mes');
   document.getElementById('pc-mo-saving').textContent = (annualOn && isAnnual)
-    ? (en ? `vs $${fc(d.mo)}/mo full price` : `vs $${fc(d.mo)}/mes precio lista`)
+    ? (en ? `vs $${fc(cvMonto(d, d.mo))}/mo full price` : `vs $${fc(cvMonto(d, d.mo))}/mes precio lista`)
     : '';
 
   const ppoEff = isAnnual ? Math.round(d.ppo * adpFactor(d) * 100) / 100 : d.ppo;
-  document.getElementById('pc-ppo-amount').textContent = fc(ppoEff);
-  document.getElementById('pc-ppo-period').textContent = en ? 'USD / operation' : 'USD / operación';
+  document.getElementById('pc-ppo-amount').textContent = fc(cvUnit(d, ppoEff));
+  document.getElementById('pc-ppo-period').textContent = en ? (cur + ' / operation') : (cur + ' / operación');
   // En payloads modulares (v5+) no hay "tier"; ocultar la línea. Legacy v<5 la muestra.
   (function() {
     const tnum = document.getElementById('pc-tier-num');
@@ -4877,7 +4928,8 @@ function applyPricingToProposal(d, billing, en) {
   try { renderBreakdownRows(d, document.getElementById('pr-breakdown-tbody'), isAnnual, en); } catch(e) { console.error(e); }
 
   stampAnnualDiscountCopy(d, en);
-  stampVatNote(en);
+  stampVatNote(en, d);
+  stampCurrencyCopy(d, en);
 }
 
 function setBillingMode(mode, btn) {
@@ -4946,7 +4998,7 @@ function applyEnglish(d) {
   document.getElementById('tc-intro').innerHTML = 'This proposal is subject to the following terms. For any questions, contact us at <a href="mailto:hola@birdie.mx" style="color:var(--cyan-dark)">hola@birdie.mx</a>.';
   t('tc1-h','1. Proposal Validity'); t('tc1-p','This proposal is valid for 30 calendar days from the date of issue. After this period, prices and conditions may be subject to revision.');
   t('tc2-h','2. Billing and Payment');
-  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>' + (adpOn(d) ? ('The ' + adpOf(d) + '% discount applies exclusively to prepaid annual payment.') : 'This proposal has no prepayment discount; the annual subscription is invoiced at list price.') + '</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li>Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
+  document.getElementById('tc2-ul').innerHTML = '<li>Annual subscription invoiced at the start of the contract for the full year.</li><li>' + (adpOn(d) ? ('The ' + adpOf(d) + '% discount applies exclusively to prepaid annual payment.') : 'This proposal has no prepayment discount; the annual subscription is invoiced at list price.') + '</li><li>Monthly payment has no discount and may be cancelled with 30 days notice.</li><li>Implementation fee invoiced at contract signing.</li><li>Payments due within 15 calendar days of invoice date.</li><li id="tc-currency-li">Prices in USD; MXN payment accepted at Banxico exchange rate on payment date.</li>';
   t('tc3-h','3. Implementation & Onboarding');
   document.getElementById('tc3-ul').innerHTML = '<li>Estimated duration: 2–4 weeks.</li><li>Includes: platform configuration, initial data load, customs broker integration, and team training.</li><li>Client must assign a point of contact during implementation.</li>';
   t('tc4-h','4. Contract & Renewal');
@@ -5580,6 +5632,7 @@ function renderEntCommercial(d) {
   const en = ACTIVE_LANG === 'en';
   // Mismo criterio que la vista PYME: sin descuento anual, fuera el selector de pago.
   const annualOn = adpOn(d);
+  const cur = curOf(d);
   const isAnnual = annualOn ? EC_BILLING === 'annual' : true;
   const ecBillWrap = document.getElementById('ec-bill-wrap');
   if (ecBillWrap) ecBillWrap.style.display = annualOn ? '' : 'none';
@@ -5588,21 +5641,21 @@ function renderEntCommercial(d) {
   document.getElementById('ec-disc-chip').style.display = isAnnual ? '' : 'none';
 
   document.getElementById('ec-company').textContent = d.co || (en ? 'your company' : 'tu empresa');
-  document.getElementById('ec-chip-saving').textContent = fc(d.saving || 0);
+  document.getElementById('ec-chip-saving').textContent = fc(cvMonto(d, d.saving || 0));
 
   const subAmt = isAnnual ? d.ann : d.acv;
   const moEq   = isAnnual ? d.moDisc : d.mo;
-  document.getElementById('ec-pc-main-amount').textContent = fc(subAmt);
+  document.getElementById('ec-pc-main-amount').textContent = fc(cvMonto(d, subAmt));
   document.getElementById('ec-pc-main-label').textContent = isAnnual
     ? (en ? 'Annual Subscription' : 'Suscripción Anual')
     : (en ? 'Monthly Subscription' : 'Suscripción Mensual');
-  document.getElementById('ec-pc-main-period').textContent = isAnnual ? (en ? 'USD / year' : 'USD / año') : (en ? 'USD / month' : 'USD / mes');
-  document.getElementById('ec-pc-eq-amount').textContent = fc(moEq);
+  document.getElementById('ec-pc-main-period').textContent = isAnnual ? (en ? (cur + ' / year') : (cur + ' / año')) : (en ? (cur + ' / month') : (cur + ' / mes'));
+  document.getElementById('ec-pc-eq-amount').textContent = fc(cvMonto(d, moEq));
   // Aplica el descuento anual al precio por operación cuando el cliente está viendo
   // facturación anual. El % sale del payload (adp), igual que en el formato PYME, para
   // que la etiqueta por-op sea consistente con la tarjeta de suscripción.
   const ecPpoEff = isAnnual ? Math.round((d.ppo || 0) * adpFactor(d) * 100) / 100 : (d.ppo || 0);
-  document.getElementById('ec-pc-op-amount').textContent = fc(ecPpoEff);
+  document.getElementById('ec-pc-op-amount').textContent = fc(cvUnit(d, ecPpoEff));
   // Enterprise: mismo criterio — sin tier en modular, ocultar la línea.
   (function() {
     const el = document.getElementById('ec-pc-op-tier');
@@ -5618,7 +5671,8 @@ function renderEntCommercial(d) {
   try { renderProposalModulesBreakdown(d, 'ec-modules-breakdown', 'ec-modules-breakdown-list'); } catch(e) { console.error(e); }
 
   stampAnnualDiscountCopy(d, en);
-  stampVatNote(en);
+  stampVatNote(en, d);
+  stampCurrencyCopy(d, en);
 }
 
 // ── ES/EN for enterprise labels ───────────────────────────────────────────────
@@ -5948,6 +6002,9 @@ function docMoney(n) {
   return '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function docInt(n) { return (Math.round(Number(n) || 0)).toLocaleString('en-US'); }
+// Monto del documento en la moneda de la propuesta (0148). En USD es docMoney tal cual;
+// en pesos va redondeado a la decena y sin centavos.
+function docMoneyD(d, n) { return curOf(d) === 'MXN' ? '$' + docInt(cvMonto(d, n)) : docMoney(n); }
 function docEsc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -6101,7 +6158,7 @@ function docPage1(d, r, cfg, level) {
     rows.push({
       c: _BREAK_ADDON_LABEL[k],
       d: DOC_SHORT_DESC[k],
-      sub: a.setup ? ('Setup único de ' + docMoney(a.setup)) : '',
+      sub: a.setup ? ('Setup único de ' + docMoneyD(d, a.setup)) : '',
       amt: a.annual,
     });
   });
@@ -6120,7 +6177,7 @@ function docPage1(d, r, cfg, level) {
               : '<div class="doc-subnote">' + docEsc(row.sub) + '</div>')
           : '')
     + '</td>'
-    + '<td class="doc-num">' + docMoney(row.amt) + '</td></tr>'
+    + '<td class="doc-num">' + docMoneyD(d, row.amt) + '</td></tr>'
   ).join('');
 
   const subtotal   = r.modulesSubtotal + r.addonsSubtotal;
@@ -6134,30 +6191,30 @@ function docPage1(d, r, cfg, level) {
   const hasBundle = r.discountAmt > 0;
   const totals = []
     .concat(hasBundle
-      ? '<div class="doc-total-row"><span>Subtotal</span><span>' + docMoney(subtotal) + '</span></div>'
+      ? '<div class="doc-total-row"><span>Subtotal</span><span>' + docMoneyD(d, subtotal) + '</span></div>'
       : [])
     .concat(hasBundle
-      ? '<div class="doc-total-row disc"><span>Descuento por combinar módulos (' + docInt(r.discountPct) + '%)</span><span>−' + docMoney(r.discountAmt) + '</span></div>'
+      ? '<div class="doc-total-row disc"><span>Descuento por combinar módulos (' + docInt(r.discountPct) + '%)</span><span>−' + docMoneyD(d, r.discountAmt) + '</span></div>'
       : [])
-    .concat('<div class="doc-total-row"><span>Suscripción anual</span><span>' + docMoney(r.acv) + '</span></div>')
+    .concat('<div class="doc-total-row"><span>Suscripción anual</span><span>' + docMoneyD(d, r.acv) + '</span></div>')
     .concat(pct > 0
-      ? '<div class="doc-total-row disc"><span>Descuento por pago anual anticipado (' + docInt(pct) + '%)</span><span>−' + docMoney(annualDisc) + '</span></div>'
+      ? '<div class="doc-total-row disc"><span>Descuento por pago anual anticipado (' + docInt(pct) + '%)</span><span>−' + docMoneyD(d, annualDisc) + '</span></div>'
       : [])
-    .concat('<div class="doc-total-row"><span>Implementación (pago único)</span><span>' + docMoney(r.impl) + '</span></div>')
+    .concat('<div class="doc-total-row"><span>Implementación (pago único)</span><span>' + docMoneyD(d, r.impl) + '</span></div>')
     .join('');
 
   const intro = level >= 2
     ? ('Propuesta de Birdie para ' + docEsc(d.co) + ' sobre ' + docInt(d.ops)
-       + ' operaciones anuales. Importes en USD, primer año de contrato.')
+       + ' operaciones anuales. Importes en ' + curOf(d) + ', primer año de contrato.')
     : ('Propuesta de implementación de Birdie para ' + docEsc(d.co)
        + ' sobre un volumen estimado de ' + docInt(d.ops) + ' operaciones anuales'
        + (modNames.length ? ', con ' + joinNames(modNames.map(docEsc), false) : '')
-       + '. Los importes están expresados en dólares estadounidenses y corresponden al primer año de contrato.');
+       + '. Los importes están expresados en ' + (curOf(d) === 'MXN' ? 'pesos mexicanos' : 'dólares estadounidenses') + ' y corresponden al primer año de contrato.');
 
   // Con el descuento anual apagado, anual y mensual cuestan lo mismo: mencionar una
   // "alternativa mensual sin descuento" sobra y confunde.
-  const note = 'Precios en USD. No incluyen IVA. Suscripción facturada de forma anual anticipada; pago a 30 días. '
-    + (pct > 0 ? ('Alternativa de pago mensual: ' + docMoney(r.acv / 12) + '/mes sin descuento. ') : '')
+  const note = 'Precios en ' + curOf(d) + '. No incluyen IVA. Suscripción facturada de forma anual anticipada; pago a 30 días. '
+    + (pct > 0 ? ('Alternativa de pago mensual: ' + docMoneyD(d, r.acv / 12) + '/mes sin descuento. ') : '')
     + 'No incluye viáticos ni desarrollos a la medida.';
 
   const lvlClass = (level >= 1 ? ' doc-dense' : '') + (level >= 2 ? ' doc-dense2' : '');
@@ -6174,11 +6231,11 @@ function docPage1(d, r, cfg, level) {
     + '<p class="doc-intro">' + intro + '</p>'
     + (d.note ? '<p class="doc-intro" style="margin-top:10px">' + docEsc(d.note) + '</p>' : '')
     + '<table class="doc-table"><thead><tr>'
-      + '<th style="width:24%">Concepto</th><th>Descripción</th><th class="num" style="width:18%">Costo (USD)</th>'
+      + '<th style="width:24%">Concepto</th><th>Descripción</th><th class="num" style="width:18%">Costo (' + curOf(d) + ')</th>'
     + '</tr></thead><tbody>' + tbody + '</tbody></table>'
     + '<div class="doc-totals-wrap"><div class="doc-totals">' + totals
       + '<div class="doc-total-box"><span class="doc-eyebrow">Total primer año</span>'
-      + '<strong>' + docMoney(totalY1) + '</strong></div>'
+      + '<strong>' + docMoneyD(d, totalY1) + '</strong></div>'
     + '</div></div>'
     + docFoot(note, 2)
     + '</div></div>';
@@ -6227,7 +6284,7 @@ function docPage2(d, r) {
       + '<div class="doc-metrics">'
         + '<div><div class="doc-metric-n">' + docInt(r.ops) + '</div><div class="doc-metric-l">operaciones/año</div></div>'
         + '<div><div class="doc-metric-n">' + modCount + ' / 3</div><div class="doc-metric-l">módulos contratados</div></div>'
-        + '<div><div class="doc-metric-n">$' + ppo.toFixed(2) + '</div><div class="doc-metric-l">USD por operación</div></div>'
+        + '<div><div class="doc-metric-n">$' + cvUnit(d, ppo).toFixed(2) + '</div><div class="doc-metric-l">' + curOf(d) + ' por operación</div></div>'
       + '</div>'
     + '</div>'
     + docFoot('Los módulos y add-ons marcados como disponibles pueden contratarse en cualquier momento del contrato; '
@@ -6243,7 +6300,7 @@ function docROIOn(d) { return isROIScenarios(d && d.roi); }
 function docPageROI(d, r, pageNo, level) {
   const roi = d.roi;
   const R = calcROIScenarios(roi, r.totalYear1);
-  const $ = n => (n < 0 ? '−$' : '$') + docInt(Math.abs(n));
+  const $ = n => { const v = cvMonto(d, n); return (v < 0 ? '−$' : '$') + docInt(Math.abs(v)); };
   const n2 = v => (Number(v) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
   const co = docEsc(d.co || '');
 
@@ -6251,22 +6308,22 @@ function docPageROI(d, r, pageNo, level) {
     + '<div class="dr-kpi-l">' + l + '</div><div class="dr-kpi-s">' + sub + '</div></div>';
   const kpis = kpi(R.multiple != null ? R.multiple.toFixed(1) + 'x' : '—', 'retorno estimado', 'Escenario base, primer año')
     + kpi('~' + roiFmtPayback(R.scen[1].payback), 'meses de payback', 'Recuperación de la inversión')
-    + kpi(R.perShip != null ? '$' + R.perShip.toFixed(2) : '—', 'USD por embarque',
+    + kpi(R.perShip != null ? '$' + cvUnit(d, R.perShip).toFixed(2) : '—', curOf(d) + ' por embarque',
           'Inversión anual / ' + docInt(R.ships) + ' embarques');
 
   const cells = (vals, fmt) => vals.map((v, i) =>
     '<td class="doc-num' + (i === 1 ? ' dr-base' : '') + '">' + fmt(v) + '</td>').join('');
   const levers = R.levers.map(l => {
-    const c = roiLeverCopy(roi, l.k, false);
+    const c = roiLeverCopy(roi, l.k, false, d);
     return '<tr><td><div class="dr-t">' + docEsc(c.t) + '</div><div class="dr-d">' + docEsc(c.d) + '</div></td>'
       + cells(l.v, $) + '</tr>';
   }).join('');
 
   const assumptions = [docInt(R.ships) + ' embarques al año']
-    .concat(roi.prod.on ? 'costo hora del equipo USD ' + n2(R.hour) + ' (carga completa)' : [])
-    .concat(roi.dem.on ? n2(roi.dem.pct) + '% de embarques con demora o almacenaje a USD ' + n2(roi.dem.cost) : [])
-    .concat(roi.err.on ? n2(roi.err.pct) + '% de operaciones con rectificación documental a USD ' + n2(roi.err.cost) : [])
-    .concat('inversión de referencia USD ' + docMoney(R.investment).slice(1) + ' del primer año')
+    .concat(roi.prod.on ? 'costo hora del equipo ' + curOf(d) + ' ' + n2(cvUnit(d, R.hour)) + ' (carga completa)' : [])
+    .concat(roi.dem.on ? n2(roi.dem.pct) + '% de embarques con demora o almacenaje a ' + curOf(d) + ' ' + n2(cvUnit(d, roi.dem.cost)) : [])
+    .concat(roi.err.on ? n2(roi.err.pct) + '% de operaciones con rectificación documental a ' + curOf(d) + ' ' + n2(cvUnit(d, roi.err.cost)) : [])
+    .concat('inversión de referencia ' + curOf(d) + ' ' + docMoneyD(d, R.investment).slice(1) + ' del primer año')
     .join(' · ') + '. No incluye ahorros por integración ERP, telemetría ni MVE, que se evaluarían por separado.';
 
   // La hoja de precios está dimensionada a d.ops; si el ROI modela otro volumen se dice.
