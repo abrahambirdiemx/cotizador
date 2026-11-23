@@ -310,6 +310,9 @@
 
     .impl-note { background: #FFFBEB; border: 1px solid #F59E0B; border-radius: var(--r-sm); padding: 14px 18px; font-size: 13px; color: #78350F; display: flex; gap: 10px; align-items: flex-start; margin: 16px 0; line-height: 1.6; }
     .vat-note { margin: 14px 0 0; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+    .ovg-note { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid var(--cyan, #0A84FF); background: #F5F9FF; border-radius: var(--r-sm); font-size: 13px; color: var(--navy, #0B1F3A); line-height: 1.55; }
+    .doc-ovg { margin-top: 12px; padding: 7px 10px; border-left: 3px solid #0A84FF; background: #F5F9FF; font-size: 10.5px; line-height: 1.45; color: #0B1F3A; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc-dense .doc-ovg { margin-top: 9px; padding: 5px 9px; }
 
     .includes-box { margin-top: 32px; padding: 28px; background: white; border-radius: var(--r); border: 1px solid var(--border); box-shadow: var(--shadow); }
     .includes-box h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
@@ -1098,6 +1101,10 @@
     .doc-dense2 .doc-totals-wrap { margin-top: 11px; }
     .doc-dense2 .doc-head { padding-bottom: 15px; }
     .doc-dense2 .doc-foot { padding-top: 14px; }
+    /* Nivel 3 (sólo hoja de precios): la nota de operaciones adicionales pasa al pie y el
+       espaciado se aprieta un poco más. Las fuentes no bajan. */
+    .doc-dense3 .doc-totals-wrap { margin-top: 7px; }
+    .doc-dense3 .doc-foot { padding-top: 9px; }
 
     .doc-totals-wrap { display: flex; justify-content: flex-end; margin-top: 19px; }
     .doc-totals { width: 340px; }
@@ -1448,6 +1455,7 @@
           <div class="mod-section">
             <div class="mod-section-head">Módulos <span class="mod-hint-inline">— tarifa plana: el tramo del volumen total fija el precio de TODAS las unidades</span></div>
             <div id="mod-modules-container"></div>
+            <div id="mod-ovg-note" class="mod-hint" style="margin-top:10px;padding:8px 12px;border-left:3px solid #0A84FF;background:#F5F9FF;font-size:12.5px"></div>
           </div>
 
           <div class="mod-section">
@@ -2142,6 +2150,7 @@
       </table>
 
       <div id="vat-note" class="vat-note">Precios en USD. No incluyen IVA.</div>
+      <div id="ovg-note" class="ovg-note" style="display:none"></div>
 
       <div class="impl-note">
         ℹ️ <span id="impl-note-text">El costo de implementación se cobra <strong>una sola vez</strong> al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.</span>
@@ -2583,6 +2592,7 @@
         <tbody id="ec-breakdown-tbody"><!-- rows rendered dynamically per payload --></tbody>
       </table>
       <div id="ec-vat-note" class="vat-note">Precios en USD. No incluyen IVA.</div>
+      <div id="ec-ovg-note" class="ovg-note" style="display:none"></div>
       <div class="impl-note" id="ec-impl-note">El costo de implementación se cobra una sola vez al inicio del contrato. A partir del segundo año, solo se renueva la suscripción anual.</div>
 
       <!-- Siguientes pasos -->
@@ -2706,6 +2716,58 @@ function cvMonto(d, usd) {
 function cvUnit(d, usd) {
   var n = Number(usd) || 0;
   return curOf(d) === 'MXN' ? Math.round(n * Number(d.tc) * 100) / 100 : n;
+}
+
+// ── Operaciones adicionales (nov-2026) ───────────────────────────────────────
+// Tolerancia sin costo (2 % de las operaciones cotizadas, hacia abajo) y tarifa por
+// operación excedente según la combinación de módulos. Gemelos de DEFAULT_PRICING_CONFIG
+// .overage / comboExcedente / tarifaExcedente / opsSinCosto en pricingEngine.ts del OS.
+// La liga lleva la tarifa YA resuelta (`ovg: {f, r}`): el OS la puede editar y una
+// propuesta enviada no cambia. Sin `ovg` (ligas viejas) no se pinta nota.
+const OVG_DEFAULT = {
+  freePct: 2,
+  tiers: [ { min: 101, max: 1000 }, { min: 1001, max: 5000 }, { min: 5001, max: 18000 }, { min: 18001, max: 9999999 } ],
+  rates: { suite: [15, 12, 10, 9], eos_validai: [11.5, 9, 8, 7], eos_mve: [13.5, 10, 9, 8], eos: [9, 7, 6, 5.5] },
+};
+const OVG_LABELS = { suite: 'Suite completa', eos_validai: 'EOS + ValidAI', eos_mve: 'EOS + MVE', eos: 'EOS solo' };
+function ovgCombo(mods) {
+  const on = function (k) { return !!(mods && mods[k] && mods[k].on); };
+  if (!on('eos') && !on('validai') && !on('mve')) return null;
+  if (on('eos') && on('validai') && on('mve')) return 'suite';
+  if (on('eos') && on('validai')) return 'eos_validai';
+  if (on('eos') && on('mve')) return 'eos_mve';
+  return 'eos'; // sin EOS: piso
+}
+function ovgTier(ops) {
+  const o = Math.max(0, Number(ops) || 0);
+  const t = OVG_DEFAULT.tiers;
+  for (let i = 0; i < t.length; i++) if (o >= t[i].min && o <= t[i].max) return i;
+  return o < t[0].min ? 0 : t.length - 1;
+}
+function ovgRate(mods, ops) {
+  const c = ovgCombo(mods);
+  return c ? OVG_DEFAULT.rates[c][ovgTier(ops)] : null;
+}
+function ovgFree(ops, pct) {
+  return Math.max(0, Math.floor((Math.max(0, Number(ops) || 0) * (Number(pct) || 0)) / 100));
+}
+/** La línea que ve el cliente, o null si la liga no trae `ovg` válido. */
+function ovgText(d, en) {
+  const o = d && d.ovg;
+  const r = o && Number(o.r);
+  const f = o && Number(o.f);
+  const ops = Number(d && d.ops) || 0;
+  if (!o || !(r > 0) || !(f >= 0) || !(ops > 0)) return null;
+  const cur = curOf(d);
+  const price = '$' + cvUnit(d, r).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + cur;
+  const free = ovgFree(ops, f).toLocaleString('en-US');
+  const pct = f.toLocaleString('en-US');
+  const n = ops.toLocaleString('en-US');
+  return en
+    ? ('Additional operations: includes ' + free + ' operations at no cost (' + pct + '% of the ' + n
+       + ' quoted). Each additional operation is billed at ' + price + '.')
+    : ('Operaciones adicionales: incluye ' + free + ' operaciones sin costo (' + pct + '% de las ' + n
+       + ' cotizadas). Cada operación adicional se cobra a ' + price + '.');
 }
 
 /** Une nombres en lista legible: "A, B y C" / "A, B and C". */
@@ -3704,6 +3766,19 @@ function updateModularSummary() {
   const cfg = readModularConfig();
   const r = calcModularPricing(cfg);
 
+  // Operaciones adicionales: lo que verá el cliente en su propuesta.
+  const ovgEl = document.getElementById('mod-ovg-note');
+  if (ovgEl) {
+    const c = ovgCombo(cfg.modules), rate = cfg.ops > 0 ? ovgRate(cfg.modules, cfg.ops) : null;
+    ovgEl.style.display = rate != null ? '' : 'none';
+    if (rate != null) {
+      const t = OVG_DEFAULT.tiers[ovgTier(cfg.ops)];
+      ovgEl.textContent = 'Operaciones adicionales: ' + ovgFree(cfg.ops, OVG_DEFAULT.freePct).toLocaleString('en-US')
+        + ' sin costo (' + OVG_DEFAULT.freePct + '%) · excedente $' + rate.toFixed(2) + ' USD/op ('
+        + OVG_LABELS[c] + ', tramo ' + t.min.toLocaleString('en-US') + (t.max >= 9999999 ? '+' : '–' + t.max.toLocaleString('en-US')) + ')';
+    }
+  }
+
   // Update per-tier margin badges + per-module volume + subtotal
   ['eos','validai','mve'].forEach(k => {
     try { updateTierVisibility(k); } catch(e) {}
@@ -4327,6 +4402,9 @@ function generateProposal() {
     // Enterprise block (unchanged)
     ent: (ACTIVE_FMT === 'ent') ? entCollectFromForm() : null,
   };
+  // Operaciones adicionales: tarifa YA resuelta en USD (gemelo de buildPayloadV5 del OS).
+  const ovgR = ops > 0 ? ovgRate(cfg.modules, ops) : null;
+  if (ovgR != null) data.ovg = { f: OVG_DEFAULT.freePct, r: ovgR };
 
   const encoded = enc(data);
   const url = window.location.href.split('?')[0] + '?p=' + encoded;
@@ -4844,6 +4922,18 @@ function stampVatNote(en, d) {
   set('vat-note'); set('ec-vat-note');
 }
 
+// Operaciones adicionales: mismo patrón que stampVatNote (elemento propio, estampado al
+// final del render), así sobrevive a applyEnglish/applySpanish. Sin `ovg` se oculta.
+function stampOverageNote(d, en) {
+  const txt = ovgText(d, en);
+  ['ovg-note', 'ec-ovg-note'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = txt || '';
+    el.style.display = txt ? '' : 'none';
+  });
+}
+
 // La moneda en los textos FIJOS del HTML que ningún render reescribe (chips, unidades
 // del piloto y de Enterprise, encabezado de la tabla) y en la cláusula de moneda de los
 // T&C. Corre al final del render, igual que stampVatNote, para ganarle a
@@ -4929,6 +5019,7 @@ function applyPricingToProposal(d, billing, en) {
 
   stampAnnualDiscountCopy(d, en);
   stampVatNote(en, d);
+  stampOverageNote(d, en);
   stampCurrencyCopy(d, en);
 }
 
@@ -5672,6 +5763,7 @@ function renderEntCommercial(d) {
 
   stampAnnualDiscountCopy(d, en);
   stampVatNote(en, d);
+  stampOverageNote(d, en);
   stampCurrencyCopy(d, en);
 }
 
@@ -6215,9 +6307,12 @@ function docPage1(d, r, cfg, level) {
   // "alternativa mensual sin descuento" sobra y confunde.
   const note = 'Precios en ' + curOf(d) + '. No incluyen IVA. Suscripción facturada de forma anual anticipada; pago a 30 días. '
     + (pct > 0 ? ('Alternativa de pago mensual: ' + docMoneyD(d, r.acv / 12) + '/mes sin descuento. ') : '')
-    + 'No incluye viáticos ni desarrollos a la medida.';
+    + 'No incluye viáticos ni desarrollos a la medida.'
+    // Nivel 3 de la escalera: la nota de operaciones adicionales deja su recuadro y se
+    // vuelve la primera frase de esta nota al pie. El texto es el mismo, nunca se recorta.
+    + (level >= 3 && ovgText(d, false) ? ' ' + docEsc(ovgText(d, false)) : '');
 
-  const lvlClass = (level >= 1 ? ' doc-dense' : '') + (level >= 2 ? ' doc-dense2' : '');
+  const lvlClass = (level >= 1 ? ' doc-dense' : '') + (level >= 2 ? ' doc-dense2' : '') + (level >= 3 ? ' doc-dense3' : '');
   return '<div class="doc-page doc-p1' + lvlClass + '"><div class="doc-inner">'
     + docHead(d, '', false)
     + '<div class="doc-parties">'
@@ -6237,6 +6332,7 @@ function docPage1(d, r, cfg, level) {
       + '<div class="doc-total-box"><span class="doc-eyebrow">Total primer año</span>'
       + '<strong>' + docMoneyD(d, totalY1) + '</strong></div>'
     + '</div></div>'
+    + (level < 3 && ovgText(d, false) ? '<div class="doc-ovg">' + docEsc(ovgText(d, false)) + '</div>' : '')
     + docFoot(note, 2)
     + '</div></div>';
 }
@@ -6548,8 +6644,10 @@ function renderDocument(d) {
     fit = docCheckFit();
     const pOk = !!(fit[PRICING] && fit[PRICING].ok);
     const rOk = !roiOn || !!(fit[ROI] && fit[ROI].ok);
-    if ((pOk || lp >= 2) && (rOk || lr >= 2)) break;
-    if (!pOk && lp < 2) lp++;
+    // La hoja de precios tiene un nivel más (3) que la de ROI: mueve la nota de
+    // operaciones adicionales al pie en vez de recortar nada.
+    if ((pOk || lp >= 3) && (rOk || lr >= 2)) break;
+    if (!pOk && lp < 3) lp++;
     if (!rOk && lr < 2) lr++;
   }
   return fit;
